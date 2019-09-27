@@ -15,7 +15,7 @@ jobs:
       - save_cache:
           paths:
             - /root/.gradle
-          key: v2-dependencies-{{ checksum "pom.xml" }}
+          key: v2-dependencies-{{ checksum "build.gradle.kts" }}
 
       - run: ./gradlew clean assemble
       - persist_to_workspace:
