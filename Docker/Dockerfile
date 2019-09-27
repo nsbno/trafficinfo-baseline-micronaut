@@ -6,7 +6,8 @@ ENV JAVA_HOME=/opt/java/openjdk \
 RUN adduser -S $USER
 RUN apk add --no-cache su-exec
 
-COPY Docker/runapp.sh target/app.jar $HOME/
+# Replace baseline.jar with your applications JAR file (defined in build.gradle.kts)
+COPY Docker/runapp.sh build/libs/baseline.jar $HOME/
 RUN chmod 755 $HOME/*.sh && \
     chown -R $USER $HOME
 
