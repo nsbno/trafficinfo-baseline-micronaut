@@ -14,7 +14,7 @@ object HealthControllerSpec: Spek({
 
         it("test /health contains startuptime") {
             var rsp : String = client.toBlocking().retrieve("/health")
-            assertTrue(rsp.contains("startupTime"))
+            assertTrue(rsp.contains("runningSince"))
         }
 
         afterGroup {
