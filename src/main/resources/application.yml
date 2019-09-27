@@ -1,3 +1,12 @@
 micronaut:
   application:
     name: trafficinfo-baseline-micronaut
+jackson:
+  serialization:
+    indentOutput: true
+    writeDatesAsTimestamps: false
+  deserialization:
+    useBigIntegerForInts: true
+    failOnUnknownProperties: false
+  json-view:
+    enabled: true

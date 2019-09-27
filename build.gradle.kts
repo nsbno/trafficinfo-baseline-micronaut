@@ -6,13 +6,16 @@ plugins {
     id ("application")
 }
 
+group = "no.vy.trafficinfo.baseline.micronaut"
+
+val version: String by project
 val micronautVersion: String by project
 val kotlinVersion: String by project
 val spekVersion: String by project
 val junitVersion: String by project
-
-version = "0.1"
-group = "trafficinfo.baseline.micronaut"
+val artifactGroup = group
+val artifactVersion = version
+val targetJvmVersion: String by project
 
 repositories {
     mavenCentral()
@@ -73,21 +76,25 @@ tasks {
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "12"
+            jvmTarget = targetJvmVersion
             javaParameters = true
         }
     }
 
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = "12"
+            jvmTarget = targetJvmVersion
             javaParameters = true
         }
     }
 
     shadowJar {
         mergeServiceFiles()
-        archiveName ="baseline.jar"
+        archiveName = "baseline.jar"
+        manifest {
+            attributes (mapOf("Implementation-Title" to rootProject.name, "Implementation-Version" to artifactVersion))
+        }
+
     }
 
     (run) {
