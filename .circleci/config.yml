@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  build-source:
+    docker:
+      - image:  gradle:5.6.2-jdk12
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "build.gradle.kts" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+      - save_cache:
+          paths:
+            - /root/.gradle
+          key: v2-dependencies-{{ checksum "pom.xml" }}
+
+      - run: ./gradlew clean assemble
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - build
+
+  build-docker:
+    docker:
+      - image: colincoleman/circleci-ecr:latest
+    working_directory: ~/repo
+    steps:
+      - setup_remote_docker
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: "Build Docker image"
+          command: |
+            LOGIN_COMMAND=$(aws ecr get-login --region eu-west-1 --no-include-email)
+            $LOGIN_COMMAND
+            SHORT_SHA1=`echo ${CIRCLE_SHA1}|cut -c1-7`
+            docker build -t ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut -f Docker/Dockerfile .
+            docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${CIRCLE_BRANCH}-branch"
+            docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${CIRCLE_BRANCH}-branch"
+            docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${SHORT_SHA1}-SHA1"
+            docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${SHORT_SHA1}-SHA1"
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build-source
+      - build-docker:
+            requires:
+            - build-source
