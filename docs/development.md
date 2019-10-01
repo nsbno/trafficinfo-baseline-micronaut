@@ -5,7 +5,7 @@ Description of everything needed to be installed to start developing the applica
 
 ## Run
 ### maven
-Run `mvn exec:exec` and it will start the application.
+Run `./gradlew run` and it will start the application.
 
 ### docker 
 Build a new image standing in the root-project-folder and execute `docker build -t microservice -f Docker/Dockerfile .` 
@@ -18,13 +18,13 @@ the local machine. Go to `http://localhost:8080/health` to check after the conta
 Start the main class by right click on it, should start without any special configuration.
 
 ## Build
-Describe how to build the application.
+Run `./gradlew assemble` and it will package the application into a runnable jar. Output is in build/libs/baseline.jar
 
 ## Deploy
 Describe how this application is deployed in dev, test and production env.
 
 ## Release
-Describe how a new release is performed.
+When building for release (CircleCI), supply a parameter version on the commandline as so: `./gradlew assemble -Dversion=<releaseversion or hash>`
 
 ## Branching
 Describe how the branching strategy is handled when developing this app.
@@ -32,7 +32,7 @@ Describe how the branching strategy is handled when developing this app.
 ## Tech
 
 * JDK12
-* [Jetty Web Server](https://www.eclipse.org/jetty/)
-* [Jersey JAX-RS](https://jersey.github.io/)
-* [TestNG](https://github.com/cbeust/testng)
-* [REST-assured: Java DSL for easy testing of REST services](https://github.com/rest-assured/rest-assured)
+* [Micronaut](https://micronaut.io)
+* [JUnit](https://junit.org/junit5/)
+* [KotlinTest](https://github.com/kotlintest/kotlintest)
+
