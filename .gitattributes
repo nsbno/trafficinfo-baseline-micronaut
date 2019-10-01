@@ -3,8 +3,11 @@
 *.md		text
 *.json		text 
 *.xml		text
-*.properties	text
-*.xml		text
-*.properties	text
 *.gradle	text
 *.kt		text
+*.kts		text
+*.sh		text
+Docker/*    text
+gradlew     text
+*.properties	text
+*.xml		    text
