@@ -20,11 +20,12 @@ val targetJvmVersion: String by project
 repositories {
     mavenCentral()
     jcenter()
-    maven(url = "https://dl.bintray.com/spekframework/spek-dev")
 }
 
-configurations {
+val developmentOnly = configurations.create("developmentOnly")
 
+configurations {
+    developmentOnly
 }
 
 dependencies {
@@ -37,24 +38,30 @@ dependencies {
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
 
+    kapt("io.micronaut.configuration:micronaut-openapi")
+    compile("io.swagger.core.v3:swagger-annotations")
+
+    kapt("io.micronaut:micronaut-security")
+    implementation("io.micronaut:micronaut-security")
+
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
 
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
+
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
 
-    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
-    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    testAnnotationProcessor("io.micronaut:micronaut-inject-java")
 
     testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     testImplementation("io.micronaut.test:micronaut-test-kotlintest")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
 
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
     testImplementation("io.mockk:mockk:1.9.3")
-
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
@@ -63,11 +70,11 @@ dependencies {
 application {
     mainClassName = "no.vy.trafficinfo.baseline.micronaut.Application"
 }
+
 tasks {
     test {
-        useJUnitPlatform () {
-            includeEngines("spek2", "junit-jupiter")
-        }
+        useJUnitPlatform ()
+        classpath += developmentOnly
     }
 
     allOpen {
@@ -92,7 +99,10 @@ tasks {
         mergeServiceFiles()
         archiveName = "baseline.jar"
         manifest {
-            attributes (mapOf("Implementation-Title" to rootProject.name, "Implementation-Version" to artifactVersion))
+            attributes (mapOf(
+                    "Implementation-Title" to rootProject.name,
+                    "Implementation-Version" to artifactVersion
+            ))
         }
 
     }

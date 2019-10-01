@@ -1,6 +1,27 @@
 micronaut:
   application:
     name: trafficinfo-baseline-micronaut
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+  server:
+    port: 8080
+    cors:
+      enabled: false
+  security:
+    enabled: true
+    token:
+      jwt: # https://micronaut-projects.github.io/micronaut-security/latest/guide/#jwtValidation
+        enabled: false
+        signatures:
+          jwks:
+            awscognito:
+              url: 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-XXXX/.well-known/jwks.json'
+endpoints:
+  health:
+    enabled: false
 jackson:
   serialization:
     indentOutput: true
@@ -10,3 +31,4 @@ jackson:
     failOnUnknownProperties: false
   json-view:
     enabled: true
+
