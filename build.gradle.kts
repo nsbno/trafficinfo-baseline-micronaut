@@ -20,6 +20,9 @@ val targetJvmVersion: String by project
 repositories {
     mavenCentral()
     jcenter()
+    maven(
+            url = "https://mvnrepo.cantara.no/content/repositories/releases"
+    )
 }
 
 val developmentOnly = configurations.create("developmentOnly")
