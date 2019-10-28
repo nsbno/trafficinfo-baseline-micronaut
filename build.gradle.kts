@@ -37,6 +37,12 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-discovery-client")
+    implementation("io.micronaut.configuration:micronaut-aws-common")
+    implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.2.0")
+    implementation("no.cantara.aws:sqs-util:0.6")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.648")
+    implementation("org.javers:javers-core:5.8.2")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
     compile("io.swagger.core.v3:swagger-annotations")
@@ -48,7 +54,7 @@ dependencies {
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
 
-    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
     runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -57,14 +63,13 @@ dependencies {
     testAnnotationProcessor("io.micronaut:micronaut-inject-java")
 
     testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    testImplementation("io.micronaut.test:micronaut-test-kotlintest")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
-
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
     testImplementation("io.mockk:mockk:1.9.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+
+    testImplementation("org.assertj:assertj-core:3.13.2")
 }
 
 application {
