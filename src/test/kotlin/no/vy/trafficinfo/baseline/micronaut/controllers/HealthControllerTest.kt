@@ -1,19 +1,17 @@
 package no.vy.trafficinfo.baseline.micronaut.controllers
 
-import io.kotlintest.specs.AbstractAnnotationSpec
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient
-import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.annotation.MicronautTest
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import java.io.IOException
 import java.net.URI
 import javax.inject.Inject
 
