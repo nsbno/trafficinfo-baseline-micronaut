@@ -1,0 +1,13 @@
+# basic config to bootstrap the distributed config from AWS parameter store.
+# rest of config is in application.yml and in AWS SSM.
+micronaut:
+  application:
+    name: baseline-micronaut
+
+  # metrics only enabled in cloud environment
+  metrics:
+    enabled: false
+
+  # distributed config only enabled in cloud environment
+  config-client:
+    enabled: false

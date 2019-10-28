@@ -1,0 +1,6 @@
+# Disable some cloud stuff when running tests
+micronaut:
+  metrics:
+    enabled: false
+  config-client:
+    enabled: false

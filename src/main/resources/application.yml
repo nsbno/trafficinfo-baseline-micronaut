@@ -1,24 +1,27 @@
 micronaut:
   application:
-    name: trafficinfo-baseline-micronaut
+    name: baseline-micronaut
   router:
     static-resources:
       swagger:
         paths: classpath:META-INF/swagger
         mapping: /swagger/**
+
   server:
+    # let system environment variable override context-path if available
+    # or else just use / as root. The Dockerfile sets this to /otc matching
+    # what the ECS Fargate task is routed as from the load balancer.
+    context-path: ${CONTEXT_PATH:/}
     port: 8080
     cors:
       enabled: false
+
   security:
     enabled: true
-    token:
-      jwt: # https://micronaut-projects.github.io/micronaut-security/latest/guide/#jwtValidation
-        enabled: false
-        signatures:
-          jwks:
-            awscognito:
-              url: 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-XXXX/.well-known/jwks.json'
+    endpoints:
+      login:
+        enabled: true
+
 endpoints:
   health:
     enabled: false

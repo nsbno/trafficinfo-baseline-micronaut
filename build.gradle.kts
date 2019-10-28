@@ -75,6 +75,8 @@ tasks {
     test {
         useJUnitPlatform ()
         classpath += developmentOnly
+        systemProperty("micronaut.environments", "test")
+        systemProperty("micronaut.env.deduction", false)
     }
 
     allOpen {

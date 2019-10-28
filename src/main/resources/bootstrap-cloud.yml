@@ -1,0 +1,37 @@
+# basic config to bootstrap the distributed config from AWS parameter store.
+# rest of config is in application.yml and in AWS SSM.
+micronaut:
+  config-client:
+    enabled: true
+
+  metrics:
+    enabled: true
+    export:
+      cloudwatch:
+        enabled: true
+        namespace: trafficinfo-baseline-micronaut
+        batchSize: 10
+
+# Check out the documentation about using System manager in micronaut
+# https://github.com/micronaut-projects/micronaut-core/blob/master/src/main/docs/guide/cloud/cloudConfiguration/distributedConfigurationAwsParameterStore.adoc
+# and more about the other posibilites in micrnaut and cloud  https://github.com/micronaut-projects/micronaut-core/tree/master/src/main/docs/guide/cloud
+aws:
+  client:
+    system-manager:
+      parameterstore:
+        enabled: true
+
+        # should probably figure out how secure parameters work.
+        useSecureParameters: false
+
+
+#  security:
+#    enabled: true
+#
+#    token:
+#      jwt:
+#        enabled: true
+#        signatures:
+#          jwks:
+#            awscognito:
+#              url: 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-XXXX/.well-known/jwks.json'
