@@ -23,6 +23,9 @@ repositories {
     maven(
             url = "https://mvnrepo.cantara.no/content/repositories/releases"
     )
+    maven(
+            url = "https://repo.spring.io/libs-snapshot"
+    )
 }
 
 val developmentOnly = configurations.create("developmentOnly")
@@ -43,6 +46,9 @@ dependencies {
     implementation("io.micronaut:micronaut-discovery-client")
     implementation("io.micronaut.configuration:micronaut-aws-common")
     implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.2.0")
+    // workaround for https:///github.com/micrometer-metrics/micrometer/issues/1645
+    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.1-SNAPSHOT")
+
     implementation("no.cantara.aws:sqs-util:0.6")
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.648")
     implementation("org.javers:javers-core:5.8.2")
