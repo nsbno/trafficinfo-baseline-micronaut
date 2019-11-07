@@ -54,6 +54,8 @@ jobs:
             docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${CIRCLE_BRANCH}-branch"
             docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${SHORT_SHA1}-SHA1"
             docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${SHORT_SHA1}-SHA1"
+            docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
+            docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
 
 workflows:
   version: 2
