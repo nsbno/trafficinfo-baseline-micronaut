@@ -18,7 +18,7 @@ See https://jico.nsb.no/confluence/display/TRAFFICINFO/Baseline+Micronaut
 Docker/runapp.sh.
 
 2. Set up an ECR for the microservice
-Create a new module based on ech-baseline-micronaut in trafficinfo-aws/terraform/circleci-init/main.tf.
+Create a new module based on ecr-baseline-micronaut in trafficinfo-aws/terraform/circleci-init/main.tf.
 
 3. CircleCI setup
 CircleCI is responsible for running tests, and building the artifacts before publishing it to ECR to be deployed to ECS.
