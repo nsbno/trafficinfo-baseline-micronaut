@@ -19,6 +19,7 @@ Docker/runapp.sh.
 
 2. Set up an ECR for the microservice
 Create a new module based on ecr-baseline-micronaut in trafficinfo-aws/terraform/circleci-init/main.tf.
+Add the new ecr-repository to the module "ci_machine_user", and update the number of allowed ecr_count.
 
 3. CircleCI setup
 CircleCI is responsible for running tests, and building the artifacts before publishing it to ECR to be deployed to ECS.
@@ -30,7 +31,7 @@ AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 
 The ECR endpoint can be found in the ECR configuration panel after it has been terraformed. The AWS variables can be
-found in the AWS Systems Manager -> Parameter Store. AWS_ACCESS_ID can be found in ci-machine-user-id, and the 
+found in the AWS Systems Manager -> Parameter Store. AWS_ACCESS_KEY_ID can be found in ci-machine-user-id, and the 
 AWS_SECRET_ACCESS_KEY can be found under ci-machine-user-key.
  
 4. Generate a "status badge" in Circle CI that can be used in README.md for the new microservice. 
