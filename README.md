@@ -35,7 +35,9 @@ AWS_SECRET_ACCESS_KEY can be found under ci-machine-user-key.
  
 4. Generate a "status badge" in Circle CI that can be used in README.md for the new microservice. 
 
-5. WIP Create terraform stuff for new service
+5. Add the slack webhook-url to Circle CI for build notifications
+
+6. WIP Create terraform stuff for new service
 ## Deploy til test
 template/main.tf -> ECS
 
