@@ -21,7 +21,10 @@ micronaut:
     endpoints:
       login:
         enabled: true
-
+  http:
+    client:
+      max-content-length: 104857600 # 100mb max content length
+      read-timeout: 60s
 endpoints:
   health:
     enabled: false
