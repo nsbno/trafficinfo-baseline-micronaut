@@ -1,6 +1,5 @@
 package no.vy.trafficinfo.baseline.micronaut.domain
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.ZonedDateTime
 
 class Health {

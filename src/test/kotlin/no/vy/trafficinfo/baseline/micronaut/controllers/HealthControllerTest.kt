@@ -31,7 +31,7 @@ class HealthControllerTest {
     @Test
     fun testHealthResponse() {
         val rsp: String = client.toBlocking().retrieve("/health")
-        assertTrue(rsp.contains("runningSince"))
+        assertTrue(rsp.contains("startupTime"))
     }
 
     @Test

@@ -27,7 +27,11 @@ micronaut:
       read-timeout: 60s
 endpoints:
   health:
-    enabled: false
+    enabled: true
+    sensitive: false
+    details-visible: ANONYMOUS
+    disk-space:
+      enabled: false
 jackson:
   serialization:
     indentOutput: true
