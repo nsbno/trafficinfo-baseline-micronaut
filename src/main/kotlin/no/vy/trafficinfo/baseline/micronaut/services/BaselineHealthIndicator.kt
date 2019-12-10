@@ -9,7 +9,7 @@ import org.reactivestreams.Publisher
 import javax.inject.Singleton
 
 @Singleton
-class TrainstaffHealthIndicator : HealthIndicator {
+class BaselineHealthIndicator : HealthIndicator {
     override fun getResult(): Publisher<HealthResult> {
         return Flowable.just(FillrateHealthResult())
     }
@@ -17,7 +17,7 @@ class TrainstaffHealthIndicator : HealthIndicator {
 
 class FillrateHealthResult : HealthResult {
     override fun getName(): String {
-        return "trafficinfo-trainstaff"
+        return "trafficinfo-baseline"
     }
 
     override fun getDetails(): Any {
