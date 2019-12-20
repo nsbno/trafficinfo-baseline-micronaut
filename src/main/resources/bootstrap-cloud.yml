@@ -12,10 +12,12 @@ micronaut:
       files:
         enabled: false
       logback:
-        enabled: false
+        enabled: true
       jdbc:
         enabled: false
       jvm:
+        enabled: false
+      http:
         enabled: false
     export:
       cloudwatch:
