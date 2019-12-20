@@ -6,6 +6,17 @@ micronaut:
 
   metrics:
     enabled: true
+    binders:
+      processor:
+        enabled: false
+      files:
+        enabled: false
+      logback:
+        enabled: false
+      jdbc:
+        enabled: false
+      jvm:
+        enabled: false
     export:
       cloudwatch:
         enabled: true
