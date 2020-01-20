@@ -51,7 +51,7 @@ dependencies {
 
     implementation("no.cantara.aws:sqs-util:0.6")
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.648")
-    implementation("org.javers:javers-core:5.8.2")
+    implementation("org.javers:javers-core:5.8.8")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
     compile("io.swagger.core.v3:swagger-annotations")
