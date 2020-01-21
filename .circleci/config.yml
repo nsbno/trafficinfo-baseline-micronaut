@@ -2,7 +2,7 @@ version: 2
 jobs:
   build-source:
     docker:
-      - image:  gradle:5.6.2-jdk12
+      - image:  gradle:5.6.4-jdk12
     working_directory: ~/repo
     steps:
       - checkout

@@ -1,7 +1,8 @@
 FROM adoptopenjdk/openjdk12:jdk-12.0.2_10-alpine
 ENV USER=appuser
 ENV JAVA_HOME=/opt/java/openjdk \
-    HOME=/home/$USER
+    HOME=/home/$USER \
+    CONTEXT_PATH=/baseline-micronaut
 
 RUN adduser -S $USER
 RUN apk add --no-cache su-exec

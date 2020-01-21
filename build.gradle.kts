@@ -45,13 +45,13 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-discovery-client")
     implementation("io.micronaut.configuration:micronaut-aws-common")
-    implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.2.0")
+    implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.0")
     // workaround for https:///github.com/micrometer-metrics/micrometer/issues/1645
-    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.1-SNAPSHOT")
+    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.3")
 
-    implementation("no.cantara.aws:sqs-util:0.6")
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.648")
-    implementation("org.javers:javers-core:5.8.2")
+    implementation("no.cantara.aws:sqs-util:0.7.1")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.711")
+    implementation("org.javers:javers-core:5.8.8")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
     compile("io.swagger.core.v3:swagger-annotations")
@@ -63,7 +63,7 @@ dependencies {
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
     runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -78,7 +78,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
-    testImplementation("org.assertj:assertj-core:3.13.2")
+    testImplementation("org.assertj:assertj-core:3.14.0")
 }
 
 application {

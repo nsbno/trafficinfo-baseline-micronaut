@@ -35,6 +35,7 @@ aws:
         enabled: true
         # to use secure parameters, make sure the service has access to the key used to encrypt it
         useSecureParameters: true
+        rootHierarchyPath: /trafficinfo/config
 
 
 #  security:
