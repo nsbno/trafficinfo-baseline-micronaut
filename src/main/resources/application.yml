@@ -16,9 +16,9 @@ micronaut:
     cors:
       enabled: false
 
-  # For local development disable authentication.
+  # For local development use Basic Auth for authentication
   security:
-    enabled: false
+    enabled: true
 
   http:
     client:
