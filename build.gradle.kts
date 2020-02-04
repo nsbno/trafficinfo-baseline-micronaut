@@ -57,6 +57,7 @@ dependencies {
 
     kapt("io.micronaut:micronaut-security")
     implementation("io.micronaut:micronaut-security")
+    implementation("io.micronaut:micronaut-security-jwt")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")

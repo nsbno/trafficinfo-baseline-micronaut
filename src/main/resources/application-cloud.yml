@@ -1,0 +1,22 @@
+micronaut:
+  # enable security when running in the cloud.
+  # JWT validation, parses incoming Bearer token and validates
+  # signatures and attributes against jwks.json.
+  #
+  # The jwksUrl property below is stored in cloud SSM as a common parameter
+  # under /trafficinfo/config/application for all applications to use
+  # and contain the url to the public endpoint where public keys are published
+  # to verify signatures in JWT token.
+  security:
+    enabled: true
+    token:
+      basic-auth:
+        enabled: false
+      jwt:
+        bearer:
+          enabled: true
+        enabled: true
+        signatures:
+          jwks:
+            awscognito:
+              url: ${jwksUrl}
