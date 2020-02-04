@@ -1,8 +1,8 @@
 plugins {
-    id ("org.jetbrains.kotlin.jvm") version "1.3.50"
-    id ("org.jetbrains.kotlin.kapt") version "1.3.50"
-    id ("org.jetbrains.kotlin.plugin.allopen")  version "1.3.50"
-    id ("com.github.johnrengelman.shadow")  version "5.0.0"
+    id ("org.jetbrains.kotlin.jvm") version "1.3.61"
+    id ("org.jetbrains.kotlin.kapt") version "1.3.61"
+    id ("org.jetbrains.kotlin.plugin.allopen")  version "1.3.61"
+    id ("com.github.johnrengelman.shadow")  version "5.2.0"
     id ("application")
 }
 
@@ -49,11 +49,11 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.3")
 
     implementation("no.cantara.aws:sqs-util:0.7.1")
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.711")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.714")
     implementation("org.javers:javers-core:5.8.8")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
-    compile("io.swagger.core.v3:swagger-annotations")
+    implementation("io.swagger.core.v3:swagger-annotations")
 
     kapt("io.micronaut:micronaut-security")
     implementation("io.micronaut:micronaut-security")
@@ -112,7 +112,7 @@ tasks {
 
     shadowJar {
         mergeServiceFiles()
-        archiveName = "baseline.jar"
+        archiveFileName.set("baseline.jar")
         manifest {
             attributes (mapOf(
                     "Implementation-Title" to rootProject.name,
