@@ -49,7 +49,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.3")
 
     implementation("no.cantara.aws:sqs-util:0.7.3")
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.714")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.716")
     implementation("org.javers:javers-core:5.8.8")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
