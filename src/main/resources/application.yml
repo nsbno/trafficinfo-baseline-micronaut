@@ -38,6 +38,7 @@ jackson:
   deserialization:
     useBigIntegerForInts: true
     failOnUnknownProperties: false
+    adjustDatesToContextTimeZone: false
   json-view:
     enabled: true
 
