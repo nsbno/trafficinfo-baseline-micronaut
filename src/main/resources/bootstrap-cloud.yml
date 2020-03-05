@@ -19,6 +19,8 @@ micronaut:
         enabled: false
       http:
         enabled: false
+      web:
+        enabled: false
     export:
       cloudwatch:
         enabled: true
