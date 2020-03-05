@@ -48,9 +48,8 @@ dependencies {
     implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.0")
     implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.5")
 
-    implementation("no.cantara.aws:sqs-util:0.7.3")
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.720")
-    implementation("org.javers:javers-core:5.8.10")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.737")
+    implementation("no.cantara.aws:sqs-util:0.7.6")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
     implementation("io.swagger.core.v3:swagger-annotations")
@@ -63,7 +62,7 @@ dependencies {
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3")
     runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
