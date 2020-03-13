@@ -1,9 +1,10 @@
 plugins {
-    id ("org.jetbrains.kotlin.jvm") version "1.3.70"
-    id ("org.jetbrains.kotlin.kapt") version "1.3.70"
-    id ("org.jetbrains.kotlin.plugin.allopen")  version "1.3.70"
-    id ("com.github.johnrengelman.shadow")  version "5.2.0"
-    id ("application")
+    id("org.jetbrains.kotlin.jvm") version "1.3.70"
+    id("org.jetbrains.kotlin.kapt") version "1.3.70"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.70"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("application")
+    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
 }
 
 group = "no.vy.trafficinfo.baseline.micronaut"
@@ -37,8 +38,8 @@ configurations {
 dependencies {
     implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-http-server-netty")
@@ -78,15 +79,25 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
     testImplementation("org.assertj:assertj-core:3.15.0")
+    testImplementation("com.github.tomakehurst:wiremock:2.26.0")
 }
 
 application {
     mainClassName = "no.vy.trafficinfo.baseline.micronaut.Application"
 }
 
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    // Optionally configure plugin
+    ktlint {
+        debug.set(true)
+    }
+}
+
 tasks {
     test {
-        useJUnitPlatform ()
+        useJUnitPlatform()
         classpath += developmentOnly
         systemProperty("micronaut.environments", "test")
         systemProperty("micronaut.env.deduction", false)
@@ -114,18 +125,16 @@ tasks {
         mergeServiceFiles()
         archiveFileName.set("baseline.jar")
         manifest {
-            attributes (mapOf(
+            attributes(mapOf(
                     "Implementation-Title" to rootProject.name,
                     "Implementation-Version" to artifactVersion
             ))
         }
-
     }
 
     (run) {
         doFirst {
             jvmArgs = listOf("-XX:TieredStopAtLevel=1", "-Dcom.sun.management.jmxremote")
-
         }
     }
 }

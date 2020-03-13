@@ -4,9 +4,9 @@ import io.micronaut.health.HealthStatus
 import io.micronaut.management.health.indicator.HealthIndicator
 import io.micronaut.management.health.indicator.HealthResult
 import io.reactivex.Flowable
+import javax.inject.Singleton
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
 import org.reactivestreams.Publisher
-import javax.inject.Singleton
 
 @Singleton
 class BaselineHealthIndicator : HealthIndicator {
@@ -27,5 +27,4 @@ class FillrateHealthResult : HealthResult {
     override fun getStatus(): HealthStatus {
         return HealthStatus.UP
     }
-
 }

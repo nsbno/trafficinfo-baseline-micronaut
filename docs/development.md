@@ -18,13 +18,21 @@ the local machine. Go to `http://localhost:8080/health` to check after the conta
 Start the main class by right click on it, should start without any special configuration.
 
 ## Build
-Run `./gradlew assemble` and it will package the application into a runnable jar. Output is in build/libs/baseline.jar
+Run `./gradlew assemble` and it will package the application into a runnable jar. 
+Output is in `build/libs/baseline.jar`
+
+### Code Linting
+Code linting is done with ktlint and a gradle plugin running the linting when building the code.
+There should be a commit hook checking the code on pre-commit so that you cant commit code that 
+does not satisfy linting rules. When detecting lint errors, auto-format the code to match ktlint 
+rules with `gradle ktlintFormat` command and all the code in the repo will be auto-formatted. 
 
 ## Deploy
 Describe how this application is deployed in dev, test and production env.
 
 ## Release
-When building for release (CircleCI), supply a parameter version on the commandline as so: `./gradlew assemble -Dversion=<releaseversion or hash>`
+When building for release (CircleCI), supply a parameter version on the commandline as so: 
+`./gradlew assemble -Dversion=<releaseversion or hash>`
 
 ## Branching
 Describe how the branching strategy is handled when developing this app.

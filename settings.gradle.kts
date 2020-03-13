@@ -1,1 +1,1 @@
-rootProject.name="trafficinfo-baseline-micronaut"
+rootProject.name = "trafficinfo-baseline-micronaut"
