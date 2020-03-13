@@ -5,6 +5,8 @@ import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.annotation.MicronautTest
+import java.net.URI
+import javax.inject.Inject
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -12,8 +14,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import java.net.URI
-import javax.inject.Inject
 
 @MicronautTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -21,7 +21,7 @@ class HealthControllerTest {
     @Inject
     lateinit var server: EmbeddedServer
 
-    private lateinit var client : HttpClient
+    private lateinit var client: HttpClient
 
     @BeforeAll
     fun init() {
@@ -43,8 +43,8 @@ class HealthControllerTest {
 
     @Test
     fun testSecuredHealthResponseWithAuth() {
-        val req : HttpRequest<Health> = HttpRequest.GET<Health>(URI.create("/secured/health")).basicAuth("user", "password")
-        val rsp : Health = client.toBlocking().retrieve(req, Health::class.java)
+        val req: HttpRequest<Health> = HttpRequest.GET<Health>(URI.create("/secured/health")).basicAuth("user", "password")
+        val rsp: Health = client.toBlocking().retrieve(req, Health::class.java)
 
         assertNotNull(rsp.service)
         assertNotNull(rsp.now)
