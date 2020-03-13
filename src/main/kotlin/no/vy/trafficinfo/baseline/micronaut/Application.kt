@@ -5,6 +5,10 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Contact
 import io.swagger.v3.oas.annotations.info.Info
 
+/**
+ * Main application object
+ * Started by Docker container.
+ */
 @OpenAPIDefinition(
         info = Info(
                 title = "Micronaut Baseline",
