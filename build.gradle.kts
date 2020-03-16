@@ -79,7 +79,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
     testImplementation("org.assertj:assertj-core:3.15.0")
-    testImplementation("com.github.tomakehurst:wiremock:2.26.0")
+    testImplementation("com.github.tomakehurst:wiremock:2.26.3")
 }
 
 application {
