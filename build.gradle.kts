@@ -52,10 +52,10 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-discovery-client")
     implementation("io.micronaut.configuration:micronaut-aws-common")
-    implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.0")
-    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.5")
+    implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.1")
+    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.6")
 
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.742")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.748")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("no.vy.trafficinfo.common:logging:0.0.1")
 
@@ -86,7 +86,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
     testImplementation("org.assertj:assertj-core:3.15.0")
-    testImplementation("com.github.tomakehurst:wiremock:2.26.0")
+    testImplementation("com.github.tomakehurst:wiremock:2.26.3")
 }
 
 application {
