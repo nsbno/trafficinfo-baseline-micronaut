@@ -18,15 +18,25 @@ val artifactGroup = group
 val artifactVersion = version
 val targetJvmVersion: String by project
 
+fun getProperty(name: String): String? {
+    return if (project.properties[name] != null)
+        project.properties[name].toString()
+    else
+        System.getenv(name)
+}
+
 repositories {
     mavenCentral()
     jcenter()
-    maven(
-            url = "https://mvnrepo.cantara.no/content/repositories/releases"
-    )
-    maven(
-            url = "https://repo.spring.io/libs-snapshot"
-    )
+    maven(url = "https://mvnrepo.cantara.no/content/repositories/releases")
+    maven(url = "https://dl.bintray.com/arrow-kt/arrow-kt/")
+    maven {
+        url = uri("https://nexus.common-services.vydev.io/repository/maven-public")
+        credentials {
+            username = getProperty("NEXUS_USERNAME")
+            password = getProperty("NEXUS_PASSWORD")
+        }
+    }
 }
 
 val developmentOnly = configurations.create("developmentOnly")
@@ -51,6 +61,12 @@ dependencies {
 
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.742")
     implementation("no.cantara.aws:sqs-util:0.7.6")
+
+    /**
+     * Trafficinfo Common Dependencies.
+     */
+    implementation("no.vy.trafficinfo.domain:trainroute:0.0.6")
+    implementation("no.vy.trafficinfo.common.client:trainroute:0.0.3")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
     implementation("io.swagger.core.v3:swagger-annotations")
