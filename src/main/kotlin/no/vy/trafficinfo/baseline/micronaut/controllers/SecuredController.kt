@@ -7,12 +7,10 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Produces
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
-import java.time.LocalDate
+import io.reactivex.Single
 import javax.inject.Inject
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
-import no.vy.trafficinfo.common.client.trainroute.TrainRouteClient
-import no.vy.trafficinfo.domain.trainroute.CountryCode
-import no.vy.trafficinfo.domain.trainroute.Train
+import no.vy.trafficinfo.baseline.micronaut.services.WhoamiClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -22,7 +20,7 @@ class SecuredController {
     private val log: Logger = LoggerFactory.getLogger(SecuredController::class.java)
 
     @Inject
-    lateinit var trainRouteClient: TrainRouteClient
+    lateinit var whoamiClient: WhoamiClient
 
     /**
      * Test Generic secured endpoint.
@@ -36,19 +34,13 @@ class SecuredController {
     }
 
     /**
-     * To test A2A communication to trainroute with authentication.
+     * To test A2A communication to Whoami with authentication.
      * Should propagate the incoming access token by default.
      */
-    @Get("/trainroute")
+    @Get("/whoami")
     @Produces(MediaType.APPLICATION_JSON)
-    fun securedTrainroute(): HttpResponse<Health> {
-        log.info("Secured Trainroute")
-        trainRouteClient.getTrain(CountryCode.NO, "512", LocalDate.now())
-                .subscribe(
-                        { x: Train -> print("Emitted item: $x") },
-                        { ex: Throwable -> println("Error: " + ex.message) },
-                        { println("Completed. No items.") }
-                )
-        return HttpResponse.ok(Health())
+    fun securedWhoami(): Single<String> {
+        log.info("Secured Whoami")
+        return whoamiClient.whoami()
     }
 }

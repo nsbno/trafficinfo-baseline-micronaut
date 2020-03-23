@@ -2,7 +2,10 @@
 <configuration>
     <include resource="no/vy/trafficinfo/common/logging/base.xml"/>
 
-    <logger name="io.micronaut.http.server.netty.NettyHttpServer" level="DEBUG"/>
+    <!--
+    <logger name="io.micronaut.http.server.netty.NettyHttpServer" level="WARN"/>
     <logger name="io.micronaut.security" level="DEBUG"/>
+    <logger name="io.micronaut.http.client" level="TRACE"/>
+    -->
 
 </configuration>

@@ -25,4 +25,4 @@ micronaut:
           enabled: true
       propagation:
         enabled: true
-        service-id-regex: "trainroute"
+        service-id-regex: "whoami"
