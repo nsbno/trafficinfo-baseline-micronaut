@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="no/vy/trafficinfo/common/logging/base.xml"/>
+
+    <logger name="io.micronaut.http.server.netty.NettyHttpServer" level="DEBUG"/>
+    <logger name="io.micronaut.security" level="DEBUG"/>
+
 </configuration>
