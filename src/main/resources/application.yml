@@ -24,6 +24,11 @@ micronaut:
     client:
       max-content-length: 104857600 # 100mb max content length
       read-timeout: 60s
+    services:
+      trainroute:
+        url: "${baseUrl}"
+        path: "/trainroute"
+
 endpoints:
   health:
     enabled: true
