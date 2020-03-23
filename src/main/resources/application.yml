@@ -29,6 +29,8 @@ micronaut:
         url: "${baseUrl}"
         path: "/trainroute"
 
+baseUrl: http://localhost:4000
+
 endpoints:
   health:
     enabled: true
