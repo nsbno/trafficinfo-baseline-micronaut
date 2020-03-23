@@ -64,9 +64,10 @@ dependencies {
     /**
      * Trafficinfo Common Dependencies.
      */
-    implementation("no.vy.trafficinfo.domain:trainroute:0.0.6")
-    implementation("no.vy.trafficinfo.common.client:trainroute:0.0.3")
+    implementation("no.vy.trafficinfo.domain:traincomposition:0.0.3")
+    implementation("no.vy.trafficinfo.common.client:traincomposition:0.0.3")
     implementation("no.vy.trafficinfo.common:logging:0.0.1")
+    implementation("no.vy.trafficinfo.common:security:0.0.2")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
     implementation("io.swagger.core.v3:swagger-annotations")

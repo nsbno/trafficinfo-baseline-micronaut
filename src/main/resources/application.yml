@@ -25,11 +25,11 @@ micronaut:
       max-content-length: 104857600 # 100mb max content length
       read-timeout: 60s
     services:
-      trainroute:
+      whoami:
         url: "${baseUrl}"
-        path: "/trainroute"
+        path: "/whoami"
 
-baseUrl: http://localhost:4000
+baseUrl: http://localhoat:8080
 
 endpoints:
   health:
