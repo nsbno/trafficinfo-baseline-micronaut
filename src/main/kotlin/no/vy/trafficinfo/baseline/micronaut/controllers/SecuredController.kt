@@ -28,7 +28,7 @@ class SecuredController {
      * Test Generic secured endpoint.
      * Just return some basic Health info.
      */
-    @Get()
+    @Get("/health")
     @Produces(MediaType.APPLICATION_JSON)
     fun securedHealth(): HttpResponse<Health> {
         log.info("Secured health called")
