@@ -1,4 +1,15 @@
 # Development
+To test if the application is working and running, the application exposes two endpoint
+* /health
+* /secure
+
+To call the endpoints run the application locally and call them on http://localhost:8080 
+or if running in Docker, locally or in ECS, call them on the path `/baseline-micronaut/secure` or 
+`/baseline-micronaut/health`.
+
+When running in the cloud environment use the Cognito service to retrieve an Access Token 
+to use as Authentication to the service. When running locally use basic auth and the 
+hard coded username and password found in the `UserAuthenticationService`-class.
 
 ## Pre-requisites
 Description of everything needed to be installed to start developing the application.
