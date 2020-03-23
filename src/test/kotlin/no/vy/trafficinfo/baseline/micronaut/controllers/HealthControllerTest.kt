@@ -43,7 +43,7 @@ class HealthControllerTest {
 
     @Test
     fun testSecuredHealthResponseWithAuth() {
-        val req: HttpRequest<Health> = HttpRequest.GET<Health>(URI.create("/secured")).basicAuth("user", "password")
+        val req: HttpRequest<Health> = HttpRequest.GET<Health>(URI.create("/secured/health")).basicAuth("user", "password")
         val rsp: Health = client.toBlocking().retrieve(req, Health::class.java)
 
         assertNotNull(rsp.service)
