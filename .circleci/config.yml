@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build-source:
     docker:
@@ -61,7 +61,8 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build-source
+      - build-source:
+          context: nexus
       - build-docker:
             requires:
             - build-source
