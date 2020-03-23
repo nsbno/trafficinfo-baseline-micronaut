@@ -16,9 +16,8 @@ import org.slf4j.LoggerFactory
 class SecuredController {
     private val log: Logger = LoggerFactory.getLogger(SecuredController::class.java)
 
-    @Get("/health")
+    @Get()
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured("ROLE_ADMIN")
     fun securedHealth(): HttpResponse<Health> {
         log.info("Secured health called")
         return HttpResponse.ok(Health())
