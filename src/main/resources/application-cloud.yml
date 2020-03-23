@@ -20,3 +20,9 @@ micronaut:
           jwks:
             awscognito:
               url: ${jwksUrl}
+      writer:
+        header:
+          enabled: true
+      propagation:
+        enabled: true
+        service-id-regex: "trainroute"
