@@ -56,7 +56,7 @@ dependencies {
     implementation("io.micronaut:micronaut-discovery-client")
     implementation("io.micronaut.configuration:micronaut-aws-common")
     implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.1")
-    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.3.6")
+    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.4.0")
 
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.748")
     implementation("no.cantara.aws:sqs-util:0.7.6")
