@@ -1,4 +1,4 @@
-package no.vy.trafficinfo.baseline.micronaut.services
+package no.vy.trafficinfo.baseline.micronaut.system
 
 import io.micronaut.security.authentication.AuthenticationFailed
 import io.micronaut.security.authentication.AuthenticationProvider

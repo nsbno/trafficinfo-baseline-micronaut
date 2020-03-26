@@ -4,6 +4,7 @@ micronaut:
   config-client:
     enabled: true
 
+  # Disable most metric classe to save costs in CloudWatch.
   metrics:
     enabled: true
     binders:
@@ -38,15 +39,3 @@ aws:
         # to use secure parameters, make sure the service has access to the key used to encrypt it
         useSecureParameters: true
         rootHierarchyPath: /trafficinfo/config
-
-
-#  security:
-#    enabled: true
-#
-#    token:
-#      jwt:
-#        enabled: true
-#        signatures:
-#          jwks:
-#            awscognito:
-#              url: 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-XXXX/.well-known/jwks.json'
