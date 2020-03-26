@@ -1,11 +1,8 @@
 package no.vy.trafficinfo.baseline.micronaut.system
 
-import io.micronaut.security.authentication.AuthenticationFailed
-import io.micronaut.security.authentication.AuthenticationProvider
-import io.micronaut.security.authentication.AuthenticationRequest
-import io.micronaut.security.authentication.AuthenticationResponse
-import io.micronaut.security.authentication.UserDetails
+import io.micronaut.security.authentication.*
 import io.reactivex.Flowable
+import java.util.*
 import javax.inject.Singleton
 import org.reactivestreams.Publisher
 import org.slf4j.Logger
