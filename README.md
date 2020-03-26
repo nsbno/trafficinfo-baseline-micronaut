@@ -13,6 +13,16 @@ See https://jico.nsb.no/confluence/display/TRAFFICINFO/Baseline+Micronaut
 - [Configuration](/docs/configuration.md)
 - [Operation](/docs/operation.md)
 
+# Techincal Requirements to microservices.
+- must respond to /health endpoint with status 200 if UP.
+- must send log to CloudWatch and to elasticsearch/kibana
+- must send metrics to CloudWatch
+- must use access token to authenticate user
+- must use access token scopes to authorize user for fine grained access control.
+- must use CloudWatch Alarms for to notify when something is wrong.
+- must be deployed using deployment pipeline
+- must be deployed using terraform code.
+
 # Infrastructure checklist for new microservice
 1. Create a new repository with "use this template" on Github.  
     1. Give access to team "trafficinfo". Remove personal permission.

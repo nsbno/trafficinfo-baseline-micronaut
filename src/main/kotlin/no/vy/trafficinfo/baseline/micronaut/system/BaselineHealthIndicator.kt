@@ -1,4 +1,4 @@
-package no.vy.trafficinfo.baseline.micronaut.services
+package no.vy.trafficinfo.baseline.micronaut.system
 
 import io.micronaut.health.HealthStatus
 import io.micronaut.management.health.indicator.HealthIndicator

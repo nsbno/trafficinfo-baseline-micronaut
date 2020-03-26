@@ -23,6 +23,22 @@ micronaut:
       writer:
         header:
           enabled: true
+
+      # propagate only to known services
+      # the access token should be treated like normal credentials and not must not be
+      # passed to unknown services that could get access to our system by the token.
       propagation:
         enabled: true
-        service-id-regex: "trainroute"
+        service-id-regex: "whoami|baseline-micronaut"
+
+  http:
+    client:
+      max-content-length: 104857600 # 100mb max content length
+      read-timeout: 60s
+    services:
+      whoami:
+        url: ${baseUrl}
+        path: /whoami
+      baseline-micronaut:
+        url: ${baseUrl}
+        path: /baseline-micronaut
