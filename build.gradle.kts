@@ -67,13 +67,14 @@ dependencies {
     implementation("no.vy.trafficinfo.domain:traincomposition:0.0.3")
     implementation("no.vy.trafficinfo.common.client:traincomposition:0.0.3")
     implementation("no.vy.trafficinfo.common:logging:0.0.1")
-    implementation("no.vy.trafficinfo.common:security:0.0.2")
+    implementation("no.vy.trafficinfo.common:security:0.0.3")
 
     kapt("io.micronaut.configuration:micronaut-openapi")
     implementation("io.swagger.core.v3:swagger-annotations")
 
     kapt("io.micronaut:micronaut-security")
     implementation("io.micronaut:micronaut-security")
+    implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut:micronaut-security-jwt")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -81,7 +82,7 @@ dependencies {
     kapt("io.micronaut:micronaut-validation")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3")
-    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")

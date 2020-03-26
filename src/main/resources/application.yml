@@ -19,6 +19,23 @@ micronaut:
   # For local development use Basic Auth for authentication
   security:
     enabled: true
+    token:
+      basic-auth:
+        enabled: false
+      jwt:
+        bearer:
+          enabled: true
+        enabled: true
+        signatures:
+          jwks:
+            awscognito:
+              url: ${jwksUrl}
+      writer:
+        header:
+          enabled: true
+      propagation:
+        enabled: true
+        service-id-regex: "whoami|baseline-micronaut"
 
   http:
     client:
@@ -26,10 +43,15 @@ micronaut:
       read-timeout: 60s
     services:
       whoami:
-        url: "${baseUrl}"
-        path: "/whoami"
+        url: ${baseUrl}
+      baseline-micronaut:
+        url: ${baseUrl}
 
-baseUrl: http://localhoat:8080
+#when doing local development and using remote services.
+#baseUrl: https://services.dev.trafficinfo.vydev.io
+#jwksUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_t3uhWZYm9/.well-known/jwks.json
+
+baseUrl: http://localhost:8080
 
 endpoints:
   health:
