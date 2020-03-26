@@ -43,14 +43,14 @@ micronaut:
       read-timeout: 60s
     services:
       whoami:
-        url: ${baseUrl}
+        url: https://services.dev.trafficinfo.vydev.io
       baseline-micronaut:
         url: ${baseUrl}
 
 #when doing local development and using remote services.
 #baseUrl: https://services.dev.trafficinfo.vydev.io
-#jwksUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_t3uhWZYm9/.well-known/jwks.json
 
+jwksUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_t3uhWZYm9/.well-known/jwks.json
 baseUrl: http://localhost:8080
 
 endpoints:

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/secured")
+@RolesAllowed("https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read")
 class SecuredController {
     private val log: Logger = LoggerFactory.getLogger(SecuredController::class.java)
 
@@ -66,7 +67,6 @@ class SecuredController {
      */
     @Post("/callback")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("https://services.dev.trafficinfo.vydev.io/whoami/read")
     fun securedCallback(
         @Body text: String,
         authentication: Authentication?
