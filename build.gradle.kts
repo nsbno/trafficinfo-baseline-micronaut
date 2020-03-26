@@ -64,8 +64,6 @@ dependencies {
     /**
      * Trafficinfo Common Dependencies.
      */
-    implementation("no.vy.trafficinfo.domain:traincomposition:0.0.3")
-    implementation("no.vy.trafficinfo.common.client:traincomposition:0.0.3")
     implementation("no.vy.trafficinfo.common:logging:0.0.1")
     implementation("no.vy.trafficinfo.common:security:0.0.3")
 
