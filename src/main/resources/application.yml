@@ -19,38 +19,38 @@ micronaut:
   # For local development use Basic Auth for authentication
   security:
     enabled: true
-    token:
-      basic-auth:
-        enabled: false
-      jwt:
-        bearer:
-          enabled: true
-        enabled: true
-        signatures:
-          jwks:
-            awscognito:
-              url: ${jwksUrl}
-      writer:
-        header:
-          enabled: true
-      propagation:
-        enabled: true
-        service-id-regex: "whoami|baseline-micronaut"
+#   token:
+#     basic-auth:
+#       enabled: false
+#      jwt:
+#        bearer:
+#          enabled: true
+#        enabled: true
+#        signatures:
+#          jwks:
+#            awscognito:
+#              url: ${jwksUrl}
+#      writer:
+#        header:
+#          enabled: true
+#      propagation:
+#        enabled: true
+#        service-id-regex: "whoami|baseline-micronaut"
 
   http:
     client:
       max-content-length: 104857600 # 100mb max content length
       read-timeout: 60s
-    services:
-      whoami:
-        url: https://services.dev.trafficinfo.vydev.io
-      baseline-micronaut:
-        url: ${baseUrl}
 
-#when doing local development and using remote services.
-#baseUrl: https://services.dev.trafficinfo.vydev.io
+# for overriding when doing local development
+#    services:
+#      whoami:
+#        url: https://services.dev.trafficinfo.vydev.io
+#      baseline-micronaut:
+#        url: ${baseUrl}
 
-jwksUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_t3uhWZYm9/.well-known/jwks.json
+# for overriding when doing local development
+# jwksUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_t3uhWZYm9/.well-known/jwks.json
 baseUrl: http://localhost:8080
 
 endpoints:
