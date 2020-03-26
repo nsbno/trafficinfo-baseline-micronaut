@@ -13,6 +13,7 @@ import org.slf4j.MDC
 
 /**
  * Servlet filter to add current user to Logging.
+ * TODO move this to common-logging for resuse.
  */
 @Filter("/**")
 class UsernameLoggingHttpServerFilter(val securityService: SecurityService) : HttpServerFilter {
