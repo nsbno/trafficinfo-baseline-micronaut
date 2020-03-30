@@ -57,6 +57,85 @@ jobs:
             docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
             docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
 
+  build-repo-zip:
+    docker:
+      - image: circleci/buildpack-deps:latest
+    working_directory: /tmp/workspace
+    steps:
+      - checkout:
+          path: ~/repo
+      - run:
+          name: Zip source code
+          command: |
+            s3_prefix="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/branches/$CIRCLE_BRANCH"
+            sha1="$(echo $CIRCLE_SHA1 | cut -c -7)"
+            artifacts_dir="artifacts"
+            trigger_file="trigger-event.json"
+            zip_path="$(pwd)/$artifacts_dir/$s3_prefix"
+            zip_file="$zip_path/$sha1.zip"
+            printf "Initial contents of current directory '%s':\n" "$(pwd)"
+            ls -al
+            mkdir -p "$zip_path"
+            printf "Creating zip archive of source code '%s':\n" "$zip_file"
+            (cd ~/repo; zip -r "$zip_file" ./*)
+            cp "$zip_file" "$zip_path/latest.zip"
+            cat \<<EOF > "$trigger_file"
+            {
+              "SHA": "$sha1",
+              "date": "$(date)",
+              "name_prefix": "trafficinfo",
+              "aws_repo_name": "trafficinfo-aws"
+            }
+            EOF
+            printf "Final contents of current directory '%s':\n" "$(pwd)"
+            ls -al
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - "*"
+  upload-repo-zip:
+    docker:
+      - image: vydev/circleci-ecr:latest
+    working_directory: /tmp/workspace
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Upload source to S3
+          command: |
+            s3_bucket="929368261477-pipeline-artifact"
+            s3_prefix="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/branches/$CIRCLE_BRANCH"
+            printf "Contents of current directory '%s':\n" "$(pwd)"
+            ls -al
+            num_dirs="$(find ./artifacts -maxdepth 1 -mindepth 1 -type d | wc -l)"
+            num_zips="$(find ./artifacts -type f -name "*.zip" | wc -l)"
+            if [ ! "$num_dirs" -eq 1 ] || [ ! "$num_zips" -gt 0 ]; then
+              printf "Expected to find 1 directory and more than 1 zip file, but found %s directories and %s zip files\n" "$num_dirs" "$num_zips"
+              exit 1
+            fi
+            printf "Uploading files to s3://%s/%s\n" "$s3_bucket" "$s3_prefix"
+            aws s3 sync ./artifacts/. "s3://$s3_bucket"
+  upload-trigger-event:
+    docker:
+      - image: vydev/circleci-ecr:latest
+    working_directory: /tmp/workspace
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Upload trigger event file to S3
+          command: |
+            s3_bucket="929368261477-pipeline-artifact"
+            s3_prefix="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/branches/$CIRCLE_BRANCH"
+            printf "Contents of current directory '%s':\n" "$(pwd)"
+            ls -al
+            num_json="$(find . -maxdepth 1 -mindepth 1 -type f -name "*.json" | wc -l)"
+            if [ ! "$num_json" -eq 1 ]; then
+              printf "Expected to find 1 json file, but found %s json files\n" "$num_json"
+              exit 1
+            fi
+            printf "Uploading trigger event file to s3://%s/%s\n" "$s3_bucket" "$s3_prefix"
+            aws s3 cp ./*.json "s3://${s3_bucket}/${s3_prefix}/"
 workflows:
   version: 2
   build-and-deploy:
@@ -66,3 +145,20 @@ workflows:
       - build-docker:
             requires:
             - build-source
+      - build-repo-zip:
+          filters:
+            branches:
+              only: master
+      - upload-repo-zip:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-repo-zip
+            - build-docker
+      - upload-trigger-event:
+          filters:
+            branches:
+              only: master
+          requires:
+            - upload-repo-zip
