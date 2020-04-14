@@ -867,7 +867,7 @@ ij_coffeescript_var_declaration_wrap = normal
 
 [{*.gradle.kts,*.kts,*.kt}]
 # intellij is hard to make not to use automatic wildcard optimization, disable wildcard import rules
-disabled_rules = no-wildcard-imports
+disabled_rules = no-wildcard-imports, import-ordering
 
 ij_kotlin_align_in_columns_case_branch = false
 ij_kotlin_align_multiline_binary_operation = false
