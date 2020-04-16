@@ -1,7 +1,7 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.71"
-    id("org.jetbrains.kotlin.kapt") version "1.3.71"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.71"
+    id("org.jetbrains.kotlin.jvm") version "1.3.72"
+    id("org.jetbrains.kotlin.kapt") version "1.3.72"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.72"
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
@@ -58,7 +58,7 @@ dependencies {
     implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.1")
     implementation("io.micrometer:micrometer-registry-cloudwatch2:1.4.1")
 
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.755")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.756")
     implementation("no.cantara.aws:sqs-util:0.7.6")
 
     /**
