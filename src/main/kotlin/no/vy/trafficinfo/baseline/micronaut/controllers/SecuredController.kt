@@ -7,17 +7,29 @@ import io.micronaut.security.annotation.Secured
 import io.micronaut.security.authentication.Authentication
 import io.micronaut.security.rules.SecurityRule
 import io.reactivex.Single
-import javax.annotation.security.RolesAllowed
-import javax.inject.Inject
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
 import no.vy.trafficinfo.baseline.micronaut.services.CallbackClient
 import no.vy.trafficinfo.baseline.micronaut.services.WhoamiClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import javax.annotation.security.RolesAllowed
+import javax.inject.Inject
 
+/**
+ * A secured resource that you need an access token to call.
+ *
+ * This endpoint is just an example of how to do authorization and authentication
+ * and in addition also fine grained access control using custom scopes from
+ * Cognito.
+ *
+ * To call any of these resources you need to set a Authorization: Bearer <token>
+ * http header on the request. The token is retrieved from Cognito like described
+ * in confluence https://jico.nsb.no/confluence/display/TRAFFICINFO/Authentication+and+Authorization
+ */
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/secured")
 class SecuredController {
+
     private val log: Logger = LoggerFactory.getLogger(SecuredController::class.java)
 
     @Inject
@@ -27,8 +39,8 @@ class SecuredController {
     lateinit var callbackClient: CallbackClient
 
     /**
-     * Test Generic secured endpoint.
-     * Just return some basic Health info.
+     * Secured health endpoint.
+     * Everyone that is authenticated should be able to call this endpoint.
      */
     @Get("/health")
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,7 +56,9 @@ class SecuredController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(
             "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.dev.trafficinfo.vydev.io/whoami/read")
+            "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
     fun securedWhoami(): Single<String> {
         return whoamiClient.whoami()
     }
@@ -56,7 +70,11 @@ class SecuredController {
      */
     @Get("/self")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read")
+    @RolesAllowed(
+            "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
     fun securedSelf(): Single<String> {
         return callbackClient.callback("Hello from secured self.")
     }
@@ -69,7 +87,11 @@ class SecuredController {
      */
     @Post("/callback")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read")
+    @RolesAllowed(
+            "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
+            "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
     fun securedCallback(
         @Body text: String,
         authentication: Authentication?

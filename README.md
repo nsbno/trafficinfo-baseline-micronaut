@@ -19,10 +19,10 @@ See https://jico.nsb.no/confluence/display/TRAFFICINFO/Baseline+Micronaut
 - must send log to CloudWatch and to elasticsearch/kibana
 - must send metrics to CloudWatch
 - must use access token to authenticate user
-- must use access token scopes to authorize user for fine grained access control.
 - must use CloudWatch Alarms for to notify when something is wrong.
 - must be deployed using deployment pipeline
 - must be deployed using terraform code.
+- may use access token scopes to authorize user for fine grained access control.
 
 # Infrastructure checklist for new microservice
 1. Create a new repository with "use this template" on Github.  
