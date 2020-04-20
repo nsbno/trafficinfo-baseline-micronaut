@@ -54,11 +54,13 @@ class SecuredController {
      */
     @Get("/whoami")
     @Produces(MediaType.APPLICATION_JSON)
+/*
     @RolesAllowed(
             "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
             "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
             "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
             "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
+*/
     fun securedWhoami(): Single<String> {
         return whoamiClient.whoami()
     }
