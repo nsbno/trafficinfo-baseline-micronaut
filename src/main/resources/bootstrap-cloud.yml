@@ -21,7 +21,13 @@ micronaut:
       http:
         enabled: false
       web:
-        enabled: false
+        enabled: true
+
+    # "Disables" client metrics by setting path to an unused path
+    http:
+      client:
+        path: /do-not-log-client-requests
+
     export:
       cloudwatch:
         enabled: true
