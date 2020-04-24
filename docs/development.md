@@ -16,7 +16,7 @@ hard coded username and password found in the `UserAuthenticationService`-class.
 Description of everything needed to be installed to start developing the application.
 
 ## Run
-### maven
+### Gradle wrapper
 Run `./gradlew run` and it will start the application.
 
 ### docker 
