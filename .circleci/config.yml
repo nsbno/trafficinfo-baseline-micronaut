@@ -16,8 +16,14 @@ jobs:
           paths:
             - /root/.gradle
           key: v2-dependencies-{{ checksum "build.gradle.kts" }}
-
-      - run: gradle clean test assemble -Pversion="${CIRCLE_SHA1}"
+      - run:
+          name: Build With Gradle
+          command: |
+            gradle clean test assemble jacocoTestReport sonar \
+            -Pversion="${CIRCLE_SHA1}" \
+            -Dsonar.host.url=$SONAR_URL \
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
       - persist_to_workspace:
           root: ./
           paths:
@@ -141,7 +147,7 @@ workflows:
   build-and-deploy:
     jobs:
       - build-source:
-          context: nexus
+          context: trafficinfo
       - build-docker:
             requires:
             - build-source
