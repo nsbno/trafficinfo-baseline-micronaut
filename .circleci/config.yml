@@ -16,8 +16,17 @@ jobs:
           paths:
             - /root/.gradle
           key: v2-dependencies-{{ checksum "build.gradle.kts" }}
-
-      - run: gradle clean test assemble -Pversion="${CIRCLE_SHA1}"
+      - run:
+          name: SonarQube Setup
+          command: |
+            mkdir /root/.gradle
+            touch /root/.gradle/gradle.properties
+            echo "systemProp.sonar.host.url=$SONAR_URL" > /root/.gradle/gradle.properties
+            echo "systemProp.sonar.login=$SONAR_TOKEN" >> /root/.gradle/gradle.properties
+            echo "systemProp.sonar.projectKey=$CIRCLE_PROJECT_REPONAME" >> /root/.gradle/gradle.properties
+            touch settings.gradle
+            echo "rootProject.name = '$CIRCLE_PROJECT_REPONAME'" > settings.gradle
+      - run: gradle clean test assemble jacocoTestReport sonar -Pversion="${CIRCLE_SHA1}"
       - persist_to_workspace:
           root: ./
           paths:
@@ -141,7 +150,7 @@ workflows:
   build-and-deploy:
     jobs:
       - build-source:
-          context: nexus
+          context: trafficinfo
       - build-docker:
             requires:
             - build-source
