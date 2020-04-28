@@ -1,6 +1,6 @@
 # TODO replace all <placeholders>
 terraform {
-  required_version = "0.12.24"
+  required_version = "0.12.23"
 
   backend "s3" {
     key            = "trafficinfo-baseline-micronaut/main.tfstate"
@@ -133,7 +133,7 @@ locals {
 
   service_input_single_use_fargate_task = jsonencode(merge(local.common_input_single_use_fargate_task, {
     task_role_arn = local.shared_config.role_arns.single_use_fargate_task_task
-    image         = "vydev/terraform:0.12.24"
+    image         = "vydev/terraform:0.12.23"
     cmd_to_run = format(lookup(local.string_templates_single_use_fargate_task, "cmd_to_run", ""),
       local.shared_config.role_arns.deploy_service,
       "cd terraform/service && terraform init -lock-timeout=120s && terraform apply -auto-approve -lock-timeout=120s"
@@ -141,7 +141,7 @@ locals {
   }))
   test_input_single_use_fargate_task = jsonencode(merge(local.common_input_single_use_fargate_task, {
     task_role_arn = local.shared_config.role_arns.single_use_fargate_task_task
-    image         = "vydev/terraform:0.12.24"
+    image         = "vydev/terraform:0.12.23"
     cmd_to_run = format(lookup(local.string_templates_single_use_fargate_task, "cmd_to_run", ""),
       local.shared_config.role_arns.deploy_test,
       "cd terraform/test && terraform init -lock-timeout=120s && terraform apply -auto-approve -lock-timeout=120s"
@@ -149,7 +149,7 @@ locals {
   }))
   stage_input_single_use_fargate_task = jsonencode(merge(local.common_input_single_use_fargate_task, {
     task_role_arn = local.shared_config.role_arns.single_use_fargate_task_task
-    image         = "vydev/terraform:0.12.24"
+    image         = "vydev/terraform:0.12.23"
     cmd_to_run = format(lookup(local.string_templates_single_use_fargate_task, "cmd_to_run", ""),
       local.shared_config.role_arns.deploy_stage,
       "cd terraform/stage && terraform init -lock-timeout=120s && terraform apply -auto-approve -lock-timeout=120s"
@@ -157,7 +157,7 @@ locals {
   }))
   prod_input_single_use_fargate_task = jsonencode(merge(local.common_input_single_use_fargate_task, {
     task_role_arn = local.shared_config.role_arns.single_use_fargate_task_task
-    image         = "vydev/terraform:0.12.24"
+    image         = "vydev/terraform:0.12.23"
     cmd_to_run = format(lookup(local.string_templates_single_use_fargate_task, "cmd_to_run", ""),
       local.shared_config.role_arns.deploy_prod,
       "cd terraform/prod && terraform init -lock-timeout=120s && terraform apply -auto-approve -lock-timeout=120s"
