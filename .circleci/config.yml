@@ -89,8 +89,8 @@ jobs:
             {
               "SHA": "$sha1",
               "date": "$(date)",
-              "name_prefix": "trafficinfo",
-              "aws_repo_name": "trafficinfo-aws"
+              "name_prefix": "trafficinfo-baseline-micronaut",
+              "aws_repo_name": "$CIRCLE_PROJECT_REPONAME"
             }
             EOF
             printf "Final contents of current directory '%s':\n" "$(pwd)"
