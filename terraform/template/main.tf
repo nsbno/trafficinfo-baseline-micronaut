@@ -114,8 +114,8 @@ resource "aws_api_gateway_deployment" "api_gateway_microservice_rest_api_deploym
 resource "aws_api_gateway_base_path_mapping" "gateway_base_path_mapping" {
   api_id      = aws_api_gateway_rest_api.api_gateway_microservice_rest_api.id
   stage_name  = aws_api_gateway_deployment.api_gateway_microservice_rest_api_deployment_v1.stage_name
-  domain_name = var.domain_name
-  base_path   = var.base_path
+  domain_name = "services.${local.shared_config.hosted_zone_name}"
+  base_path   = var.application_name
 }
 
 
@@ -132,7 +132,7 @@ resource "aws_cloudwatch_metric_alarm" "service_unhealthy" {
   threshold           = 1
   namespace           = "AWS/ApplicationELB"
   dimensions = {
-    TargetGroup  = module.ecs_fargate_microservice.target_group_arn_suffix
+    TargetGroup  = module.baseline-micronaut.target_group_arn_suffix
     LoadBalancer = local.shared_config.lb_arn_suffix
   }
   period            = 60
@@ -182,7 +182,7 @@ resource "aws_cognito_resource_server" "resource_server" {
     }
   }
 
-  user_pool_id = var.user_pool_id
+  user_pool_id = local.shared_config.user_pool_id
 }
 
 resource "aws_cognito_user_pool_client" "app_client" {
