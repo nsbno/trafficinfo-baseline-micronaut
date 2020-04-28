@@ -1,0 +1,87 @@
+openapi: "3.0.1"
+info:
+  title: trafficinfo-baseline-micronaut
+  version: "0.1"
+paths:
+  /health:
+    get:
+      responses:
+        200:
+          description: "microservice health information response."
+      x-amazon-apigateway-integration:
+        uri: "https://svclb.${hosted_zone_name}/${basePath}/health"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "http_proxy"
+  /secured/health:
+    get:
+      summary: |-
+        Test Generic secured endpoint.
+         Just return some basic Health info.
+      description: |-
+        Test Generic secured endpoint.
+         Just return some basic Health info.
+      responses:
+        200:
+          description: "Secured endpoint for testing authn and authz."
+      security:
+        - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
+      x-amazon-apigateway-integration:
+        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/health"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "http_proxy"
+  /secured/callback:
+    get:
+      responses:
+        200:
+          description: |-
+            To test A2A communication to micronaut with authentication.
+            Should propagate the incoming access token by default.
+      security:
+        - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
+      x-amazon-apigateway-integration:
+        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/callback"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "http_proxy"
+  /secured/whoami:
+    get:
+      responses:
+        200:
+          description: |-
+            To test A2A communication to Whoami with authentication.
+            Should propagate the incoming access token by default.
+      security:
+        - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
+      x-amazon-apigateway-integration:
+        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/whoami"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "http_proxy"
+  /secured/self:
+    get:
+      responses:
+        200:
+          description: |-
+            To test A2A communication to micronaut-baseline with authentication.
+            Call the baseline service, eg. our self to see what is received
+            in the other end. Should propagate the incoming access token by default.
+      security:
+        - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
+      x-amazon-apigateway-integration:
+        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/self"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "http_proxy"
+components:
+  securitySchemes:
+    cognito_auth:
+      type: "apiKey"
+      name: "Authorization"
+      in: "header"
+      x-amazon-apigateway-authtype: "cognito_user_pools"
+      x-amazon-apigateway-authorizer:
+        providerARNs:
+          - "${provider_arn}"
+        type: "cognito_user_pools"
