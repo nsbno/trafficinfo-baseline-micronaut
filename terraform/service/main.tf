@@ -56,7 +56,7 @@ locals {
 #                                #
 ##################################
 data "aws_ssm_parameter" "shared_config" {
-  name = "/trafficinfo/shared_application_config"
+  name = "/trafficinfo/shared_config"
 }
 
 data "aws_s3_bucket" "project_bucket" {
