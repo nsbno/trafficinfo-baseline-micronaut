@@ -38,11 +38,13 @@ locals {
     application = local.name_prefix
   }
   service_account_id = "929368261477"
+  dev_account_id     = "469515120670"
   test_account_id    = "535719329059"
   stage_account_id   = "800989198581"
   prod_account_id    = "336207361115"
   trusted_accounts = [
     local.current_account_id,
+    local.dev_account_id,
     local.test_account_id,
     local.stage_account_id,
     local.prod_account_id,
