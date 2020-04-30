@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   validate-terraform:
     docker:
-      - image: vydev/terraform:0.12.23
+      - image: vydev/terraform:0.12.24
     working_directory: /tmp/workspace
     steps:
       - checkout:
