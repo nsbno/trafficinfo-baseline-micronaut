@@ -9,6 +9,21 @@ locals {
 
 }
 
+# TODO: Resources from `trafficinfo-aws/terraform/modules/template/{kernel-kms.tf,svc-baseline.tf}`
+
+resource "aws_ssm_parameter" "testvariable" {
+  name      = "/${var.name_prefix}/config/${var.application_name}/testvariable"
+  type      = "String"
+  value     = "test"
+  overwrite = true
+}
+
+resource "aws_kms_key" "baseline_params_key" {}
+resource "aws_kms_alias" "baseline_params_key_alias" {
+  target_key_id = aws_kms_key.baseline_params_key.key_id
+  name          = "alias/${var.name_prefix}-${var.application_name}_params_key"
+}
+
 ##################################
 #                                #
 # Shared configuration           #
@@ -17,6 +32,7 @@ locals {
 data "aws_ssm_parameter" "shared_config" {
   name = "/trafficinfo/shared_application_config"
 }
+
 
 
 ###################################
