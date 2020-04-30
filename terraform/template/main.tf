@@ -98,6 +98,11 @@ resource "aws_iam_role_policy" "ssm_to_microservice" {
   role   = module.baseline-micronaut.task_role_name
 }
 
+resource "aws_iam_role_policy" "kms_to_microservice" {
+  policy = data.aws_iam_policy_document.kms_for_microservice.json
+  role   = module.baseline-micronaut.task_role_name
+}
+
 
 ##################################
 #                                #

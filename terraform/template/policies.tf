@@ -24,3 +24,16 @@ data "aws_iam_policy_document" "ssm_for_microservice" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "kms_for_microservice" {
+  statement {
+    effect = "Allow"
+    # TODO should not have GenerateDataKey here
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+
+    resources = [aws_kms_key.baseline_params_key.arn]
+  }
+}
