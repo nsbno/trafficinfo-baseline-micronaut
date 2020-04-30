@@ -159,6 +159,98 @@ resource "aws_cloudwatch_metric_alarm" "service_unhealthy" {
   ok_actions        = [local.shared_config.alarms_sns_topic_arn]
 }
 
+resource "aws_cloudwatch_metric_alarm" "high_cpu_utilization" {
+  metric_name         = "CPUUtilization"
+  alarm_name          = "${var.name_prefix}-${var.application_name}-cpu"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 5
+  threshold           = 80
+  namespace           = "AWS/ECS"
+  dimensions = {
+    ClusterName = local.shared_config.ecs_cluster_name
+    ServiceName = "${var.name_prefix}-${var.application_name}"
+  }
+  period            = 60
+  statistic         = "Average"
+  alarm_description = "${var.name_prefix}-${var.application_name} has crossed the CPU usage treshold"
+  tags              = var.tags
+  alarm_actions     = [local.shared_config.alarms_sns_topic_arn]
+  ok_actions        = [local.shared_config.alarms_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_memory_utilization" {
+  metric_name         = "MemoryUtilization"
+  alarm_name          = "${var.name_prefix}-${var.application_name}-memory"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 5
+  threshold           = 80
+  namespace           = "AWS/ECS"
+  dimensions = {
+    ClusterName = local.shared_config.ecs_cluster_name
+    ServiceName = "${var.name_prefix}-${var.application_name}"
+  }
+  period            = 60
+  statistic         = "Average"
+  alarm_description = "${var.name_prefix}-${var.application_name} has crossed the memory usage treshold"
+  tags              = var.tags
+  alarm_actions     = [local.shared_config.alarms_sns_topic_arn]
+  ok_actions        = [local.shared_config.alarms_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_latency" {
+  metric_name         = "IntegrationLatency"
+  alarm_name          = "${var.name_prefix}-${var.application_name}-latency"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 5
+  threshold           = 2000
+  namespace           = "AWS/ApiGateway"
+  dimensions = {
+    ApiName = "${var.name_prefix}-${var.application_name}"
+  }
+  period            = 60
+  statistic         = "Average"
+  alarm_description = "${var.name_prefix}-${var.application_name} latency is above configured treshold"
+  tags              = var.tags
+  alarm_actions     = [local.shared_config.alarms_sns_topic_arn]
+  ok_actions        = [local.shared_config.alarms_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "num_errors_service" {
+  metric_name         = "5XXError"
+  alarm_name          = "${var.name_prefix}-${var.application_name}-errors-service"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 1
+  threshold           = 50
+  namespace           = "AWS/ApiGateway"
+  dimensions = {
+    ApiName = "${var.name_prefix}-${var.application_name}"
+  }
+  period            = 60
+  statistic         = "Average"
+  alarm_description = "${var.name_prefix}-${var.application_name} has crossed the 5xx error treshold"
+  tags              = var.tags
+  alarm_actions     = [local.shared_config.alarms_sns_topic_arn]
+  ok_actions        = [local.shared_config.alarms_sns_topic_arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "num_error_logs" {
+  metric_name         = "logback.events.count"
+  alarm_name          = "${var.name_prefix}-${var.application_name}-errors-log"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 1
+  threshold           = 50
+  namespace           = "${var.name_prefix}-${var.application_name}"
+  dimensions = {
+    level = "error"
+  }
+  period            = 60
+  statistic         = "Sum"
+  alarm_description = "${var.name_prefix}-${var.application_name} has logged to many errors"
+  tags              = var.tags
+  alarm_actions     = [local.shared_config.alarms_sns_topic_arn]
+  ok_actions        = [local.shared_config.alarms_sns_topic_arn]
+}
+
 
 ##################################
 #                                #
