@@ -114,6 +114,14 @@ subprojects {
 }
 
 tasks {
+    jacocoTestReport {
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = false
+            csv.isEnabled = false
+        }
+    }
+
     test {
         useJUnitPlatform()
         classpath += developmentOnly
