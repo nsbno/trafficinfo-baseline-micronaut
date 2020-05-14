@@ -47,21 +47,27 @@ configurations {
 }
 
 dependencies {
-    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation("javax.annotation:javax.annotation-api")
+    /**
+     * Micronaut framework dependencies.
+     */
+    annotationProcessor(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    annotationProcessor("io.micronaut:micronaut-inject-java")
+    annotationProcessor("io.micronaut:micronaut-validation")
+    annotationProcessor("io.micronaut.configuration:micronaut-openapi")
+    annotationProcessor("io.micronaut:micronaut-security")
+
+    implementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    implementation("io.micronaut:micronaut-inject")
+    implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-discovery-client")
     implementation("io.micronaut.configuration:micronaut-aws-common")
     implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.1")
-    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.5.1")
-
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.775")
-    implementation("no.cantara.aws:sqs-util:0.7.6")
+    implementation("io.micronaut:micronaut-security")
+    implementation("io.micronaut:micronaut-tracing")
+    implementation("io.micronaut:micronaut-security-jwt")
 
     /**
      * Trafficinfo Common Dependencies.
@@ -69,33 +75,28 @@ dependencies {
     implementation("no.vy.trafficinfo.common:logging:0.0.1")
     implementation("no.vy.trafficinfo.common:security:0.0.3")
 
-    kapt("io.micronaut.configuration:micronaut-openapi")
+    /**
+     * Third-party dependencies.
+     */
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.775")
+    implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-
-    kapt("io.micronaut:micronaut-security")
-    implementation("io.micronaut:micronaut-security")
-    implementation("io.micronaut:micronaut-tracing")
-    implementation("io.micronaut:micronaut-security-jwt")
-
-    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kapt("io.micronaut:micronaut-inject-java")
-    kapt("io.micronaut:micronaut-validation")
-
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.5.1")
 
-    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kaptTest("io.micronaut:micronaut-inject-java")
-
+    /**
+     * Test dependency configurations.
+     */
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    testAnnotationProcessor(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
     testAnnotationProcessor("io.micronaut:micronaut-inject-java")
 
-    testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    testImplementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
     testImplementation("io.mockk:mockk:1.10.0")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-
     testImplementation("org.assertj:assertj-core:3.16.1")
     testImplementation("com.github.tomakehurst:wiremock:2.26.3")
 }

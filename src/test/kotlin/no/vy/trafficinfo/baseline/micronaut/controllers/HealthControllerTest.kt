@@ -17,8 +17,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 class HealthControllerTest {
     @Inject
     lateinit var server: EmbeddedServer
-
-    private lateinit var client: HttpClient
+    lateinit var client: HttpClient
 
     @BeforeAll
     fun init() {
