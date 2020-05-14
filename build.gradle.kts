@@ -69,6 +69,10 @@ dependencies {
     implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut:micronaut-security-jwt")
 
+    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kapt("io.micronaut:micronaut-inject-java")
+    kapt("io.micronaut:micronaut-validation")
+
     /**
      * Trafficinfo Common Dependencies.
      */
@@ -87,18 +91,19 @@ dependencies {
     /**
      * Test dependency configurations.
      */
-    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
-    testAnnotationProcessor(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
     testAnnotationProcessor("io.micronaut:micronaut-inject-java")
-
-    testImplementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
-    testImplementation("io.mockk:mockk:1.10.0")
     testImplementation("org.assertj:assertj-core:3.16.1")
     testImplementation("com.github.tomakehurst:wiremock:2.26.3")
+    testImplementation("io.mockk:mockk:1.10.0")
+
+    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kaptTest("io.micronaut:micronaut-inject-java")
+    kaptTest("io.micronaut:micronaut-validation")
 }
 
 application {
