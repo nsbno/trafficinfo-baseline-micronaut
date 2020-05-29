@@ -98,7 +98,7 @@ locals {
     cross_account_role    = local.shared_config.role_arns.set_version
     ecr_image_tag_filters = ["master-branch"]
     ecr_repo_name_filters = [local.name_prefix]
-    ssm_prefix            = local.name_prefix
+    ssm_prefix            = local.shared_config.name_prefix
   }
 
   service_input_set_version = jsonencode(local.common_input_set_version)
