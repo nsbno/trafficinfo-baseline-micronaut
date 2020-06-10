@@ -5,7 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("org.sonarqube") version "2.8"
+    id("org.sonarqube") version "3.0"
     id("jacoco")
 }
 
