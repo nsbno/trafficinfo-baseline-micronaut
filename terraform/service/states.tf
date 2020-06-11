@@ -7,18 +7,12 @@ locals {
     "Deploy to Test and Stage": {
       "Comment": "Deployment to Test and Stage done in Parallel",
       "Type": "Parallel",
-      "Next": "Bump Versions in Prod",
+      "Next": "Raise Errors",
       "ResultPath": "$.Result",
       "Branches": [
         {
-          "StartAt": "Stagger Parallel Steps",
+          "StartAt": "Bump Versions in Test",
           "States": {
-            "Stagger Parallel Steps": {
-              "Comment": "A small wait step to prevent hitting AWS service limits",
-              "Type": "Wait",
-              "Seconds": 2,
-              "Next": "Bump Versions in Test"
-            },
             "Bump Versions in Test": {
               "Comment": "Update SSM parameters to latest SHA1 of ECR and latest S3 revision for Lambdas",
               "Type": "Task",
@@ -33,11 +27,21 @@ locals {
             "Deploy Test": {
               "Type": "Task",
               "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+              "ResultPath": "$.Result",
+              "Catch": [{
+                "ErrorEquals": ["States.ALL"],
+                "ResultPath": "$.errors",
+                "Next": "Catch Test Errors"
+              }],
               "Parameters": {
                 "FunctionName": "${local.shared_config.function_names.single_use_fargate_task}",
                 "Payload": ${local.test_input_single_use_fargate_task}
               },
               "TimeoutSeconds": 3600,
+              "End": true
+            },
+            "Catch Test Errors": {
+              "Type": "Pass",
               "End": true
             }
           }
@@ -59,6 +63,12 @@ locals {
             "Deploy Stage": {
               "Type": "Task",
               "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+              "ResultPath": "$.Result",
+              "Catch": [{
+                "ErrorEquals": ["States.ALL"],
+                "ResultPath": "$.errors",
+                "Next": "Catch Stage Errors"
+              }],
               "Parameters": {
                 "FunctionName": "${local.shared_config.function_names.single_use_fargate_task}",
                 "Payload": ${local.stage_input_single_use_fargate_task}
@@ -70,18 +80,16 @@ locals {
               "Type": "Wait",
               "Seconds": 7,
               "End": true
+            },
+            "Catch Stage Errors": {
+              "Type": "Pass",
+              "End": true
             }
           }
         },
         {
-          "StartAt": "Stagger Parallel Steps II",
+          "StartAt": "Bump Versions in Service",
           "States": {
-            "Stagger Parallel Steps II": {
-              "Comment": "A small wait step to prevent hitting AWS service limits",
-              "Type": "Wait",
-              "Seconds": 4,
-              "Next": "Bump Versions in Service"
-            },
             "Bump Versions in Service": {
               "Comment": "Update SSM parameters to latest SHA1 of ECR and latest S3 revision for Lambdas",
               "Type": "Task",
@@ -96,16 +104,41 @@ locals {
             "Deploy Service": {
               "Type": "Task",
               "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+              "ResultPath": "$.Result",
+              "Catch": [{
+                "ErrorEquals": ["States.ALL"],
+                "ResultPath": "$.errors",
+                "Next": "Catch Service Errors"
+              }],
               "Parameters": {
                 "FunctionName": "${local.shared_config.function_names.single_use_fargate_task}",
                 "Payload": ${local.service_input_single_use_fargate_task}
               },
               "TimeoutSeconds": 3600,
               "End": true
+            },
+            "Catch Service Errors": {
+              "Type": "Pass",
+              "End": true
             }
           }
         }
       ]
+    },
+    "Raise Errors": {
+      "Comment": "Raise previously caught errors, if any",
+      "Type": "Task",
+      "ResultPath": "$.errors_found",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "${local.shared_config.function_names.error_catcher}",
+        "Payload":  {
+          "token.$": "$$.Task.Token",
+          "input.$": "$.Result"
+        }
+      },
+      "TimeoutSeconds": 3600,
+      "Next": "Bump Versions in Prod"
     },
     "Bump Versions in Prod": {
       "Comment": "Update SSM parameters to latest SHA1 of ECR and latest S3 revision for Lambdas",
