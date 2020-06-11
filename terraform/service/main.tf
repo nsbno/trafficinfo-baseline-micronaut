@@ -95,9 +95,9 @@ resource "aws_iam_role_policy" "lambda_to_state_machine" {
 # Inputs for set-version Lambda
 locals {
   common_input_set_version = {
-    cross_account_role    = local.shared_config.role_arns.set_version
+    role_to_assume        = local.shared_config.role_arns.set_version
     ecr_image_tag_filters = ["master-branch"]
-    ecr_repo_name_filters = [local.name_prefix]
+    ecr_repositories      = [local.name_prefix]
     ssm_prefix            = local.shared_config.name_prefix
   }
 
