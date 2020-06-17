@@ -31,6 +31,7 @@ repositories {
     mavenCentral()
     jcenter()
     maven(url = "https://mvnrepo.cantara.no/content/repositories/releases")
+    maven(url = "https://dl.bintray.com/micronaut/core-releases-local")
     maven {
         url = uri("https://nexus.common-services.vydev.io/repository/maven-public")
         credentials {
@@ -63,11 +64,11 @@ dependencies {
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-discovery-client")
-    implementation("io.micronaut.configuration:micronaut-aws-common")
+    implementation("io.micronaut.aws:micronaut-aws-common")
     implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.1")
-    implementation("io.micronaut:micronaut-security")
     implementation("io.micronaut:micronaut-tracing")
-    implementation("io.micronaut:micronaut-security-jwt")
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.security:micronaut-security-jwt")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
@@ -77,7 +78,10 @@ dependencies {
      * Trafficinfo Common Dependencies.
      */
     implementation("no.vy.trafficinfo.common:logging:0.0.1")
-    implementation("no.vy.trafficinfo.common:security:0.0.3")
+    implementation("no.vy.trafficinfo.common:security:0.0.3") {
+        // TODO need to upgrade in common-security.
+        exclude("io.micronaut", "micronaut-security")
+    }
 
     /**
      * Third-party dependencies.
