@@ -2,9 +2,9 @@
 <configuration>
     <include resource="no/vy/trafficinfo/common/logging/base.xml"/>
 
-    <logger name="io.micronaut.http.server.netty" level="DEBUG"/>
-    <logger name="io.micronaut.security" level="DEBUG"/>
-    <logger name="io.micronaut.http.client" level="TRACE"/>
+    <logger name="io.micronaut.http.server.netty" level="WARN"/>
+    <logger name="io.micronaut.security" level="WARN"/>
+    <logger name="io.micronaut.http.client" level="WARN"/>
 
     <!--
     <logger name="io.micronaut.security" level="DEBUG"/>
