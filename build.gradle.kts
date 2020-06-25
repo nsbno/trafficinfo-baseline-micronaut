@@ -81,7 +81,7 @@ dependencies {
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
