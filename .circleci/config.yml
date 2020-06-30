@@ -18,7 +18,7 @@ jobs:
             (cd prod    && terraform init -backend=false && terraform validate)
   build-source:
     docker:
-      - image:  gradle:6.0-jdk
+      - image:  gradle:6.0-jdk12
     working_directory: ~/repo
     steps:
       - checkout
