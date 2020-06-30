@@ -86,7 +86,6 @@ dependencies {
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
-    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.5.1")
 
     /**
      * Test dependency configurations.
