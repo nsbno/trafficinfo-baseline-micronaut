@@ -36,6 +36,7 @@ jobs:
           name: Build With Gradle
           command: |
             gradle clean test build jacocoTestReport sonar \
+            --no-daemon \
             -Pversion="${CIRCLE_SHA1}" \
             -Dsonar.host.url=$SONAR_URL \
             -Dsonar.login=$SONAR_TOKEN \
