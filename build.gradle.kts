@@ -28,10 +28,6 @@ fun getProperty(name: String): String? {
 }
 
 repositories {
-    mavenCentral()
-    jcenter()
-    maven(url = "https://mvnrepo.cantara.no/content/repositories/releases")
-    maven(url = "https://dl.bintray.com/micronaut/core-releases-local")
     maven {
         url = uri("https://nexus.common-services.vydev.io/repository/maven-public")
         credentials {
