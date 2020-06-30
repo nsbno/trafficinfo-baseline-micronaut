@@ -33,6 +33,9 @@ Start the main class by right click on it, should start without any special conf
 Run `./gradlew assemble` and it will package the application into a runnable jar. 
 Output is in `build/libs/baseline.jar`
 
+## Migrate Micronaut 1.3 to 2.0
+TODO add description 
+
 ### Code Linting
 Code linting is done with ktlint and a gradle plugin running the linting when building the code.
 There should be a commit hook checking the code on pre-commit so that you cant commit code that 
