@@ -51,7 +51,7 @@ dependencies {
     annotationProcessor("io.micronaut:micronaut-inject-java")
     annotationProcessor("io.micronaut:micronaut-validation")
     annotationProcessor("io.micronaut.configuration:micronaut-openapi")
-    annotationProcessor("io.micronaut:micronaut-security")
+    annotationProcessor("io.micronaut.security:micronaut-security")
 
     implementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
     implementation("io.micronaut:micronaut-inject")
@@ -69,6 +69,7 @@ dependencies {
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
+    kapt("io.micronaut.security:micronaut-security")
 
     /**
      * Trafficinfo Common Dependencies.
@@ -88,19 +89,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
-
-    kapt("io.micronaut:micronaut-security")
-    implementation("io.micronaut:micronaut-security")
-    implementation("io.micronaut:micronaut-tracing")
-    implementation("io.micronaut:micronaut-security-jwt")
-
-    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kapt("io.micronaut:micronaut-inject-java")
-    kapt("io.micronaut:micronaut-validation")
-
-    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kaptTest("io.micronaut:micronaut-inject-java")
-
     /**
      * Test dependency configurations.
      */
@@ -117,6 +105,7 @@ dependencies {
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
     kaptTest("io.micronaut:micronaut-validation")
+}
 
 application {
     mainClassName = "no.vy.trafficinfo.baseline.micronaut.Application"
