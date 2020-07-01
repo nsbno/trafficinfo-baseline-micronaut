@@ -15,6 +15,8 @@ See https://jico.nsb.no/confluence/display/TRAFFICINFO/Baseline+Micronaut
 - [Operation](/docs/operation.md)
 
 # Techincal Requirements to microservices.
+- must contain JavaDoc for the most important classes containing the main app/business logic
+- must contain JavaDoc for the most important methods containing the main app/business logic.
 - must respond to /health endpoint with status 200 if UP.
 - must send log to CloudWatch and to elasticsearch/kibana
 - must send metrics to CloudWatch
