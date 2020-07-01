@@ -28,9 +28,6 @@ fun getProperty(name: String): String? {
 }
 
 repositories {
-    mavenCentral()
-    jcenter()
-    maven(url = "https://mvnrepo.cantara.no/content/repositories/releases")
     maven {
         url = uri("https://nexus.common-services.vydev.io/repository/maven-public")
         credentials {
@@ -47,57 +44,68 @@ configurations {
 }
 
 dependencies {
-    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation("javax.annotation:javax.annotation-api")
+    /**
+     * Micronaut framework dependencies.
+     */
+    annotationProcessor(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    annotationProcessor("io.micronaut:micronaut-inject-java")
+    annotationProcessor("io.micronaut:micronaut-validation")
+    annotationProcessor("io.micronaut.configuration:micronaut-openapi")
+    annotationProcessor("io.micronaut.security:micronaut-security")
+
+    implementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    implementation("io.micronaut:micronaut-inject")
+    implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-discovery-client")
-    implementation("io.micronaut.configuration:micronaut-aws-common")
+    implementation("io.micronaut.aws:micronaut-aws-common")
     implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.1")
-    implementation("io.micrometer:micrometer-registry-cloudwatch2:1.5.1")
+    implementation("io.micronaut:micronaut-tracing")
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.security:micronaut-security-jwt")
 
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.814")
-    implementation("no.cantara.aws:sqs-util:0.7.6")
+    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kapt("io.micronaut:micronaut-inject-java")
+    kapt("io.micronaut:micronaut-validation")
+    kapt("io.micronaut.security:micronaut-security")
+    kapt("io.micronaut.configuration:micronaut-openapi")
 
     /**
      * Trafficinfo Common Dependencies.
      */
     implementation("no.vy.trafficinfo.common:logging:0.0.2")
-    implementation("no.vy.trafficinfo.common:security:0.0.3")
+    implementation("no.vy.trafficinfo.common:security:0.0.3") {
+        // TODO need to upgrade in common-security.
+        exclude("io.micronaut", "micronaut-security")
+    }
 
-    kapt("io.micronaut.configuration:micronaut-openapi")
+    /**
+     * Third-party dependencies.
+     */
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.814")
+    implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-
-    kapt("io.micronaut:micronaut-security")
-    implementation("io.micronaut:micronaut-security")
-    implementation("io.micronaut:micronaut-tracing")
-    implementation("io.micronaut:micronaut-security-jwt")
-
-    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kapt("io.micronaut:micronaut-inject-java")
-    kapt("io.micronaut:micronaut-validation")
-
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
-    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kaptTest("io.micronaut:micronaut-inject-java")
-
+    /**
+     * Test dependency configurations.
+     */
     testAnnotationProcessor("io.micronaut:micronaut-inject-java")
-
     testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testImplementation("io.mockk:mockk:1.10.0")
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
     testImplementation("org.assertj:assertj-core:3.16.1")
     testImplementation("com.github.tomakehurst:wiremock:2.27.0")
+    testImplementation("io.mockk:mockk:1.10.0")
+
+    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kaptTest("io.micronaut:micronaut-inject-java")
+    kaptTest("io.micronaut:micronaut-validation")
 }
 
 application {
