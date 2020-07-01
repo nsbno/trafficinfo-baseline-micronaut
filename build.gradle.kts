@@ -70,6 +70,7 @@ dependencies {
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
     kapt("io.micronaut.security:micronaut-security")
+    kapt("io.micronaut.configuration:micronaut-openapi")
 
     /**
      * Trafficinfo Common Dependencies.
