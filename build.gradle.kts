@@ -82,10 +82,24 @@ dependencies {
     /**
      * Third-party dependencies.
      */
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.775")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.814")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+
+
+    kapt("io.micronaut:micronaut-security")
+    implementation("io.micronaut:micronaut-security")
+    implementation("io.micronaut:micronaut-tracing")
+    implementation("io.micronaut:micronaut-security-jwt")
+
+    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kapt("io.micronaut:micronaut-inject-java")
+    kapt("io.micronaut:micronaut-validation")
+
+    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kaptTest("io.micronaut:micronaut-inject-java")
 
     /**
      * Test dependency configurations.
@@ -97,13 +111,12 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
     testImplementation("org.assertj:assertj-core:3.16.1")
-    testImplementation("com.github.tomakehurst:wiremock:2.26.3")
+    testImplementation("com.github.tomakehurst:wiremock:2.27.0")
     testImplementation("io.mockk:mockk:1.10.0")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
     kaptTest("io.micronaut:micronaut-validation")
-}
 
 application {
     mainClassName = "no.vy.trafficinfo.baseline.micronaut.Application"
