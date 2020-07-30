@@ -66,6 +66,7 @@ dependencies {
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
+    implementation("io.micronaut.aws:micronaut-aws-parameter-store")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
