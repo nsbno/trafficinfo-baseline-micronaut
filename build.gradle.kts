@@ -65,6 +65,7 @@ dependencies {
     implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("io.micronaut.cache:micronaut-cache-caffeine")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
