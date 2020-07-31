@@ -102,7 +102,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
     testImplementation("org.assertj:assertj-core:3.16.1")
-    testImplementation("com.github.tomakehurst:wiremock:2.27.0")
+    testImplementation("com.github.tomakehurst:wiremock:2.27.1")
     testImplementation("io.mockk:mockk:1.10.0")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
