@@ -161,10 +161,12 @@ tasks {
         mergeServiceFiles()
         archiveFileName.set("baseline.jar")
         manifest {
-            attributes(mapOf(
+            attributes(
+                mapOf(
                     "Implementation-Title" to rootProject.name,
                     "Implementation-Version" to artifactVersion
-            ))
+                )
+            )
         }
     }
 

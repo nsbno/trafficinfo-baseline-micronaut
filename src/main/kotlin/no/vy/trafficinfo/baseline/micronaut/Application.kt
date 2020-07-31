@@ -10,20 +10,20 @@ import io.swagger.v3.oas.annotations.info.Info
  * Started by Docker container.
  */
 @OpenAPIDefinition(
-        info = Info(
-                title = "Micronaut Baseline",
-                version = "0.1",
-                description = "Trafficinfo baseline for microservices implemented with Micronaut",
-                contact = Contact(url = "https://vy.no", name = "Marius Gravdal", email = "marius.aune.gravdal@vy.no")
-        )
+    info = Info(
+        title = "Micronaut Baseline",
+        version = "0.1",
+        description = "Trafficinfo baseline for microservices implemented with Micronaut",
+        contact = Contact(url = "https://vy.no", name = "Marius Gravdal", email = "marius.aune.gravdal@vy.no")
+    )
 )
 object Application {
 
     @JvmStatic
     fun main(args: Array<String>) {
         Micronaut.build()
-                .packages("no.vy.trafficinfo.baseline.micronaut")
-                .mainClass(Application.javaClass)
-                .start()
+            .packages("no.vy.trafficinfo.baseline.micronaut")
+            .mainClass(Application.javaClass)
+            .start()
     }
 }
