@@ -45,10 +45,11 @@ class SecuredController {
     @Get("/health")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(
-            "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
+        "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.trafficinfo.vydev.io/baseline-micronaut/read"
+    )
     fun securedHealth(): HttpResponse<Health> {
         return HttpResponse.ok(Health())
     }
@@ -78,10 +79,11 @@ class SecuredController {
     @Get("/self")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(
-            "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
+        "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.trafficinfo.vydev.io/baseline-micronaut/read"
+    )
     fun securedSelf(): Single<String> {
         return callbackClient.callback("Hello from secured self.")
     }
@@ -95,10 +97,11 @@ class SecuredController {
     @Post("/callback")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(
-            "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
+        "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.trafficinfo.vydev.io/baseline-micronaut/read"
+    )
     fun securedCallback(
         @Body text: String,
         authentication: Authentication?
