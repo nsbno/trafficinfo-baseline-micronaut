@@ -1,7 +1,7 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
-    id("org.jetbrains.kotlin.kapt") version "1.3.72"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.72"
+    id("org.jetbrains.kotlin.jvm") version "1.4.0"
+    id("org.jetbrains.kotlin.kapt") version "1.4.0"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.4.0"
     id("com.github.johnrengelman.shadow") version "6.0.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.3.0"
