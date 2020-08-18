@@ -5,7 +5,6 @@
  * @see <a href="https://kotlinlang.org/docs/reference/using-gradle.html">Using Gradle in Official Kotlin doc.</a
  */
 
-
 plugins {
     kotlin("jvm")
     kotlin("kapt")
