@@ -6,7 +6,7 @@ micronaut:
 
   # Disable most metric classe to save costs in CloudWatch.
   metrics:
-    enabled: true
+    enabled: false
     binders:
       processor:
         enabled: false
