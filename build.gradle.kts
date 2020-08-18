@@ -1,7 +1,14 @@
+/**
+ * Gradle build file.
+ * Building the microservice with the Kotlin plugin for gradle.
+ *
+ * @see <a href="https://kotlinlang.org/docs/reference/using-gradle.html">Using Gradle in Official Kotlin doc.</a
+ */
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
-    id("org.jetbrains.kotlin.kapt") version "1.3.72"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
+    kotlin("kapt") version "1.4.0"
+
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.4.0"
     id("com.github.johnrengelman.shadow") version "6.0.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.3.0"
@@ -44,6 +51,11 @@ configurations {
 }
 
 dependencies {
+    /**
+     * Kotlin dependencies.
+     */
+    implementation(kotlin("reflect"))
+
     /**
      * Micronaut framework dependencies.
      */
