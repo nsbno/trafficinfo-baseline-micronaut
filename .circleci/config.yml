@@ -80,28 +80,6 @@ jobs:
             docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
             docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
 
-  upload-repo-zip:
-    docker:
-      - image: vydev/circleci-ecr:latest
-    working_directory: /tmp/workspace
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Upload source to S3
-          command: |
-            s3_bucket="929368261477-pipeline-artifact"
-            s3_prefix="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/branches/$CIRCLE_BRANCH"
-            printf "Contents of current directory '%s':\n" "$(pwd)"
-            ls -al
-            num_dirs="$(find ./artifacts -maxdepth 1 -mindepth 1 -type d | wc -l)"
-            num_zips="$(find ./artifacts -type f -name "*.zip" | wc -l)"
-            if [ ! "$num_dirs" -eq 1 ] || [ ! "$num_zips" -gt 0 ]; then
-              printf "Expected to find 1 directory and more than 1 zip file, but found %s directories and %s zip files\n" "$num_dirs" "$num_zips"
-              exit 1
-            fi
-            printf "Uploading files to s3://%s/%s\n" "$s3_bucket" "$s3_prefix"
-            aws s3 sync ./artifacts/. "s3://$s3_bucket"
   slack-workflow-status:
     docker:
       - image: cimg/base:stable
@@ -134,12 +112,14 @@ workflows:
           requires:
             - build-source
             - build-docker
-      - upload-repo-zip:
+      - stepfunction-ci/upload-artifacts:
           context: trafficinfo
+          s3_bucket_name: "929368261477-pipeline-artifact"
           filters:
             branches:
               only: master
           requires:
+            - stepfunction-ci/validate-terraform
             - stepfunction-ci/build-repo-zip
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
