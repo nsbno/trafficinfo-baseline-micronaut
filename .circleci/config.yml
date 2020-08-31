@@ -21,8 +21,6 @@ jobs:
       - image: circleci/buildpack-deps
     working_directory: /tmp/workspace
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
 
   build-source:
