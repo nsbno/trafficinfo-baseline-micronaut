@@ -1,6 +1,5 @@
 version: 2.1
 orbs:
-  slack: circleci/slack@3.4.2
   stepfunction-ci: vydev/ciorb@0.3.1
 commands:
   install-slack-status-prerequisites:
@@ -116,26 +115,14 @@ workflows:
     jobs:
       - build-source:
           context: trafficinfo
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-status
       - build-docker:
           context: trafficinfo
           requires:
             - build-source
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-status
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-status
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
@@ -146,8 +133,6 @@ workflows:
           requires:
             - build-source
             - build-docker
-          post-steps:
-            - invoke-slack-status
       - upload-repo-zip:
           context: trafficinfo
           filters:
@@ -156,10 +141,6 @@ workflows:
           requires:
             - stepfunction-ci/validate-terraform
             - stepfunction-ci/build-repo-zip
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-status
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -168,19 +149,3 @@ workflows:
               only: master
           requires:
             - upload-repo-zip
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-status
-      - slack-workflow-status:
-          filters:
-            branches:
-              only: master
-          requires:
-            - upload-trigger-event
-      - slack-workflow-status:
-          filters:
-            branches:
-              ignore: master
-          requires:
-            - build-docker
