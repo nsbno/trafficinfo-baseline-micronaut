@@ -104,7 +104,7 @@ jobs:
             fi
             printf "Uploading files from "%s" to s3://%s/%s\n" "$artifacts_dir" "$s3_bucket" "$s3_prefix"
             sha1="$(echo $CIRCLE_SHA1 | cut -c -7)"
-            aws s3 sync ./$artifacts_dir/. "s3://$s3_bucket" --metadata "tags"="'[\"${sha1}-SHA1\",\"${CIRCLE_BRANCH}-branch\"]'"
+            aws s3 sync $artifacts_dir "s3://$s3_bucket" --metadata "tags"="'[\"${sha1}-SHA1\",\"${CIRCLE_BRANCH}-branch\"]'"
 
   slack-workflow-status:
     docker:
