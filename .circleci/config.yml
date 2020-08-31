@@ -57,28 +57,6 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: build/reports/tests/test
-  build-docker:
-    docker:
-      - image: colincoleman/circleci-ecr:latest
-    working_directory: ~/repo
-    steps:
-      - setup_remote_docker
-      - checkout
-      - attach_workspace:
-          at: ~/repo
-      - run:
-          name: "Build Docker image"
-          command: |
-            LOGIN_COMMAND=$(aws ecr get-login --region eu-west-1 --no-include-email)
-            $LOGIN_COMMAND
-            SHORT_SHA1=`echo ${CIRCLE_SHA1}|cut -c1-7`
-            docker build -t ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut -f Docker/Dockerfile .
-            docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${CIRCLE_BRANCH}-branch"
-            docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${CIRCLE_BRANCH}-branch"
-            docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${SHORT_SHA1}-SHA1"
-            docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:${SHORT_SHA1}-SHA1"
-            docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
-            docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
 
   upload-artifacts:
     docker:
@@ -120,8 +98,9 @@ workflows:
     jobs:
       - build-source:
           context: trafficinfo
-      - build-docker:
+      - stepfunction-ci/build-docker:
           context: trafficinfo
+          build-docker: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
       - stepfunction-ci/validate-terraform:
@@ -137,7 +116,7 @@ workflows:
 #              only: master
           requires:
             - build-source
-            - build-docker
+            - stepfunction-ci/build-docker
       - upload-artifacts:
           context: trafficinfo
 #          s3_bucket_name: "929368261477-pipeline-artifact"
