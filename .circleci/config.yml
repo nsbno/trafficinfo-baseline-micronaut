@@ -154,7 +154,8 @@ workflows:
             branches:
               only: master
           requires:
-            - stepfunction-ci/upload-artifacts
+#            - stepfunction-ci/upload-artifacts
+            - upload-artifacts
       - slack-workflow-status:
           context: trafficinfo
           requires:
