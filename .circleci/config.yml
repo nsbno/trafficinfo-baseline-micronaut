@@ -120,6 +120,10 @@ workflows:
           context: trafficinfo
           requires:
             - build-source
+      - slack-workflow-status:
+          context: trafficinfo
+          requires:
+            - build-source
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
@@ -128,17 +132,17 @@ workflows:
           context: trafficinfo
           name_prefix: "trafficinfo"
           aws_repo_name: "trafficinfo-baseline-micronaut"
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - build-source
             - build-docker
       - upload-repo-zip:
           context: trafficinfo
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - stepfunction-ci/build-repo-zip
       - stepfunction-ci/upload-trigger-event:
@@ -149,7 +153,3 @@ workflows:
               only: master
           requires:
             - upload-repo-zip
-      - slack-workflow-status:
-          context: trafficinfo
-          requires:
-            - stepfunction-ci/upload-trigger-event
