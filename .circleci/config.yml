@@ -1,5 +1,6 @@
 version: 2.1
 orbs:
+  slack: circleci/slack@3.4.2
   stepfunction-ci: vydev/ciorb@0.3.1
 commands:
   install-slack-status-prerequisites:
@@ -149,3 +150,5 @@ workflows:
               only: master
           requires:
             - upload-repo-zip
+      - slack-workflow-status:
+          context: trafficinfo
