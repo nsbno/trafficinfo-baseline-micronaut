@@ -1,4 +1,19 @@
 version: 2.1
+orbs:
+  slack: circleci/slack@3.4.2
+commands:
+  install-slack-status-prerequisites:
+    steps:
+      - run:
+          name: "Add slack notifier prerequisites"
+          command: |
+            apk add bash
+            apk add curl
+  invoke-slack-status:
+    steps:
+      - slack/status:
+          failure_message: A $CIRCLE_JOB job failed for project << pipeline.project.git_url >> ($CIRCLE_BRANCH)
+          fail_only: true
 jobs:
   validate-terraform:
     docker:
@@ -159,20 +174,40 @@ jobs:
             fi
             printf "Uploading trigger event file to s3://%s/%s\n" "$s3_bucket" "$s3_prefix"
             aws s3 cp ./*.json "s3://${s3_bucket}/${s3_prefix}/"
+  slack-workflow-status:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - slack/notify:
+          color: '#1CBF43'
+          message: Success:workflow in job $CIRCLE_BUILD_URL for project << pipeline.project.git_url >> ($CIRCLE_BRANCH)
+          include_visit_job_action: false
 workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - validate-terraform
+      - validate-terraform:
+          pre-steps:
+            - install-slack-status-prerequisites
+          post-steps:
+            - invoke-slack-status
       - build-source:
           context: trafficinfo
+          post-steps:
+            - invoke-slack-status
       - build-docker:
-            requires:
+          requires:
             - build-source
+          pre-steps:
+            - install-slack-status-prerequisites
+          post-steps:
+            - invoke-slack-status
       - build-repo-zip:
           filters:
             branches:
               only: master
+          post-steps:
+            - invoke-slack-status
       - upload-repo-zip:
           filters:
             branches:
@@ -181,9 +216,29 @@ workflows:
             - build-repo-zip
             - build-docker
             - validate-terraform
+          pre-steps:
+            - install-slack-status-prerequisites
+          post-steps:
+            - invoke-slack-status
       - upload-trigger-event:
           filters:
             branches:
               only: master
           requires:
             - upload-repo-zip
+          pre-steps:
+            - install-slack-status-prerequisites
+          post-steps:
+            - invoke-slack-status
+      - slack-workflow-status:
+          filters:
+            branches:
+              only: master
+          requires:
+            - upload-trigger-event
+      - slack-workflow-status:
+          filters:
+            branches:
+              ignore: master
+          requires:
+            - build-docker

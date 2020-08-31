@@ -35,6 +35,7 @@ See https://jico.nsb.no/confluence/display/TRAFFICINFO/Baseline+Micronaut
 3. Set up an ECR for the microservice
 Create a new module based on ecr-baseline-micronaut in trafficinfo-aws/terraform/circleci-init/main.tf.
 Add the new ecr-repository to the module "ci_machine_user", and update the number of allowed ecr_count. 
+Add a state machine for this project to the state_machine_arns list in the locals section.
 
 4. CircleCI setup
 CircleCI is responsible for running tests, and building the artifacts before publishing it to ECR to be deployed to ECS.
@@ -49,15 +50,13 @@ AWS_SECRET_ACCESS_KEY
     The AWS variables can be found in the AWS Systems Manager -> Parameter Store. AWS_ACCESS_KEY_ID can be found in ci-machine-user-id, and the 
     AWS_SECRET_ACCESS_KEY can be found under ci-machine-user-key.
  
-    1. Generate a "status badge" in Circle CI that can be used in README.md for the new microservice. If the project is private (default) you'll need to create
-an access token first. This is currently only available in the old UI. 
+    1. Exchange the "status badge" at the top of the readme by editing the following with the correct values for this project:
+    \[\!\[CircleCI\](https://circleci.com/gh/nsbno/<PROJECT_NAME>.svg?style=svg&circle-token=<YOUR_STATUS_API_TOKEN>)\](https://circleci.com/gh/nsbno/<PROJECT_NAME>)
+        * PROJECT_NAME is the name of the github project
+        * YOUR_STATUS_API_TOKEN is found in the circle-ci project settings. Go to "API Permissions" and create an API token with the scope "status".
 
-    2. In CircleCI, Add the slack webhook-url to Circle CI for build notifications. This is currently only available in the old UI.
+    2. In CircleCI, Add the slack webhook-url to Circle CI for build notifications by going to project settings and "Slack Integration"
 
-5. Establish OpenAPI schema by copying "empty.yml" (if a REST API is supposed to be exposed by the service)
+5. Update with correct project naming in all the terraform/\<ENVIRONMENT>/main.tf files.
 
-6. Create application config in terraform/modules/application-config. Create files variables.tf, main.tf and output.tf
-
-7. Create ECS module by copying one of the existing modules, e.g. svc-otc.yml and create a config containing at least application config and 
-an ecs-microservice module. Remove all redundant config. NOTE: Remember to choose a unique ALB priority for the module. 
 

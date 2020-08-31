@@ -1,7 +1,15 @@
+/**
+ * Gradle build file.
+ * Building the microservice with the Kotlin plugin for gradle.
+ *
+ * @see <a href="https://kotlinlang.org/docs/reference/using-gradle.html">Using Gradle in Official Kotlin doc.</a
+ */
+
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
-    id("org.jetbrains.kotlin.kapt") version "1.3.72"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.72"
+    kotlin("jvm")
+    kotlin("kapt")
+    id("org.jetbrains.kotlin.plugin.allopen")
+
     id("com.github.johnrengelman.shadow") version "6.0.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.3.0"
@@ -45,6 +53,11 @@ configurations {
 
 dependencies {
     /**
+     * Kotlin dependencies.
+     */
+    implementation(kotlin("reflect"))
+
+    /**
      * Micronaut framework dependencies.
      */
     annotationProcessor(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -86,7 +99,7 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.814")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     /**
@@ -98,7 +111,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
-    testImplementation("org.assertj:assertj-core:3.16.1")
+    testImplementation("org.assertj:assertj-core:3.17.0")
     testImplementation("com.github.tomakehurst:wiremock:2.27.1")
     testImplementation("io.mockk:mockk:1.10.0")
 
