@@ -106,18 +106,18 @@ workflows:
           context: trafficinfo
           name_prefix: "trafficinfo"
           aws_repo_name: "trafficinfo-baseline-micronaut"
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - build-source
             - build-docker
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - stepfunction-ci/validate-terraform
             - stepfunction-ci/build-repo-zip
