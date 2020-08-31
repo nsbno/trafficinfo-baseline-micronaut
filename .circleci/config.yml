@@ -140,7 +140,6 @@ workflows:
             branches:
               only: master
           requires:
-            - stepfunction-ci/validate-terraform
             - stepfunction-ci/build-repo-zip
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
@@ -152,3 +151,5 @@ workflows:
             - upload-repo-zip
       - slack-workflow-status:
           context: trafficinfo
+          requires:
+            - stepfunction-ci/upload-trigger-event
