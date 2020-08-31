@@ -18,7 +18,7 @@ commands:
 jobs:
   build-source:
     docker:
-      - image:  gradle:6.6.0-jdk13
+      - image:  gradle:6.6
     working_directory: ~/repo
     steps:
       - checkout
