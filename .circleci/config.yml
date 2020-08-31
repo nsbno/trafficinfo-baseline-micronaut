@@ -28,7 +28,7 @@ jobs:
   build-source:
     docker:
       - image:  gradle:6.3.0-jdk13
-    working_directory: ~/repo
+    working_directory: /tmp/workspace
     steps:
       # Download and cache dependencies
       - restore_cache:
