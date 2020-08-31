@@ -116,7 +116,6 @@ workflows:
 #              only: master
           requires:
             - build-source
-            - stepfunction-ci/build-docker
       - upload-artifacts:
           context: trafficinfo
 #          s3_bucket_name: "929368261477-pipeline-artifact"
@@ -124,7 +123,6 @@ workflows:
 #            branches:
 #              only: master
           requires:
-            - stepfunction-ci/validate-terraform
             - stepfunction-ci/build-repo-zip
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
