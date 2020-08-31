@@ -69,7 +69,7 @@ jobs:
           name: Upload source to S3
           command: |
             s3_bucket="929368261477-pipeline-artifact"
-            artifacts_dir="."
+            artifacts_dir="artifacts"
             s3_prefix="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/branches/$CIRCLE_BRANCH"
             printf "Contents of current directory '%s':\n" "$(pwd)"
             ls -al $artifacts_dir
