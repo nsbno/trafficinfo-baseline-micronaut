@@ -17,6 +17,8 @@ commands:
           fail_only: true
 jobs:
   checkout-source:
+    docker:
+      image: circleci/buildpack-deps
     working_directory: ~/repo
     steps:
       - checkout
