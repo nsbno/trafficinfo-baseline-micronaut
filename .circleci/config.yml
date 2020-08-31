@@ -100,7 +100,8 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - checkout-source
+      - checkout-source:
+          context: trafficinfo
       - build-source:
           context: trafficinfo
           requires:
