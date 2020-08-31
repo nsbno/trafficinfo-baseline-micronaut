@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   slack: circleci/slack@3.4.2
+  stepfunction-ci: vydev/ciorb@0.3.1
 commands:
   install-slack-status-prerequisites:
     steps:
@@ -15,22 +16,6 @@ commands:
           failure_message: A $CIRCLE_JOB job failed for project << pipeline.project.git_url >> ($CIRCLE_BRANCH)
           fail_only: true
 jobs:
-  validate-terraform:
-    docker:
-      - image: vydev/terraform:0.12.23
-    working_directory: /tmp/workspace
-    steps:
-      - checkout:
-          path: ~/repo
-      - run:
-          name: Validate terraform code
-          command: |
-            printf "Validating terraform code\n"
-            cd ~/repo/terraform
-            (cd service && terraform init -backend=false && terraform validate)
-            (cd test    && terraform init -backend=false && terraform validate)
-            (cd stage   && terraform init -backend=false && terraform validate)
-            (cd prod    && terraform init -backend=false && terraform validate)
   build-source:
     docker:
       - image:  gradle:6.3.0-jdk13
@@ -95,42 +80,6 @@ jobs:
             docker tag ${ECR_ENDPOINT}/trafficinfo-baseline-micronaut "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
             docker push "${ECR_ENDPOINT}/trafficinfo-baseline-micronaut:latest"
 
-  build-repo-zip:
-    docker:
-      - image: circleci/buildpack-deps:latest
-    working_directory: /tmp/workspace
-    steps:
-      - checkout:
-          path: ~/repo
-      - run:
-          name: Zip source code
-          command: |
-            s3_prefix="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/branches/$CIRCLE_BRANCH"
-            sha1="$(echo $CIRCLE_SHA1 | cut -c -7)"
-            artifacts_dir="artifacts"
-            trigger_file="trigger-event.json"
-            zip_path="$(pwd)/$artifacts_dir/$s3_prefix"
-            zip_file="$zip_path/$sha1.zip"
-            printf "Initial contents of current directory '%s':\n" "$(pwd)"
-            ls -al
-            mkdir -p "$zip_path"
-            printf "Creating zip archive of source code '%s':\n" "$zip_file"
-            (cd ~/repo; zip -r "$zip_file" ./*)
-            cp "$zip_file" "$zip_path/latest.zip"
-            cat \<<EOF > "$trigger_file"
-            {
-              "SHA": "$sha1",
-              "date": "$(date)",
-              "name_prefix": "trafficinfo-baseline-micronaut",
-              "aws_repo_name": "$CIRCLE_PROJECT_REPONAME"
-            }
-            EOF
-            printf "Final contents of current directory '%s':\n" "$(pwd)"
-            ls -al
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - "*"
   upload-repo-zip:
     docker:
       - image: vydev/circleci-ecr:latest
@@ -153,27 +102,6 @@ jobs:
             fi
             printf "Uploading files to s3://%s/%s\n" "$s3_bucket" "$s3_prefix"
             aws s3 sync ./artifacts/. "s3://$s3_bucket"
-  upload-trigger-event:
-    docker:
-      - image: vydev/circleci-ecr:latest
-    working_directory: /tmp/workspace
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Upload trigger event file to S3
-          command: |
-            s3_bucket="929368261477-pipeline-artifact"
-            s3_prefix="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/branches/$CIRCLE_BRANCH"
-            printf "Contents of current directory '%s':\n" "$(pwd)"
-            ls -al
-            num_json="$(find . -maxdepth 1 -mindepth 1 -type f -name "*.json" | wc -l)"
-            if [ ! "$num_json" -eq 1 ]; then
-              printf "Expected to find 1 json file, but found %s json files\n" "$num_json"
-              exit 1
-            fi
-            printf "Uploading trigger event file to s3://%s/%s\n" "$s3_bucket" "$s3_prefix"
-            aws s3 cp ./*.json "s3://${s3_bucket}/${s3_prefix}/"
   slack-workflow-status:
     docker:
       - image: cimg/base:stable
@@ -186,41 +114,53 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - validate-terraform:
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-status
       - build-source:
           context: trafficinfo
           post-steps:
             - invoke-slack-status
       - build-docker:
+          context: trafficinfo
           requires:
             - build-source
           pre-steps:
             - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
-      - build-repo-zip:
-          filters:
-            branches:
-              only: master
-          post-steps:
-            - invoke-slack-status
-      - upload-repo-zip:
-          filters:
-            branches:
-              only: master
-          requires:
-            - build-repo-zip
-            - build-docker
-            - validate-terraform
+      - stepfunction-ci/validate-terraform:
+          context: trafficinfo
+          terraformimage: vydev/terraform:0.12.29
+          envs: "service, test, stage, prod"
           pre-steps:
             - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
-      - upload-trigger-event:
+      - stepfunction-ci/build-repo-zip:
+          context: trafficinfo
+          name_prefix: "trafficinfo"
+          aws_repo_name: "trafficinfo-baseline-micronaut"
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-source
+            - build-docker
+          post-steps:
+            - invoke-slack-status
+      - upload-repo-zip:
+          context: trafficinfo
+          filters:
+            branches:
+              only: master
+          requires:
+            - stepfunction-ci/validate-terraform
+            - stepfunction-ci/build-repo-zip
+          pre-steps:
+            - install-slack-status-prerequisites
+          post-steps:
+            - invoke-slack-status
+      - stepfunction-ci/upload-trigger-event:
+          context: trafficinfo
+          s3_bucket_name: "929368261477-pipeline-artifact"
           filters:
             branches:
               only: master
