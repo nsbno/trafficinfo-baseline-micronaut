@@ -100,7 +100,7 @@ workflows:
           context: trafficinfo
       - stepfunction-ci/build-docker:
           context: trafficinfo
-          build-docker: "trafficinfo-baseline-micronaut"
+          ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
       - stepfunction-ci/validate-terraform:
