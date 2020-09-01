@@ -44,18 +44,44 @@ does not satisfy linting rules. When detecting lint errors, auto-format the code
 rules with `gradle ktlintFormat` command and all the code in the repo will be auto-formatted. 
 
 ## Deploy
-Describe how this application is deployed in dev, test and production env.
+Dev is a rapid development environment that has no automated pipelines, it is maintained
+with `terraform apply` by the developers.
 
+The test, stage and prod environments has automated pipelines by Step Functions in AWS and
+should not be manually be updated from developers laptops to avoid problems with local 
+laptop settings and concurrent changes by developers.
+
+### Manually in DEV
+The development environment is manually maintained with terraform code. 
+No automated pipelines runs against the environment to avoid deployments to step on each
+others toes when committing changes on components at the same time.
+
+You have two alternatives to update DEV, 
+1) Update and run the terraform script for DEV to deploy, update the version tag of the container.
+2) To just redeploy your microservice using the latest tag, go to the AWS Fargate console
+   and find the service task and click the Kill button. 
+   This will stop the current container and recreate it from the latest tag.
+
+### Automated from branch in TEST for testing
+Update and run the terraform script for TEST to deploy, update the version tag of the container.
+Commit and run the automated pipeline to apply in TEST. 
+
+### Automated from master by pipeline in test, stage and production.
+When a new build is built on master branch, the CircleCI script triggers an automated deployment
+by the Step Function Pipeline framework created by Team Infrastructure. It will automatically
+deploy a new update current latest version in SSM for the service and trigger a new pipeline 
+deployment in test, stage and production.
+ 
 ## Release
-When building for release (CircleCI), supply a parameter version on the commandline as so: 
-`./gradlew assemble -Dversion=<releaseversion or hash>`
+Merge your changes to the master branch and automated pipelines will take care of the rest.
+test, stage and production will be updated with your changes.
 
 ## Branching
-Describe how the branching strategy is handled when developing this app.
+See our official team strategy in confluence
+https://jico.nsb.no/confluence/display/TRAFFICINFO/Versioning+and+branching
 
 ## Tech
-
-* JDK12
+* [Kotlin](https://kotlinlang.org/)
 * [Micronaut](https://micronaut.io)
 * [JUnit](https://junit.org/junit5/)
 * [KotlinTest](https://github.com/kotlintest/kotlintest)
