@@ -13,7 +13,7 @@ commands:
   invoke-slack-status:
     steps:
       - slack/status:
-          failure_message: A $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)
+          failure_message: Failure:$CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)
           fail_only: true
 jobs:
   # TODO
@@ -94,7 +94,7 @@ jobs:
     steps:
       - slack/notify:
           color: '#1CBF43'
-          message: Success:workflow in job $CIRCLE_BUILD_URL for project << pipeline.project.git_url >> ($CIRCLE_BRANCH)
+          message: Success:workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)
           include_visit_job_action: false
 workflows:
   version: 2
@@ -109,12 +109,16 @@ workflows:
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
+          pre-steps:
+            - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
+          pre-steps:
+            - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
       - stepfunction-ci/build-repo-zip:
@@ -126,6 +130,8 @@ workflows:
               only: master
           requires:
             - build-source
+          pre-steps:
+            - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
       # TODO Update when PR https://github.com/nsbno/utility-circleci-orb/pull/1 is released.
@@ -138,6 +144,8 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/build-repo-zip
+          pre-steps:
+            - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
       - stepfunction-ci/upload-trigger-event:
@@ -149,6 +157,8 @@ workflows:
           requires:
 #            - stepfunction-ci/upload-artifacts
             - upload-artifacts
+          pre-steps:
+            - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
       - slack-workflow-status:
