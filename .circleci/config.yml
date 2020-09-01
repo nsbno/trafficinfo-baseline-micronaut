@@ -16,6 +16,9 @@ commands:
           failure_message: A $CIRCLE_JOB job failed for project << pipeline.project.git_url >> ($CIRCLE_BRANCH)
           fail_only: true
 jobs:
+  # TODO
+  # Move this code into our own ORB
+  # https://github.com/nsbno/trafficinfo-orb
   build-source:
     docker:
       - image:  gradle:6.3.0-jdk13
