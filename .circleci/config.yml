@@ -57,7 +57,7 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: build/reports/tests/test
-  # TODO remove when PR https://github.com/nsbno/utility-circleci-orb/pull/1 is released.
+  # TODO Update when PR https://github.com/nsbno/utility-circleci-orb/pull/1 is released.
   # Implemented here because orb has no configurable artifacts directory yet for job.
   upload-artifacts:
     docker:
@@ -117,6 +117,9 @@ workflows:
 #              only: master
           requires:
             - build-source
+
+      # TODO Update when PR https://github.com/nsbno/utility-circleci-orb/pull/1 is released.
+      # Implemented here because orb has no configurable artifacts directory yet for job.
       - upload-artifacts:
           context: trafficinfo
 #          s3_bucket_name: "929368261477-pipeline-artifact"
