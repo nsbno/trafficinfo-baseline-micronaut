@@ -108,8 +108,6 @@ workflows:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
-          requires:
-            - checkout-source
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
