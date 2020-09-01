@@ -62,7 +62,7 @@ You have two alternatives to update DEV,
    and find the service task and click the Kill button. 
    This will stop the current container and recreate it from the latest tag.
 
-### Automated from branch in TEST for testing
+### Automated from feature branch in TEST for testing
 Update and run the terraform script for TEST to deploy, update the version tag of the container.
 Commit and run the automated pipeline to apply in TEST. 
 
