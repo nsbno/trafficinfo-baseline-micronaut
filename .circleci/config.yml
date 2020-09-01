@@ -94,7 +94,7 @@ jobs:
     steps:
       - slack/notify:
           color: '#1CBF43'
-          message: ":sunglasses: thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+          message: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
           include_visit_job_action: false
 workflows:
   version: 2
