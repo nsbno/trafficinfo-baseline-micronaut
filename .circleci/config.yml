@@ -16,18 +16,12 @@ commands:
           failure_message: A $CIRCLE_JOB job failed for project << pipeline.project.git_url >> ($CIRCLE_BRANCH)
           fail_only: true
 jobs:
-  checkout-source:
-    docker:
-      - image: circleci/buildpack-deps
-    working_directory: /tmp/workspace
-    steps:
-      - checkout
-
   build-source:
     docker:
       - image:  gradle:6.3.0-jdk13
     working_directory: /tmp/workspace
     steps:
+      - checkout
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -63,7 +57,8 @@ jobs:
           path: ~/test-results/junit
       - store_artifacts:
           path: build/reports/tests/test
-
+  # TODO remove when PR https://github.com/nsbno/utility-circleci-orb/pull/1 is released.
+  # Implemented here because orb has no configurable artifacts directory yet for job.
   upload-artifacts:
     docker:
       - image: vydev/circleci-ecr:latest
@@ -102,12 +97,8 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - checkout-source:
-          context: trafficinfo
       - build-source:
           context: trafficinfo
-          requires:
-            - checkout-source
       - stepfunction-ci/build-docker:
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
