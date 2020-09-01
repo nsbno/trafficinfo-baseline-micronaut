@@ -109,10 +109,14 @@ workflows:
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
+          post-steps:
+            - invoke-slack-status
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
+          post-steps:
+            - invoke-slack-status
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
@@ -122,7 +126,8 @@ workflows:
               only: master
           requires:
             - build-source
-
+          post-steps:
+            - invoke-slack-status
       # TODO Update when PR https://github.com/nsbno/utility-circleci-orb/pull/1 is released.
       # Implemented here because orb has no configurable artifacts directory yet for job.
       - upload-artifacts:
@@ -133,6 +138,8 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/build-repo-zip
+          post-steps:
+            - invoke-slack-status
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -142,6 +149,8 @@ workflows:
           requires:
 #            - stepfunction-ci/upload-artifacts
             - upload-artifacts
+          post-steps:
+            - invoke-slack-status
       - slack-workflow-status:
           context: trafficinfo
           requires:
