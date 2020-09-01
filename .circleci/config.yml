@@ -102,6 +102,8 @@ workflows:
     jobs:
       - build-source:
           context: trafficinfo
+          post-steps:
+            - invoke-slack-status
       - stepfunction-ci/build-docker:
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
