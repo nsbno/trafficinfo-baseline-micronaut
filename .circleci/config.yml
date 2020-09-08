@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   slack: circleci/slack@3.4.2
-  stepfunction-ci: vydev/ciorb@0.3.1
+  stepfunction-ci: vydev/ciorb@0.4.2
 commands:
   install-slack-status-prerequisites:
     steps:
