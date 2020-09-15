@@ -147,6 +147,7 @@ tasks {
         classpath += developmentOnly
         systemProperty("micronaut.environments", "test")
         systemProperty("micronaut.env.deduction", false)
+        dependsOn(ktlintCheck)
     }
 
     allOpen {
