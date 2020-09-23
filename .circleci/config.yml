@@ -67,6 +67,10 @@ workflows:
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
+      - stepfunction-ci/validate-terraform:
+          context: trafficinfo
+          terraformimage: vydev/terraform:0.12.29
+          envs: "service, test, stage, prod"
           post-steps:
             - run:
                 name: "Add slack notifier prerequisites"
@@ -78,10 +82,6 @@ workflows:
             - slack/status:
                 failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
                 fail_only: true
-      - stepfunction-ci/validate-terraform:
-          context: trafficinfo
-          terraformimage: vydev/terraform:0.12.29
-          envs: "service, test, stage, prod"
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
