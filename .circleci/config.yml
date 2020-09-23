@@ -111,4 +111,5 @@ workflows:
             branches:
               only: master
           requires:
+            - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
