@@ -2,27 +2,19 @@ version: 2.1
 orbs:
   slack: circleci/slack@3.4.2
   stepfunction-ci: vydev/ciorb@0.4.3
-commands:
-  install-slack-status-prerequisites:
-    steps:
-      - run:
-          name: "Add slack notifier prerequisites"
-          command: |
-            apk add bash
-            apk add curl
-  invoke-slack-status:
-    steps:
-      - slack/status:
-          failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
-          fail_only: true
-  invoke-slack-step-complete:
-    description: "Send a message to slack"
-    parameters:
-      step:
-        type: string
-    steps:
-      - slack/status:
-          message: Completed step << parameters.step >>
+
+slack-fail-post-step: &slack-fail-post-step
+  post-steps:
+    - run:
+        name: "Add slack notifier prerequisites"
+        command: |
+          apk add bash
+          apk add curl
+    - slack/notify:
+        message: "step done"
+    - slack/status:
+        failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+        fail_only: true
 
 jobs:
   # TODO
@@ -83,28 +75,20 @@ workflows:
     jobs:
       - build-source:
           context: trafficinfo
-          post-steps:
-            - invoke-slack-status
-      - stepfunction-ci/build-docker:
+      - stepfunction-ci/build-docker: *slack-fail-post-step
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
-          post-steps:
-            - invoke-slack-step-complete:
-                step: "build-source"
-            - invoke-slack-status
-      - stepfunction-ci/validate-terraform:
+      - stepfunction-ci/validate-terraform: *slack-fail-post-step
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
           pre-steps:
             - install-slack-status-prerequisites
           post-steps:
-            - invoke-slack-step-complete:
-                step: "stepfunction-ci/validate-terraform"
             - invoke-slack-status
-      - stepfunction-ci/build-repo-zip:
+      - stepfunction-ci/build-repo-zip: *slack-fail-post-step
           context: trafficinfo
           name_prefix: "trafficinfo"
           aws_repo_name: "trafficinfo-baseline-micronaut"
@@ -113,13 +97,7 @@ workflows:
               only: master
           requires:
             - build-source
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-step-complete:
-                step: "stepfunction-ci/build-repo-zip"
-            - invoke-slack-status
-      - stepfunction-ci/upload-artifacts:
+      - stepfunction-ci/upload-artifacts: *slack-fail-post-step
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
           filters:
@@ -127,13 +105,7 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/build-repo-zip
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-step-complete:
-                step: stepfunction-ci/upload-artifacts
-            - invoke-slack-status
-      - stepfunction-ci/upload-trigger-event:
+      - stepfunction-ci/upload-trigger-event: *slack-fail-post-step
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
           filters:
@@ -141,19 +113,3 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/upload-artifacts
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-step-complete:
-                step: "stepfunction-ci/upload-trigger-event"
-            - invoke-slack-status
-      - slack-workflow-status:
-          context: trafficinfo
-          requires:
-            - stepfunction-ci/upload-trigger-event
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-step-complete:
-                step: "slack-workflow-status"
-            - invoke-slack-statuss
