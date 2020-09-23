@@ -92,7 +92,7 @@ workflows:
             - build-source
           post-steps:
             - invoke-slack-step-complete
-                step: build-source
+                step: "build-source"
             - invoke-slack-status
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
@@ -102,7 +102,7 @@ workflows:
             - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-step-complete
-                step: stepfunction-ci/validate-terraform
+                step: "stepfunction-ci/validate-terraform"
             - invoke-slack-status
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
@@ -117,7 +117,7 @@ workflows:
             - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-step-complete
-                step: stepfunction-ci/build-repo-zip
+                step: "stepfunction-ci/build-repo-zip"
             - invoke-slack-status
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
@@ -145,7 +145,7 @@ workflows:
             - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-step-complete
-                step: stepfunction-ci/upload-trigger-event
+                step: "stepfunction-ci/upload-trigger-event"
             - invoke-slack-status
       - slack-workflow-status:
           context: trafficinfo
@@ -155,5 +155,5 @@ workflows:
             - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-step-complete
-                step: slack-workflow-status
+                step: "slack-workflow-status"
             - invoke-slack-statuss
