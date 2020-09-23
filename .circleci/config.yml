@@ -15,6 +15,15 @@ commands:
       - slack/status:
           failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
           fail_only: true
+  invoke-slack-step-complete:
+    description: "Send a message to slack"
+    parameters:
+      step:
+        type: string
+    steps:
+      - slack/status:
+          message: Completed step << parameters.step >>
+
 jobs:
   # TODO
   # Move this code into our own ORB
@@ -81,9 +90,8 @@ workflows:
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
-          pre-steps:
-            - install-slack-status-prerequisites
           post-steps:
+            - invoke-slack-step-complete
             - invoke-slack-status
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
@@ -92,6 +100,7 @@ workflows:
           pre-steps:
             - install-slack-status-prerequisites
           post-steps:
+            - invoke-slack-step-complete
             - invoke-slack-status
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
@@ -105,6 +114,7 @@ workflows:
           pre-steps:
             - install-slack-status-prerequisites
           post-steps:
+            - invoke-slack-step-complete
             - invoke-slack-status
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
@@ -117,6 +127,7 @@ workflows:
           pre-steps:
             - install-slack-status-prerequisites
           post-steps:
+            - invoke-slack-step-complete
             - invoke-slack-status
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
@@ -129,8 +140,14 @@ workflows:
           pre-steps:
             - install-slack-status-prerequisites
           post-steps:
+            - invoke-slack-step-complete
             - invoke-slack-status
       - slack-workflow-status:
           context: trafficinfo
           requires:
             - stepfunction-ci/upload-trigger-event
+          pre-steps:
+            - install-slack-status-prerequisites
+          post-steps:
+            - invoke-slack-step-complete
+            - invoke-slack-statuss
