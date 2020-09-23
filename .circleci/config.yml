@@ -80,7 +80,7 @@ workflows:
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
             - build-source
-          *slack-fail-post-step
+          *slack-fail-post-step:
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
@@ -89,7 +89,7 @@ workflows:
             - install-slack-status-prerequisites
           post-steps:
             - invoke-slack-status
-          *slack-fail-post-step
+          *slack-fail-post-step:
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
@@ -99,7 +99,7 @@ workflows:
               only: master
           requires:
             - build-source
-          *slack-fail-post-step
+          *slack-fail-post-step:
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -108,7 +108,7 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/build-repo-zip
-          *slack-fail-post-step
+          *slack-fail-post-step:
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -117,4 +117,4 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/upload-artifacts
-          *slack-fail-post-step
+          *slack-fail-post-step:
