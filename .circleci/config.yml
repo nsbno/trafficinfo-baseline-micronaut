@@ -72,11 +72,11 @@ workflows:
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
           post-steps:
-            - run:
-                name: "Add slack notifier prerequisites"
-                command: |
-                  apk add bash
-                  apk add curl
+#            - run:
+#                name: "Add slack notifier prerequisites"
+#                command: |
+#                  apk add bash
+#                  apk add curl
             - slack/notify:
                 message: "step done"
             - slack/status:
