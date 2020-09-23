@@ -62,6 +62,9 @@ workflows:
     jobs:
       - build-source:
           context: trafficinfo
+          post-steps:
+            - slack/notify:
+                message: "build-source done"
       - stepfunction-ci/build-docker:
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
@@ -72,13 +75,8 @@ workflows:
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
           post-steps:
-#            - run:
-#                name: "Add slack notifier prerequisites"
-#                command: |
-#                  apk add bash
-#                  apk add curl
             - slack/notify:
-                message: "step done"
+                message: "stepfunction-ci/validate-terraform done"
             - slack/status:
                 failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
                 fail_only: true
