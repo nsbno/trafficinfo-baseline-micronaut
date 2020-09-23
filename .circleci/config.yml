@@ -82,10 +82,6 @@ workflows:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
-          pre-steps:
-            - install-slack-status-prerequisites
-          post-steps:
-            - invoke-slack-status
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
