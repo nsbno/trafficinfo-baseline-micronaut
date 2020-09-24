@@ -69,12 +69,12 @@ orbs:
 
     jobs:
       ######################################
-      # Common build-source with gradle.
+      # Common build-gradle with gradle.
       # Does a default gradle build with standard settings.
       #
       # TODO
       # Should probably extract or parameterize checkout step.
-      build-source:
+      build-gradle:
         executor: gradleexecutor
         working_directory: /tmp/workspace
         steps:
@@ -156,7 +156,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - trafficinfo/build-source:
+      - trafficinfo/build-gradle:
           context: trafficinfo
           post-steps:
             - trafficinfo/invoke-slack-failure
@@ -165,7 +165,7 @@ workflows:
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
-            - trafficinfo/build-source
+            - trafficinfo/build-gradle
           post-steps:
             - trafficinfo/invoke-slack-failure:
                 install_dependencies: true
@@ -181,20 +181,20 @@ workflows:
           context: trafficinfo
           name_prefix: "trafficinfo"
           aws_repo_name: "trafficinfo-baseline-micronaut"
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
           requires:
-            - trafficinfo/build-source
+            - trafficinfo/build-gradle
           post-steps:
             - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
           requires:
             - stepfunction-ci/build-repo-zip
           post-steps:
