@@ -36,7 +36,17 @@ orbs:
               fail_only: true
 
       invoke-slack-success:
+        parameters:
+          install_dependencies:
+            description: >
+              Install bash and curl for use on Alpine image.
+            type: boolean
+            default: false
         steps:
+          - when:
+              condition: << parameters.install_dependencies >>
+              steps:
+                - install-slack-status-prerequisites
           - slack/notify:
               color: '#1CBF43'
               message: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
