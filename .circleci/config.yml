@@ -105,7 +105,6 @@ workflows:
       - trafficinfo/build-source:
           context: trafficinfo
           post-steps:
-            - trafficinfo/invoke-slack-success
             - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/build-docker:
@@ -114,8 +113,8 @@ workflows:
           requires:
             - trafficinfo/build-source
           post-steps:
-            - trafficinfo/invoke-slack-success
             - trafficinfo/invoke-slack-failure
+                install_dependencies: true
 
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
@@ -151,8 +150,7 @@ workflows:
           requires:
             - stepfunction-ci/build-repo-zip
           post-steps:
-            - slack/notify:
-                message: "stepfunction-ci/upload-artifacts done"
+            - trafficinfo/invoke-slack-failure
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
