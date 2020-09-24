@@ -22,46 +22,47 @@ orbs:
         docker:
           - image: gradle:6.3.0-jdk13
 
-    build-source:
-      executor: gradleexecutor
-      working_directory: /tmp/workspace
-      steps:
-        - checkout
-        # Download and cache dependencies
-        - restore_cache:
-            keys:
-              - v3-dependencies-{{ checksum "build.gradle.kts" }}
-              # fallback to using the latest cache if no exact match is found
-              - v3-dependencies-
-        - save_cache:
-            paths:
-              - /root/.gradle
-            key: v3-dependencies-{{ checksum "build.gradle.kts" }}
-        - run:
-            name: Build With Gradle
-            command: |
-              gradle clean test build jacocoTestReport sonar \
-              --no-daemon \
-              -Pversion="${CIRCLE_SHA1}" \
-              -Dsonar.host.url=$SONAR_URL \
-              -Dsonar.login=$SONAR_TOKEN \
-              -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
-        - persist_to_workspace:
-            root: ./
-            paths:
-              - build
-        - run:
-            name: Save test results
-            command: |
-              mkdir -p ~/test-results/junit/
-              find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
-            when: always
-        - store_test_results:
-            path: ~/test-results
-        - store_artifacts:
-            path: ~/test-results/junit
-        - store_artifacts:
-            path: build/reports/tests/test
+    jobs:
+      build-source:
+        executor: gradleexecutor
+        working_directory: /tmp/workspace
+        steps:
+          - checkout
+          # Download and cache dependencies
+          - restore_cache:
+              keys:
+                - v3-dependencies-{{ checksum "build.gradle.kts" }}
+                # fallback to using the latest cache if no exact match is found
+                - v3-dependencies-
+          - save_cache:
+              paths:
+                - /root/.gradle
+              key: v3-dependencies-{{ checksum "build.gradle.kts" }}
+          - run:
+              name: Build With Gradle
+              command: |
+                gradle clean test build jacocoTestReport sonar \
+                --no-daemon \
+                -Pversion="${CIRCLE_SHA1}" \
+                -Dsonar.host.url=$SONAR_URL \
+                -Dsonar.login=$SONAR_TOKEN \
+                -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
+          - persist_to_workspace:
+              root: ./
+              paths:
+                - build
+          - run:
+              name: Save test results
+              command: |
+                mkdir -p ~/test-results/junit/
+                find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+              when: always
+          - store_test_results:
+              path: ~/test-results
+          - store_artifacts:
+              path: ~/test-results/junit
+          - store_artifacts:
+              path: build/reports/tests/test
 
 
 jobs:
