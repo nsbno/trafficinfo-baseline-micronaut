@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  stepfunction-ci: vydev/ciorb@0.4.3
+  stepfunction-ci: vydev/ciorb@dev:update-docker-images
 
   # TODO
   # Move this code into our own ORB
@@ -167,8 +167,7 @@ workflows:
           requires:
             - trafficinfo/build-gradle
           post-steps:
-            - trafficinfo/invoke-slack-failure:
-                install_dependencies: true
+            - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
