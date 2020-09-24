@@ -12,11 +12,12 @@ orbs:
 
     commands:
       invoke-slack-failure:
-        install_dependencies:
-          description: >
-            Install bash and curl for use on Alpine image.
-          type: boolean
-          default: false
+        parameters:
+          install_dependencies:
+            description: >
+              Install bash and curl for use on Alpine image.
+            type: boolean
+            default: false
         steps:
           - when:
               condition: << parameters.install_dependencies >>
