@@ -2,53 +2,73 @@ version: 2.1
 orbs:
   slack: circleci/slack@3.4.2
   stepfunction-ci: vydev/ciorb@0.4.3
+  trafficinfo:
+    commands:
+      install-slack-status-prerequisites:
+        steps:
+          - run:
+              name: "Add slack notifier prerequisites"
+              command: |
+                apk add bash
+                apk add curl
+      invoke-slack-status:
+        steps:
+          - slack/status:
+              failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+              fail_only: true
+
+    executors:
+      gradleexecutor:
+        docker:
+          - image: gradle:6.3.0-jdk13
+
+    build-source:
+      executor: gradleexecutor
+      working_directory: /tmp/workspace
+      steps:
+        - checkout
+        # Download and cache dependencies
+        - restore_cache:
+            keys:
+              - v3-dependencies-{{ checksum "build.gradle.kts" }}
+              # fallback to using the latest cache if no exact match is found
+              - v3-dependencies-
+        - save_cache:
+            paths:
+              - /root/.gradle
+            key: v3-dependencies-{{ checksum "build.gradle.kts" }}
+        - run:
+            name: Build With Gradle
+            command: |
+              gradle clean test build jacocoTestReport sonar \
+              --no-daemon \
+              -Pversion="${CIRCLE_SHA1}" \
+              -Dsonar.host.url=$SONAR_URL \
+              -Dsonar.login=$SONAR_TOKEN \
+              -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
+        - persist_to_workspace:
+            root: ./
+            paths:
+              - build
+        - run:
+            name: Save test results
+            command: |
+              mkdir -p ~/test-results/junit/
+              find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+            when: always
+        - store_test_results:
+            path: ~/test-results
+        - store_artifacts:
+            path: ~/test-results/junit
+        - store_artifacts:
+            path: build/reports/tests/test
 
 
 jobs:
   # TODO
   # Move this code into our own ORB
   # https://github.com/nsbno/trafficinfo-orb
-  build-source:
-    docker:
-      - image:  gradle:6.3.0-jdk13
-    working_directory: /tmp/workspace
-    steps:
-      - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v3-dependencies-{{ checksum "build.gradle.kts" }}
-            # fallback to using the latest cache if no exact match is found
-            - v3-dependencies-
-      - save_cache:
-          paths:
-            - /root/.gradle
-          key: v3-dependencies-{{ checksum "build.gradle.kts" }}
-      - run:
-          name: Build With Gradle
-          command: |
-            gradle clean test build jacocoTestReport sonar \
-            --no-daemon \
-            -Pversion="${CIRCLE_SHA1}" \
-            -Dsonar.host.url=$SONAR_URL \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - build
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results/junit
-      - store_artifacts:
-          path: build/reports/tests/test
+
   slack-workflow-status:
     docker:
       - image: cimg/base:stable
@@ -61,7 +81,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build-source:
+      - trafficinfo/build-source:
           context: trafficinfo
           post-steps:
             - slack/notify:
@@ -113,3 +133,4 @@ workflows:
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
+      - trafficinfo/slack-workflow-status
