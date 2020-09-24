@@ -107,7 +107,7 @@ workflows:
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
-            - build-source
+            - trafficinfo/build-source
           post-steps:
             - trafficinfo/invoke-slack-success
             - trafficinfo/invoke-slack-failure
@@ -127,7 +127,7 @@ workflows:
 #            branches:
 #              only: master
           requires:
-            - build-source
+            - trafficinfo/build-source
           post-steps:
             - slack/notify:
                 message: "stepfunction-ci/build-repo-zip done"
