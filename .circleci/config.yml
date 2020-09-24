@@ -113,7 +113,7 @@ workflows:
           requires:
             - trafficinfo/build-source
           post-steps:
-            - trafficinfo/invoke-slack-failure
+            - trafficinfo/invoke-slack-failure:
                 install_dependencies: true
 
       - stepfunction-ci/validate-terraform:
