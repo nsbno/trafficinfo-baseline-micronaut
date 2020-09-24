@@ -108,7 +108,6 @@ orbs:
             type: string
         steps:
           - invoke-slack-failure:
-              install_dependencies: << parameters.install_dependencies >>
               message: << parameters.message >>
 
       ######################################
@@ -123,7 +122,6 @@ orbs:
             type: string
         steps:
           - invoke-slack-success:
-              install_dependencies: << parameters.install_dependencies >>
               message: << parameters.message >>
 
 workflows:
