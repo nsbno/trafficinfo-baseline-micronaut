@@ -151,4 +151,3 @@ workflows:
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
-      - trafficinfo/slack-notify-success
