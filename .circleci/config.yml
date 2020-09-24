@@ -14,13 +14,13 @@ orbs:
               command: |
                 apk add bash
                 apk add curl
-      invoke-slack-status:
+      invoke-slack-failure:
         steps:
           - slack/status:
               failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
               fail_only: true
 
-      invoke-slack-notify:
+      invoke-slack-success:
         steps:
           - slack/notify:
               color: '#1CBF43'
@@ -79,13 +79,13 @@ orbs:
         docker:
           - image: cimg/base:stable
         steps:
-          - invoke-slack-status
+          - invoke-slack-failure
 
       slack-notify-success:
         docker:
           - image: cimg/base:stable
         steps:
-          - invoke-slack-notify
+          - invoke-slack-success
 
 jobs:
   # TODO
@@ -107,8 +107,8 @@ workflows:
           requires:
             - build-source
           post-steps:
-            - trafficinfo/slack-notify-success
-            - trafficinfo/slack-notify-failure
+            - trafficinfo/invoke-slack-success
+            - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
