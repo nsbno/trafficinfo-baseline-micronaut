@@ -26,13 +26,18 @@ orbs:
               Install bash and curl for use on Alpine image.
             type: boolean
             default: false
+          message:
+            description: >
+              Message to send on failure.
+            type: string
+            default: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
         steps:
           - when:
               condition: << parameters.install_dependencies >>
               steps:
               - install-slack-status-prerequisites
           - slack/status:
-              failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+              failure_message:  << parameters.message >>
               fail_only: true
 
       invoke-slack-success:
@@ -42,6 +47,11 @@ orbs:
               Install bash and curl for use on Alpine image.
             type: boolean
             default: false
+          message:
+            description: >
+              Message to send on failure.
+            type: string
+            default: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
         steps:
           - when:
               condition: << parameters.install_dependencies >>
@@ -49,7 +59,7 @@ orbs:
                 - install-slack-status-prerequisites
           - slack/notify:
               color: '#1CBF43'
-              message: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+              message: << parameters.message >>
               include_visit_job_action: false
 
 
@@ -103,14 +113,35 @@ orbs:
       slack-notify-failure:
         docker:
           - image: cimg/base:stable
+        parameters:
+          install_dependencies:
+            description: Install bash and curl for use on Alpine image.
+            type: boolean
+            default: false
+          message:
+            description: Message to send on failure.
+            type: string
         steps:
-          - invoke-slack-failure
+          - invoke-slack-failure:
+              install_dependencies: << parameters.install_dependencies >>
+              message: << parameters.message >>
 
       slack-notify-success:
         docker:
           - image: cimg/base:stable
+        parameters:
+          install_dependencies:
+            description: Install bash and curl for use on Alpine image.
+            type: boolean
+            default: false
+          message:
+            description: Message to send on failure.
+            type: string
         steps:
-          - invoke-slack-success
+          - invoke-slack-success:
+              install_dependencies: << parameters.install_dependencies >>
+              message: << parameters.message >>
+
 
 workflows:
   version: 2
@@ -140,6 +171,7 @@ workflows:
 
       - trafficinfo/slack-notify-success:
           context: trafficinfo
+          message: "Terraform code was valid"
           requires:
             - stepfunction-ci/validate-terraform
 
