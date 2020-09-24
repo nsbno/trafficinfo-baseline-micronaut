@@ -100,7 +100,9 @@ workflows:
       - trafficinfo/build-source:
           context: trafficinfo
           post-steps:
-            - trafficinfo/slack-notify-success
+            - trafficinfo/invoke-slack-success
+            - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/build-docker:
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
