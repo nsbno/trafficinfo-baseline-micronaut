@@ -126,6 +126,7 @@ workflows:
                 message: "stepfunction-ci/validate-terraform done"
 
       - trafficinfo/slack-notify-success:
+          context: trafficinfo
           requires:
             - stepfunction-ci/validate-terraform
 
