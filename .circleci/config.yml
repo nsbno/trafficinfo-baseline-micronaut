@@ -180,6 +180,7 @@ workflows:
           context: trafficinfo
           name_prefix: "trafficinfo"
           aws_repo_name: "trafficinfo-baseline-micronaut"
+          s3_bucket_name: "929368261477-pipeline-artifact"
           filters:
             branches:
               only: master
