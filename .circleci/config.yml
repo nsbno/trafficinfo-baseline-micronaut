@@ -1,6 +1,5 @@
 version: 2.1
 orbs:
-  slack: circleci/slack@3.4.2
   stepfunction-ci: vydev/ciorb@0.4.3
 
   # TODO
@@ -114,6 +113,10 @@ orbs:
           - store_artifacts:
               path: build/reports/tests/test
 
+      ######################################
+      # Common workflow job for sending a notification on workflow failure.
+      # This workflow job won't send anything if the pipeline status is not failed.
+      #
       slack-notify-failure:
         docker:
           - image: cimg/base:stable
@@ -130,6 +133,9 @@ orbs:
               install_dependencies: << parameters.install_dependencies >>
               message: << parameters.message >>
 
+      ######################################
+      # Common workflow job for sending a notification to slack.
+      #
       slack-notify-success:
         docker:
           - image: cimg/base:stable
@@ -161,7 +167,7 @@ workflows:
           requires:
             - trafficinfo/build-source
           post-steps:
-            - trafficinfo/invoke-slack-failure
+            - trafficinfo/invoke-slack-failure:
                 install_dependencies: true
 
       - stepfunction-ci/validate-terraform:
@@ -208,7 +214,7 @@ workflows:
 
       - trafficinfo/slack-notify-success:
           context: trafficinfo
-          message: ":sunglasses: :thumbsup: Uploaded trigger event for pipeline for version"
+          message: ":sunglasses: :thumbsup: Uploaded pipeline trigger event for $CIRCLE_PROJECT_REPONAME version $CIRCLE_SHA1."
           requires:
             - stepfunction-ci/upload-trigger-event
 
