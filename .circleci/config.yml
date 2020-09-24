@@ -2,6 +2,10 @@ version: 2.1
 orbs:
   slack: circleci/slack@3.4.2
   stepfunction-ci: vydev/ciorb@0.4.3
+
+  # TODO
+  # Move this code into our own ORB
+  # https://github.com/nsbno/trafficinfo-orb
   trafficinfo:
     orbs:
       slack: circleci/slack@3.4.2
@@ -87,12 +91,6 @@ orbs:
         steps:
           - invoke-slack-success
 
-jobs:
-  # TODO
-  # Move this code into our own ORB
-  # https://github.com/nsbno/trafficinfo-orb
-
-
 workflows:
   version: 2
   build-and-deploy:
@@ -119,6 +117,11 @@ workflows:
           post-steps:
             - slack/notify:
                 message: "stepfunction-ci/validate-terraform done"
+
+      - trafficinfo/slack-notify-success:
+          requires:
+            - stepfunction-ci/validate-terraform
+
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
