@@ -20,32 +20,18 @@ orbs:
 
       invoke-slack-failure:
         parameters:
-          install_dependencies:
-            description: >
-              Install bash and curl for use on Alpine image.
-            type: boolean
-            default: false
           message:
             description: >
               Message to send on failure.
             type: string
             default: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
         steps:
-          - when:
-              condition: << parameters.install_dependencies >>
-              steps:
-              - install-slack-status-prerequisites
           - slack/status:
               failure_message:  << parameters.message >>
               fail_only: true
 
       invoke-slack-success:
         parameters:
-          install_dependencies:
-            description: >
-              Install bash and curl for use on Alpine image.
-            type: boolean
-            default: false
           message:
             description: >
               Message to send on failure.
@@ -121,10 +107,6 @@ orbs:
         docker:
           - image: cimg/base:stable
         parameters:
-          install_dependencies:
-            description: Install bash and curl for use on Alpine image.
-            type: boolean
-            default: false
           message:
             description: Message to send on failure.
             type: string
@@ -140,10 +122,6 @@ orbs:
         docker:
           - image: cimg/base:stable
         parameters:
-          install_dependencies:
-            description: Install bash and curl for use on Alpine image.
-            type: boolean
-            default: false
           message:
             description: Message to send on failure.
             type: string
