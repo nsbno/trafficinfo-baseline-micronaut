@@ -64,20 +64,20 @@ orbs:
           - store_artifacts:
               path: build/reports/tests/test
 
-
+      slack-workflow-status:
+        docker:
+          - image: cimg/base:stable
+        steps:
+          - slack/notify:
+              color: '#1CBF43'
+              message: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+              include_visit_job_action: false
 jobs:
   # TODO
   # Move this code into our own ORB
   # https://github.com/nsbno/trafficinfo-orb
 
-  slack-workflow-status:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - slack/notify:
-          color: '#1CBF43'
-          message: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
-          include_visit_job_action: false
+
 workflows:
   version: 2
   build-and-deploy:
