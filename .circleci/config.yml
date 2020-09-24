@@ -69,16 +69,20 @@ orbs:
           - image: gradle:6.3.0-jdk13
 
     jobs:
+      ######################################
+      # Common build-source with gradle.
+      # Does a default gradle build with standard settings.
+      #
+      # TODO
+      # Should probably extract or parameterize checkout step.
       build-source:
         executor: gradleexecutor
         working_directory: /tmp/workspace
         steps:
           - checkout
-          # Download and cache dependencies
           - restore_cache:
               keys:
                 - v3-dependencies-{{ checksum "build.gradle.kts" }}
-                # fallback to using the latest cache if no exact match is found
                 - v3-dependencies-
           - save_cache:
               paths:
@@ -142,7 +146,6 @@ orbs:
               install_dependencies: << parameters.install_dependencies >>
               message: << parameters.message >>
 
-
 workflows:
   version: 2
   build-and-deploy:
@@ -158,7 +161,7 @@ workflows:
           requires:
             - trafficinfo/build-source
           post-steps:
-            - trafficinfo/invoke-slack-failure:
+            - trafficinfo/invoke-slack-failure
                 install_dependencies: true
 
       - stepfunction-ci/validate-terraform:
@@ -166,14 +169,7 @@ workflows:
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
           post-steps:
-            - slack/notify:
-                message: "stepfunction-ci/validate-terraform done"
-
-      - trafficinfo/slack-notify-success:
-          context: trafficinfo
-          message: "Terraform code was valid"
-          requires:
-            - stepfunction-ci/validate-terraform
+            - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
@@ -185,8 +181,8 @@ workflows:
           requires:
             - trafficinfo/build-source
           post-steps:
-            - slack/notify:
-                message: "stepfunction-ci/build-repo-zip done"
+            - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -197,6 +193,7 @@ workflows:
             - stepfunction-ci/build-repo-zip
           post-steps:
             - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -206,3 +203,12 @@ workflows:
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
+          post-steps:
+            - trafficinfo/invoke-slack-failure
+
+      - trafficinfo/slack-notify-success:
+          context: trafficinfo
+          message: ":sunglasses: :thumbsup: Uploaded trigger event for pipeline for version"
+          requires:
+            - stepfunction-ci/upload-trigger-event
+
