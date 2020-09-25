@@ -1,111 +1,166 @@
 version: 2.1
 orbs:
-  slack: circleci/slack@3.4.2
-  stepfunction-ci: vydev/ciorb@0.4.3
-commands:
-  install-slack-status-prerequisites:
-    steps:
-      - run:
-          name: "Add slack notifier prerequisites"
-          command: |
-            apk add bash
-            apk add curl
-  invoke-slack-status:
-    steps:
-      - slack/status:
-          failure_message: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
-          fail_only: true
-jobs:
+  stepfunction-ci: vydev/ciorb@dev:1.0.1
+
   # TODO
   # Move this code into our own ORB
   # https://github.com/nsbno/trafficinfo-orb
-  build-source:
-    docker:
-      - image:  gradle:6.3.0-jdk13
-    working_directory: /tmp/workspace
-    steps:
-      - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v3-dependencies-{{ checksum "build.gradle.kts" }}
-            # fallback to using the latest cache if no exact match is found
-            - v3-dependencies-
-      - save_cache:
-          paths:
-            - /root/.gradle
-          key: v3-dependencies-{{ checksum "build.gradle.kts" }}
-      - run:
-          name: Build With Gradle
-          command: |
-            gradle clean test build jacocoTestReport sonar \
-            --no-daemon \
-            -Pversion="${CIRCLE_SHA1}" \
-            -Dsonar.host.url=$SONAR_URL \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - build
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
-          when: always
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-results/junit
-      - store_artifacts:
-          path: build/reports/tests/test
-  slack-workflow-status:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - slack/notify:
-          color: '#1CBF43'
-          message: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
-          include_visit_job_action: false
+  trafficinfo:
+    orbs:
+      slack: circleci/slack@3.4.2
+
+    commands:
+      install-slack-status-prerequisites:
+        steps:
+          - run:
+              name: "Add slack notifier prerequisites"
+              command: |
+                apk add bash
+                apk add curl
+
+      invoke-slack-failure:
+        parameters:
+          message:
+            description: >
+              Message to send on failure.
+            type: string
+            default: ":boom: :point_right: Failure $CIRCLE_JOB job failed for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+        steps:
+          - slack/status:
+              failure_message:  << parameters.message >>
+              fail_only: true
+
+      invoke-slack-success:
+        parameters:
+          message:
+            description: >
+              Message to send on success.
+            type: string
+            default: ":sunglasses: :thumbsup: Success workflow in job $CIRCLE_BUILD_URL for project $CIRCLE_PROJECT_REPONAME ($CIRCLE_BRANCH)"
+        steps:
+          - slack/notify:
+              color: '#1CBF43'
+              message: << parameters.message >>
+              include_visit_job_action: false
+
+
+    executors:
+      gradleexecutor:
+        docker:
+          - image: gradle:6.3.0-jdk13
+
+    jobs:
+      ######################################
+      # Common build-gradle with gradle.
+      # Does a default gradle build with standard settings.
+      #
+      # TODO
+      # Should probably extract or parameterize checkout step.
+      build-gradle:
+        executor: gradleexecutor
+        working_directory: /tmp/workspace
+        steps:
+          - checkout
+          - restore_cache:
+              keys:
+                - v3-dependencies-{{ checksum "build.gradle.kts" }}
+                - v3-dependencies-
+          - save_cache:
+              paths:
+                - /root/.gradle
+              key: v3-dependencies-{{ checksum "build.gradle.kts" }}
+          - run:
+              name: Build With Gradle
+              command: |
+                gradle clean test build jacocoTestReport sonar \
+                --no-daemon \
+                -Pversion="${CIRCLE_SHA1}" \
+                -Dsonar.host.url=$SONAR_URL \
+                -Dsonar.login=$SONAR_TOKEN \
+                -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
+          - persist_to_workspace:
+              root: ./
+              paths:
+                - build
+          - run:
+              name: Save test results
+              command: |
+                mkdir -p ~/test-results/junit/
+                find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+              when: always
+          - store_test_results:
+              path: ~/test-results
+          - store_artifacts:
+              path: ~/test-results/junit
+          - store_artifacts:
+              path: build/reports/tests/test
+
+      ######################################
+      # Common workflow job for sending a notification on workflow failure.
+      # This workflow job won't send anything if the pipeline status is not failed.
+      #
+      slack-notify-failure:
+        docker:
+          - image: cimg/base:stable
+        parameters:
+          message:
+            description: Message to send on failure.
+            type: string
+        steps:
+          - invoke-slack-failure:
+              message: << parameters.message >>
+
+      ######################################
+      # Common workflow job for sending a notification to slack.
+      #
+      slack-notify-success:
+        docker:
+          - image: cimg/base:stable
+        parameters:
+          message:
+            description: Message to send on failure.
+            type: string
+        steps:
+          - invoke-slack-success:
+              message: << parameters.message >>
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build-source:
+      - trafficinfo/build-gradle:
           context: trafficinfo
           post-steps:
-            - invoke-slack-status
+            - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/build-docker:
           context: trafficinfo
           ecr_repo_name: "trafficinfo-baseline-micronaut"
           requires:
-            - build-source
-          pre-steps:
-            - install-slack-status-prerequisites
+            - trafficinfo/build-gradle
           post-steps:
-            - invoke-slack-status
+            - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.29
           envs: "service, test, stage, prod"
-          pre-steps:
-            - install-slack-status-prerequisites
           post-steps:
-            - invoke-slack-status
+            - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           name_prefix: "trafficinfo"
           aws_repo_name: "trafficinfo-baseline-micronaut"
+          s3_bucket_name: "929368261477-pipeline-artifact"
           filters:
             branches:
               only: master
           requires:
-            - build-source
-          pre-steps:
-            - install-slack-status-prerequisites
+            - trafficinfo/build-gradle
           post-steps:
-            - invoke-slack-status
+            - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -114,10 +169,9 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/build-repo-zip
-          pre-steps:
-            - install-slack-status-prerequisites
           post-steps:
-            - invoke-slack-status
+            - trafficinfo/invoke-slack-failure
+
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name: "929368261477-pipeline-artifact"
@@ -125,12 +179,17 @@ workflows:
             branches:
               only: master
           requires:
+            - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
-          pre-steps:
-            - install-slack-status-prerequisites
           post-steps:
-            - invoke-slack-status
-      - slack-workflow-status:
+            - trafficinfo/invoke-slack-failure
+
+      - trafficinfo/slack-notify-success:
           context: trafficinfo
+          message: ":sunglasses: :thumbsup: Uploaded pipeline trigger event for $CIRCLE_PROJECT_REPONAME version $CIRCLE_SHA1."
           requires:
             - stepfunction-ci/upload-trigger-event
+
+
+
+
