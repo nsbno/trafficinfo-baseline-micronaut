@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  stepfunction-ci: vydev/ciorb@dev:update-docker-images
+  stepfunction-ci: vydev/ciorb@dev:1.0.1
 
   # TODO
   # Move this code into our own ORB
