@@ -99,7 +99,7 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.814")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     /**
