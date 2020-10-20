@@ -10,7 +10,7 @@ plugins {
     kotlin("kapt")
     id("org.jetbrains.kotlin.plugin.allopen")
 
-    id("com.github.johnrengelman.shadow") version "6.0.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("org.sonarqube") version "3.0"
