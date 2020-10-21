@@ -1,4 +1,19 @@
 version: 2.1
+# Local parameters can be used to avoid repetitive values (referenced as `<< pipeline.parameters.parameter-name >>`)
+parameters:
+  s3_bucket_name:
+    type: string
+    default: "929368261477-pipeline-artifact"
+  name_prefix:
+    type: string
+    default: "trafficinfo-baseline-micronaut"
+  aws_repo_name:
+    type: string
+    default: "trafficinfo-baseline-micronaut"
+  ecr_repo_name:
+    type: string
+    default: "trafficinfo-baseline-micronaut"
+
 orbs:
   stepfunction-ci: vydev/ciorb@dev:1.0.1
 
@@ -135,7 +150,7 @@ workflows:
 
       - stepfunction-ci/build-docker:
           context: trafficinfo
-          ecr_repo_name: "trafficinfo-baseline-micronaut"
+          ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
           requires:
             - trafficinfo/build-gradle
           post-steps:
@@ -150,9 +165,9 @@ workflows:
 
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
-          name_prefix: "trafficinfo-baseline-micronaut"
-          aws_repo_name: "trafficinfo-baseline-micronaut"
-          s3_bucket_name: "929368261477-pipeline-artifact"
+          name_prefix:  << pipeline.parameters.name_prefix >>
+          aws_repo_name:   << pipeline.parameters.aws_repo_name >>
+          s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
           filters:
             branches:
               only: master
@@ -163,7 +178,7 @@ workflows:
 
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
-          s3_bucket_name: "929368261477-pipeline-artifact"
+          s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
           filters:
             branches:
               only: master
@@ -174,7 +189,7 @@ workflows:
 
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
-          s3_bucket_name: "929368261477-pipeline-artifact"
+          s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
           filters:
             branches:
               only: master
