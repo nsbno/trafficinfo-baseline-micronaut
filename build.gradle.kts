@@ -10,7 +10,7 @@ plugins {
     kotlin("kapt")
     id("org.jetbrains.kotlin.plugin.allopen")
 
-    id("com.github.johnrengelman.shadow") version "6.0.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("org.sonarqube") version "3.0"
@@ -111,9 +111,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
-    testImplementation("org.assertj:assertj-core:3.17.1")
+    testImplementation("org.assertj:assertj-core:3.17.2")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.0")
+    testImplementation("io.mockk:mockk:1.10.2")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
