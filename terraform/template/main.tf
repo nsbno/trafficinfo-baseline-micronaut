@@ -24,7 +24,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=d87d9d8/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=154aea3/ecs-microservice"
   application-config = "" # Not being used by anything
   ecs_cluster = {
     id   = local.shared_config.ecs_cluster_id
@@ -36,7 +36,7 @@ module "ecs-microservice" {
   current_account      = local.current_account_id
   service_name         = var.application_name
   service_port         = 8080
-  task_container_image = "${local.service_account_id}.dkr.ecr.${local.current_region}.amazonaws.com/${var.name_prefix}-${var.application_name}:${data.aws_ssm_parameter.version.value}-SHA1"
+  task_container_image = "${local.service_account_id}.dkr.ecr.${local.current_region}.amazonaws.com/${var.name_prefix}-${var.application_name}:${var.task_container_image}"
   task_container_port  = 8080
   vpc = {
     private_subnet_ids = local.shared_config.private_subnet_ids
@@ -77,6 +77,8 @@ module "ecs-microservice" {
   # Cognito user pool to create resources in.
   user_pool_id = local.shared_config.user_pool_id
 
+  cognito_resource_server_identifier_base = "https://services.${local.shared_config.hosted_zone_name}"
+
   # Enabled to create a resource server for the microservice in Cognito.
   create_resource_server = 1
 
@@ -101,10 +103,9 @@ module "ecs-microservice" {
     "https://services.${local.shared_config.hosted_zone_name}/whoami/read",
     "https://services.${local.shared_config.hosted_zone_name}/${var.application_name}/read"
   ]
-}
 
-data "aws_ssm_parameter" "version" {
-  name = "/${var.name_prefix}/${var.name_prefix}-${var.application_name}"
+  enable_elasticcloud = true
+  lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
 }
 
 # TODO: Resources from `trafficinfo-aws/terraform/modules/template/{kernel-kms.tf,svc-baseline.tf}`
