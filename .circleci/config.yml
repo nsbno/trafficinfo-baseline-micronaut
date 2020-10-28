@@ -158,7 +158,7 @@ workflows:
 
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
-          terraformimage: vydev/terraform:0.12.29
+          terraformimage: vydev/terraform:0.12.24
           envs: "service, test, stage, prod"
           post-steps:
             - trafficinfo/invoke-slack-failure
