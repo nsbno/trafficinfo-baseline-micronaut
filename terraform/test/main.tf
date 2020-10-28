@@ -1,6 +1,6 @@
 # TODO replace all <placeholders>
 terraform {
-  required_version = ">= 0.12.23"
+  required_version = "= 0.12.24"
 
   backend "s3" {
     key            = "trafficinfo-baseline-micronaut/main.tfstate"
@@ -24,10 +24,15 @@ locals {
   application_name = "baseline-micronaut"
 }
 
+data "aws_ssm_parameter" "version" {
+  name = "/${local.name_prefix}/${local.name_prefix}-${local.application_name}"
+}
+
 module "trafficinfo-baseline-micronaut" {
   source           = "../template"
   name_prefix      = local.name_prefix
   application_name = local.application_name
+  task_container_image = "${data.aws_ssm_parameter.version.value}-SHA1"
   tags = {
     terraform   = "true"
     environment = "test"
