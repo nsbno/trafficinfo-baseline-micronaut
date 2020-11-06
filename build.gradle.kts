@@ -78,7 +78,7 @@ dependencies {
     implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
-    implementation("io.micronaut.aws:micronaut-aws-parameter-store:$micronautVersion")
+    implementation("io.micronaut.aws:micronaut-aws-parameter-store:2.2.2")
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
