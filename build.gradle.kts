@@ -111,7 +111,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
-    testImplementation("org.assertj:assertj-core:3.18.0")
+    testImplementation("org.assertj:assertj-core:3.18.1")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
     testImplementation("io.mockk:mockk:1.10.2")
 
