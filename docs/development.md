@@ -49,7 +49,7 @@ No known issues
 ### Micronaut 2.1 to 2.2
 TODO anything found?
 
-### Code Linting
+## Code Linting
 Code linting is done with ktlint and a gradle plugin running the linting when building the code.
 There should be a commit hook checking the code on pre-commit so that you cant commit code that 
 does not satisfy linting rules. When detecting lint errors, auto-format the code to match ktlint 
