@@ -13,3 +13,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "task_container_image" {
+  description = "The name of the container image that should be deployed"
+  type        = string
+}

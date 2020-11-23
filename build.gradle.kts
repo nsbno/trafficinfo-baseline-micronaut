@@ -78,7 +78,7 @@ dependencies {
     implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
-    implementation("io.micronaut.aws:micronaut-aws-parameter-store:$micronautVersion")
+    implementation("io.micronaut.aws:micronaut-aws-parameter-store:2.2.2")
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -96,7 +96,7 @@ dependencies {
     /**
      * Third-party dependencies.
      */
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.876")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.892")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
