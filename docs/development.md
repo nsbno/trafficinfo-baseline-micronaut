@@ -33,9 +33,18 @@ Start the main class by right click on it, should start without any special conf
 Run `./gradlew assemble` and it will package the application into a runnable jar. 
 Output is in `build/libs/baseline.jar`
 
-## Migration Micronaut 1.3 to 2.0
+
+## Upgrade Micronaut to new versions
+### Micronaut 1.3 to 2.0
 Most changes need to be done is to update dependency versions and renamed artifacts.
-Only minor changes need to be done in kotlin code. 
+They have restructured packages and moved to new packages.
+TODO: add examples of renamed packages.
+
+### Micronaut 2.0 to 2.1 
+No known issues
+
+### Micronaut 2.1 to 2.2
+TODO anything found?
 
 ### Code Linting
 Code linting is done with ktlint and a gradle plugin running the linting when building the code.
