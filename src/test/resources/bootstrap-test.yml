@@ -1,6 +1,10 @@
 # Disable some cloud stuff when running tests
 micronaut:
   metrics:
-    enabled: false
+    export:
+      logging:
+        enabled: true
+      cloudwatch:
+        enabled: false
   config-client:
     enabled: false

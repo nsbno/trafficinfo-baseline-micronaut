@@ -4,25 +4,7 @@ micronaut:
   config-client:
     enabled: true
 
-  # Disable most metric classe to save costs in CloudWatch.
   metrics:
-    enabled: false
-    binders:
-      processor:
-        enabled: false
-      files:
-        enabled: false
-      logback:
-        enabled: true
-      jdbc:
-        enabled: false
-      jvm:
-        enabled: false
-      http:
-        enabled: false
-      web:
-        enabled: true
-
     # "Disables" client metrics by setting path to an unused path
     http:
       client:
@@ -30,7 +12,6 @@ micronaut:
 
     export:
       cloudwatch:
-        enabled: true
         namespace: trafficinfo-baseline-micronaut
         batchSize: 10
 
