@@ -38,7 +38,10 @@ Output is in `build/libs/baseline.jar`
 ### Micronaut 1.3 to 2.0
 Most changes need to be done is to update dependency versions and renamed artifacts.
 They have restructured packages and moved to new packages.
+
 TODO: add examples of renamed packages.
+Examples of dependencies that have been moved
+* io.micronaut.aws:micronaut-aws-parameter-store
 
 ### Micronaut 2.0 to 2.1 
 No known issues
