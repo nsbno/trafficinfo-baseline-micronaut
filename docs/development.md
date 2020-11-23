@@ -47,7 +47,13 @@ Examples of dependencies that have been moved
 No known issues
 
 ### Micronaut 2.1 to 2.2
-TODO anything found?
+Add new configuration
+```
+micronaut:
+  caches:
+    discovery-client:
+      enabled: false
+```
 
 ## Code Linting
 Code linting is done with ktlint and a gradle plugin running the linting when building the code.
