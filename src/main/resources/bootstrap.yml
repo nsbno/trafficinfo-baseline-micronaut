@@ -4,9 +4,8 @@ micronaut:
   application:
     name: baseline-micronaut
 
-  # metrics only enabled in cloud environment
   metrics:
-    enabled: false
+    enabled: true
 
   # distributed config only enabled in cloud environment
   config-client:
