@@ -1,0 +1,8 @@
+# See description of CODEOWNERS file at
+# https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/about-code-owners
+#
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence.
+* @dniel @EirikRogno @stian-hundhammer @larskraa @geirbye
+
+# EOF
