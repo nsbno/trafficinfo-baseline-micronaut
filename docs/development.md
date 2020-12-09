@@ -35,6 +35,9 @@ Output is in `build/libs/baseline.jar`
 
 
 ## Upgrade Micronaut to new versions
+See official docs for breaking changes
+https://docs.micronaut.io/latest/guide/index.html#breaks
+
 ### Micronaut 1.3 to 2.0
 Most changes need to be done is to update dependency versions and renamed artifacts.
 They have restructured packages and moved to new packages.
