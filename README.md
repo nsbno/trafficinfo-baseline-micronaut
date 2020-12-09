@@ -58,5 +58,3 @@ AWS_SECRET_ACCESS_KEY
     2. In CircleCI, Add the slack webhook-url to Circle CI for build notifications by going to project settings and "Slack Integration"
 
 5. Update with correct project naming in all the terraform/\<ENVIRONMENT>/main.tf files.
-
-
