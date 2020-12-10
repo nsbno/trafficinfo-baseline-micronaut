@@ -113,7 +113,7 @@ dependencies {
 
     testImplementation("org.assertj:assertj-core:3.18.0")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.2")
+    testImplementation("io.mockk:mockk:1.10.3")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
