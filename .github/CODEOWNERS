@@ -1,8 +1,7 @@
-# See description of CODEOWNERS file at
-# https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/about-code-owners
+####
+# Format of this file is described here https://docs.github.com/articles/about-codeowners
 #
-# These owners will be the default owners for everything in
-# the repo. Unless a later match takes precedence.
-* @dniel @EirikRogno @stian-hundhammer @larskraa @geirbye
-
-# EOF
+###
+#
+# Default is that Trafficinfo-Owners need to be added to all PRs.
+* @nsbno/trafficinfo-owners
