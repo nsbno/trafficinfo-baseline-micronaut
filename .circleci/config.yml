@@ -62,7 +62,7 @@ orbs:
     executors:
       gradleexecutor:
         docker:
-          - image: gradle:6.3.0-jdk13
+          - image: gradle:6.7.1-jdk15
 
     jobs:
       ######################################
