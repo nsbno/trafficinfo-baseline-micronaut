@@ -4,7 +4,7 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.runtime.server.EmbeddedServer
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertNotNull
