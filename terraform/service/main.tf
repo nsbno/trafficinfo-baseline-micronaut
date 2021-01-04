@@ -14,11 +14,11 @@ terraform {
 }
 
 provider "archive" {
-  version = "~> 1.3"
+  version = "~> 2.0"
 }
 
 provider "aws" {
-  version             = "2.70.0"
+  version             = "3.21.0"
   region              = "eu-west-1"
   allowed_account_ids = ["929368261477"]
 }

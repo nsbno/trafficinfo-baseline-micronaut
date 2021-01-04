@@ -35,22 +35,19 @@ Output is in `build/libs/baseline.jar`
 
 
 ## Upgrade Micronaut to new versions
-See official docs for breaking changes
+See official docs of breaking changes
 https://docs.micronaut.io/latest/guide/index.html#breaks
 
 ### Micronaut 1.3 to 2.0
-Most changes need to be done is to update dependency versions and renamed artifacts.
-They have restructured packages and moved to new packages.
-
-TODO: add examples of renamed packages.
-Examples of dependencies that have been moved
-* io.micronaut.aws:micronaut-aws-parameter-store
+Quite a lot changes to dependencies and also possible code changes needed when upgrading.
+It ususally works without serious trouble if all dependenies has been updated to new groups.
+https://docs.micronaut.io/2.0.0/guide/index.html#upgrading
 
 ### Micronaut 2.0 to 2.1 
-No known issues
+Simple upgrade with just minor changes needed, https://docs.micronaut.io/2.1.0/guide/index.html#upgrading
 
 ### Micronaut 2.1 to 2.2
-TODO anything found?
+Also very simple upgrade, https://docs.micronaut.io/2.2.0/guide/index.html#upgrading
 
 ## Code Linting
 Code linting is done with ktlint and a gradle plugin running the linting when building the code.

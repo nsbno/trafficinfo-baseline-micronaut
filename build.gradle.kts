@@ -78,7 +78,7 @@ dependencies {
     implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
-    implementation("io.micronaut.aws:micronaut-aws-parameter-store:2.2.2")
+    implementation("io.micronaut.aws:micronaut-aws-parameter-store:2.2.4")
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -99,7 +99,7 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.892")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     /**
@@ -111,9 +111,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
-    testImplementation("org.assertj:assertj-core:3.18.0")
+    testImplementation("org.assertj:assertj-core:3.18.1")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.2")
+    testImplementation("io.mockk:mockk:1.10.3")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
@@ -131,6 +131,10 @@ subprojects {
     ktlint {
         debug.set(true)
     }
+}
+
+jacoco {
+    toolVersion = "0.8.6"
 }
 
 tasks {
