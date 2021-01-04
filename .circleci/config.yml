@@ -166,8 +166,6 @@ workflows:
 
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
-          name_prefix:  << pipeline.parameters.name_prefix >>
-          aws_repo_name:   << pipeline.parameters.aws_repo_name >>
           s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
           filters:
             branches:
