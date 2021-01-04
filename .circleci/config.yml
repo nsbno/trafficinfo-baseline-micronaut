@@ -30,7 +30,7 @@ workflows:
           ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
           requires:
             - trafficinfo/gradle-build
-         post-steps:
+          post-steps:
            - trafficinfo/slack-failure
 
       - stepfunction-ci/validate-terraform:
