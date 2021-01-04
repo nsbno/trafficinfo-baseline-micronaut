@@ -15,7 +15,7 @@ parameters:
     default: "trafficinfo-baseline-micronaut"
 
 orbs:
-  stepfunction-ci: vydev/ciorb@dev:1.0.1
+  stepfunction-ci: vydev/ciorb@2.0.3
 
   # TODO
   # Move this code into our own ORB
@@ -143,6 +143,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
+      - stepfunction-ci/timestamp
       - trafficinfo/build-gradle:
           context: trafficinfo
           post-steps:
@@ -196,6 +197,7 @@ workflows:
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
+            - stepfunction-ci/timestamp
           post-steps:
             - trafficinfo/invoke-slack-failure
 
