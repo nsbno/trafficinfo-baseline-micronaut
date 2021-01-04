@@ -22,17 +22,23 @@ workflows:
       - stepfunction-ci/timestamp
       - trafficinfo/gradle-build:
           context: trafficinfo
+#          post-steps:
+#            - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/build-docker:
           context: trafficinfo
           ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
           requires:
             - trafficinfo/build-gradle
+#         post-steps:
+#           - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/validate-terraform:
           context: trafficinfo
           terraformimage: vydev/terraform:0.12.24
           envs: "service, test, stage, prod"
+#          post-steps:
+#            - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
@@ -42,6 +48,8 @@ workflows:
               only: master
           requires:
             - trafficinfo/build-gradle
+#          post-steps:
+#            - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
@@ -51,6 +59,8 @@ workflows:
               only: master
           requires:
             - stepfunction-ci/build-repo-zip
+#          post-steps:
+#            - trafficinfo/invoke-slack-failure
 
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
@@ -63,12 +73,15 @@ workflows:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
             - stepfunction-ci/timestamp
+#          post-steps:
+#            - trafficinfo/invoke-slack-failure
 
-      - trafficinfo/slack-notify-success:
-          context: trafficinfo
-          message: ":sunglasses: :thumbsup: Uploaded pipeline trigger event for $CIRCLE_PROJECT_REPONAME version $CIRCLE_SHA1."
-          requires:
-            - stepfunction-ci/upload-trigger-event
+#      - trafficinfo/slack-notify-success:
+#          context: trafficinfo
+#          message: ":sunglasses: :thumbsup: Uploaded pipeline trigger event for $CIRCLE_PROJECT_REPONAME version $CIRCLE_SHA1."
+#          requires:
+#            - stepfunction-ci/upload-trigger-event
+#            - stepfunction-ci/upload-trigger-event
 
 
 
