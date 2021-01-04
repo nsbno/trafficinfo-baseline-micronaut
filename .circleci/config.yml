@@ -4,18 +4,15 @@ parameters:
   s3_bucket_name:
     type: string
     default: "929368261477-pipeline-artifact"
-  name_prefix:
+  pipeline_name:
     type: string
-    default: "trafficinfo-baseline-micronaut"
-  aws_repo_name:
-    type: string
-    default: "trafficinfo-baseline-micronaut"
+    default: "trafficinfo-baseline-micronaut-state-machine"
   ecr_repo_name:
     type: string
     default: "trafficinfo-baseline-micronaut"
 
 orbs:
-  stepfunction-ci: vydev/ciorb@dev:1.0.1
+  stepfunction-ci: vydev/ciorb@2.0.3
 
   # TODO
   # Move this code into our own ORB
@@ -143,6 +140,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
+      - stepfunction-ci/timestamp
       - trafficinfo/build-gradle:
           context: trafficinfo
           post-steps:
@@ -165,8 +163,6 @@ workflows:
 
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
-          name_prefix:  << pipeline.parameters.name_prefix >>
-          aws_repo_name:   << pipeline.parameters.aws_repo_name >>
           s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
           filters:
             branches:
@@ -190,12 +186,14 @@ workflows:
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
+          pipeline_name:  << pipeline.parameters.pipeline_name >>
           filters:
             branches:
               only: master
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
+            - stepfunction-ci/timestamp
           post-steps:
             - trafficinfo/invoke-slack-failure
 
