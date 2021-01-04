@@ -164,9 +164,9 @@ workflows:
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - trafficinfo/build-gradle
           post-steps:
@@ -175,9 +175,9 @@ workflows:
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
           s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - stepfunction-ci/build-repo-zip
           post-steps:
@@ -187,9 +187,9 @@ workflows:
           context: trafficinfo
           s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
           pipeline_name:  << pipeline.parameters.pipeline_name >>
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
