@@ -47,7 +47,7 @@ workflows:
             branches:
               only: master
           requires:
-            - trafficinfo/build-gradle
+            - trafficinfo/gradle-build
 #          post-steps:
 #            - trafficinfo/invoke-slack-failure
 
