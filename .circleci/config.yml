@@ -6,7 +6,7 @@ parameters:
     default: "929368261477-pipeline-artifact"
   pipeline_name:
     type: string
-    default: "trafficinfo-baseline-micronaut"
+    default: "trafficinfo-baseline-micronaut-state-machine"
   ecr_repo_name:
     type: string
     default: "trafficinfo-baseline-micronaut"
