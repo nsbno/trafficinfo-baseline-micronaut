@@ -4,10 +4,7 @@ parameters:
   s3_bucket_name:
     type: string
     default: "929368261477-pipeline-artifact"
-  name_prefix:
-    type: string
-    default: "trafficinfo-baseline-micronaut"
-  aws_repo_name:
+  pipeline_name:
     type: string
     default: "trafficinfo-baseline-micronaut"
   ecr_repo_name:
@@ -189,6 +186,7 @@ workflows:
       - stepfunction-ci/upload-trigger-event:
           context: trafficinfo
           s3_bucket_name:  << pipeline.parameters.s3_bucket_name >>
+          pipeline_name:  << pipeline.parameters.pipeline_name >>
           filters:
             branches:
               only: master
