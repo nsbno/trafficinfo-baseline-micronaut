@@ -20,7 +20,7 @@ workflows:
   build-and-deploy:
     jobs:
       - stepfunction-ci/timestamp
-      - trafficinfo/build-gradle:
+      - trafficinfo/gradle-build:
           context: trafficinfo
 
       - stepfunction-ci/build-docker:
