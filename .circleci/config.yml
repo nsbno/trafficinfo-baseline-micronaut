@@ -15,70 +15,66 @@ orbs:
   stepfunction-ci: vydev/ciorb@2.0.3
   trafficinfo: vydev/trafficinfo-orb@dev:alpha
 
-jobs:
-  gradle-build:
-    parameters:
-      machine:
-        description: >
-          Boolean for setting machine flag used when running testcontainers. Default is false.
-        type: boolean
-        default: false
-      executor:
-        description: executor to use for this job
-        type: executor
-        default: trafficinfo/gradle
-      checkout:
-        description: >
-          Boolean for whether or not to checkout as a first step. Default is true.
-        type: boolean
-        default: true
-      persist-to-workspace:
-        description: >
-          Boolean for whether or not to persist to a workspace. Default
-          is false.
-        type: boolean
-        default: false
-      workspace-root:
-        description: >
-          Workspace root path that is either an absolute path or a path relative
-          to the working directory. Defaults to '~/repo'
-        type: string
-        default: ~/repo
-      attach-workspace:
-        description: >
-          Boolean for whether or not to attach to an existing workspace. Default
-          is false.
-        type: boolean
-        default: false
-
-    working_directory: << parameters.workspace-root >>
-#    docker:
-#      - image: 'cimg/base:stable'
-    machine:
-      image: ubuntu-1604:202007-01
-      docker_layer_caching: true
-
-    steps:
-      - when:
-          condition: << parameters.checkout >>
-          steps:
-            - checkout
-
-      - when:
-          condition: << parameters.attach-workspace >>
-          steps:
-            - attach_workspace:
-                at: << parameters.workspace-root >>
-
-      - trafficinfo/gradle-build
-
-      - when:
-          condition: << parameters.persist-to-workspace >>
-          steps:
-            - persist_to_workspace:
-                root: << parameters.workspace-root >>
-                paths:
-                  - .
+#
+#jobs:
+#  gradle-build:
+#    parameters:
+#      machine:
+#        description: >
+#          Boolean for setting machine flag used when running testcontainers. Default is false.
+#        type: boolean
+#        default: false
+#      executor:
+#        description: executor to use for this job
+#        type: executor
+#        default: trafficinfo/gradle
+#      checkout:
+#        description: >
+#          Boolean for whether or not to checkout as a first step. Default is true.
+#        type: boolean
+#        default: true
+#      persist-to-workspace:
+#        description: >
+#          Boolean for whether or not to persist to a workspace. Default
+#          is false.
+#        type: boolean
+#        default: false
+#      workspace-root:
+#        description: >
+#          Workspace root path that is either an absolute path or a path relative
+#          to the working directory. Defaults to '~/repo'
+#        type: string
+#        default: ~/repo
+#      attach-workspace:
+#        description: >
+#          Boolean for whether or not to attach to an existing workspace. Default
+#          is false.
+#        type: boolean
+#        default: false
+#
+#    working_directory: << parameters.workspace-root >>
+#
+#    steps:
+#      - when:
+#          condition: << parameters.checkout >>
+#          steps:
+#            - checkout
+#
+#      - when:
+#          condition: << parameters.attach-workspace >>
+#          steps:
+#            - attach_workspace:
+#                at: << parameters.workspace-root >>
+#
+#      - trafficinfo/gradle-build
+#
+#      - when:
+#          condition: << parameters.persist-to-workspace >>
+#          steps:
+#            - persist_to_workspace:
+#                root: << parameters.workspace-root >>
+#                paths:
+#                  - .
 
 workflows:
   version: 2
