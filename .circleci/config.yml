@@ -52,8 +52,11 @@ jobs:
         default: false
 
     working_directory: << parameters.workspace-root >>
-    docker:
-      - image: 'cimg/base:stable'
+#    docker:
+#      - image: 'cimg/base:stable'
+    machine:
+      image: ubuntu-1604:202007-01
+      docker_layer_caching: true
 
     steps:
       - when:
