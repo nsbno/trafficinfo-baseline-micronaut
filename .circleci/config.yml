@@ -21,7 +21,6 @@ workflows:
     jobs:
       - stepfunction-ci/timestamp
       - trafficinfo/build_gradle_machine:
-          executor: trafficinfo/machine
           context: trafficinfo
           post-steps:
             - trafficinfo/slack-failure
