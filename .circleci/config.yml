@@ -65,7 +65,7 @@ jobs:
             - attach_workspace:
                 at: << parameters.workspace-root >>
 
-      - gradle-build
+      - trafficinfo/gradle-build
 
       - when:
           condition: << parameters.persist-to-workspace >>
