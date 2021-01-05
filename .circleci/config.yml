@@ -80,7 +80,7 @@ workflows:
   build-and-deploy:
     jobs:
       - stepfunction-ci/timestamp
-      - trafficinfo/gradle-build:
+      - gradle-build:
           context: trafficinfo
           post-steps:
             - trafficinfo/slack-failure
