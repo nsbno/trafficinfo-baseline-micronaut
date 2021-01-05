@@ -15,8 +15,6 @@ orbs:
   stepfunction-ci: vydev/ciorb@2.0.3
   trafficinfo: vydev/trafficinfo-orb@dev:alpha
 
-#dummy
-
 workflows:
   version: 2
   build-and-deploy:
