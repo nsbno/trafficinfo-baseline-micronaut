@@ -52,7 +52,9 @@ jobs:
         default: false
 
     working_directory: << parameters.workspace-root >>
-    machine: true
+    docker:
+      - image: 'cimg/base:stable'
+
     steps:
       - when:
           condition: << parameters.checkout >>
