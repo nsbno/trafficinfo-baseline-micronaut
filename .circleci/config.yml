@@ -16,7 +16,7 @@ orbs:
   trafficinfo: vydev/trafficinfo-orb@dev:alpha
 
 jobs:
-  build-gradle:
+  gradle-build:
     parameters:
       machine:
         description: >
