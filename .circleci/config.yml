@@ -13,7 +13,7 @@ parameters:
 
 orbs:
   stepfunction-ci: vydev/ciorb@2.0.3
-  trafficinfo: vydev/trafficinfo-orb@0.0.1
+  trafficinfo: vydev/trafficinfo-orb@dev:0d5d360
 
 workflows:
   version: 2
