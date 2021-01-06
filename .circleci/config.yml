@@ -21,7 +21,7 @@ workflows:
   build-and-deploy:
     jobs:
       - stepfunction-ci/timestamp
-      - trafficinfo/gradle-build:
+      - trafficinfo/build:
           context: trafficinfo
           post-steps:
             - trafficinfo/slack-failure
@@ -30,7 +30,7 @@ workflows:
           context: trafficinfo
           ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
           requires:
-            - trafficinfo/gradle-build
+            - trafficinfo/build
           post-steps:
             - trafficinfo/slack-failure
 
@@ -48,7 +48,7 @@ workflows:
             branches:
               only: master
           requires:
-            - trafficinfo/gradle-build
+            - trafficinfo/build
 
           post-steps:
             - trafficinfo/slack-failure
