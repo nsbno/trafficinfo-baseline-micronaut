@@ -14,9 +14,7 @@ parameters:
 
 orbs:
   stepfunction-ci: vydev/ciorb@2.0.3
-  trafficinfo: vydev/trafficinfo-orb@dev:alpha
-
-# dummy trigger
+  trafficinfo: vydev/trafficinfo-orb@0.0.3
 
 workflows:
   version: 2
@@ -46,9 +44,9 @@ workflows:
       - stepfunction-ci/build-repo-zip:
           context: trafficinfo
           s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
           requires:
             - trafficinfo/build
 
@@ -58,9 +56,9 @@ workflows:
       - stepfunction-ci/upload-artifacts:
           context: trafficinfo
           s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
           requires:
             - stepfunction-ci/build-repo-zip
           post-steps:
@@ -70,9 +68,9 @@ workflows:
           context: trafficinfo
           s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
           pipeline_name: << pipeline.parameters.pipeline_name >>
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
