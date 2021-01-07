@@ -1,19 +1,5 @@
 version: 2.1
-# Local parameters can be used to avoid repetitive values (referenced as `<< pipeline.parameters.parameter-name >>`)
-parameters:
-  s3_bucket_name:
-    type: string
-    default: "929368261477-pipeline-artifact"
-  pipeline_name:
-    type: string
-    default: "trafficinfo-baseline-micronaut-state-machine"
-  ecr_repo_name:
-    type: string
-    default: "trafficinfo-baseline-micronaut"
-
-
 orbs:
-  stepfunction-ci: vydev/ciorb@2.0.3
   trafficinfo: vydev/trafficinfo-orb@dev:alpha
 
 workflows:
@@ -23,6 +9,7 @@ workflows:
       - trafficinfo/build-and-deploy:
           context: trafficinfo
           envs: "service, test, stage, prod"
-          ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
-          s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
-          pipeline_name: << pipeline.parameters.pipeline_name >>
+          ecr_repo_name: "trafficinfo-baseline-micronaut"
+          ecr_endpoint: "929368261477.dkr.ecr.eu-west-1.amazonaws.com"
+          s3_bucket_name: "929368261477-pipeline-artifact"
+          pipeline_name: "trafficinfo-baseline-micronaut-state-machine"
