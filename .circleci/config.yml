@@ -13,3 +13,4 @@ workflows:
           ecr_endpoint: "929368261477.dkr.ecr.eu-west-1.amazonaws.com"
           s3_bucket_name: "929368261477-pipeline-artifact"
           pipeline_name: "trafficinfo-baseline-micronaut-state-machine"
+
