@@ -16,5 +16,3 @@ workflows:
           gradle_version: "6.7"
           terraform_version: "0.12.24"
           jdk_version: 15
-
-# trigger
