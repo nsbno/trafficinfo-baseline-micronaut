@@ -13,7 +13,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
-    id("org.sonarqube") version "3.0"
+    id("org.sonarqube") version "3.1"
     id("jacoco")
 }
 
