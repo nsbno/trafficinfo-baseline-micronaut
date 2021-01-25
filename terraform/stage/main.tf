@@ -22,6 +22,13 @@ provider "aws" {
 locals {
   name_prefix      = "trafficinfo"
   application_name = "baseline-micronaut"
+  environment      = "stage"
+  tags = {
+    terraform   = "true"
+    environment = local.environment
+    application = "${local.name_prefix}-${local.application_name}"
+  }
+
 }
 
 data "aws_ssm_parameter" "version" {
@@ -29,13 +36,10 @@ data "aws_ssm_parameter" "version" {
 }
 
 module "trafficinfo-baseline-micronaut" {
-  source           = "../template"
-  name_prefix      = local.name_prefix
-  application_name = local.application_name
+  source               = "../template"
+  name_prefix          = local.name_prefix
+  environment          = local.environment
+  application_name     = local.application_name
   task_container_image = "${data.aws_ssm_parameter.version.value}-SHA1"
-  tags = {
-    terraform   = "true"
-    environment = "stage"
-    application = "${local.name_prefix}-${local.application_name}"
-  }
+  tags                 = local.tags
 }
