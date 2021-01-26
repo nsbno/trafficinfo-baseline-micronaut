@@ -19,6 +19,12 @@ provider "aws" {
   allowed_account_ids = ["469515120670"]
 }
 
+provider "grafana" {
+  url    = "https://grafana.test.common-services.vydev.io/"
+  auth   = "eyJrIjoieHFiWDdLNkVPSU1JWmNoUVFURzBuNEZEZGRNRmY0b3UiLCJuIjoidHJhZmZpY2luZm8iLCJpZCI6MX0="
+  org_id = 1
+}
+
 locals {
   name_prefix      = "trafficinfo"
   application_name = "baseline-micronaut"

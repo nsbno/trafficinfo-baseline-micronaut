@@ -122,3 +122,8 @@ resource "aws_kms_alias" "baseline_params_key_alias" {
   target_key_id = aws_kms_key.baseline_params_key.key_id
   name          = "alias/${var.name_prefix}-${var.application_name}_params_key"
 }
+
+resource "grafana_folder" "collection" {
+  title = title("${var.name_prefix} ${var.application_name}")
+}
+
