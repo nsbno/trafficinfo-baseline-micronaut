@@ -136,6 +136,7 @@ resource "grafana_dashboard" "dashboard_in_folder" {
     "environment": var.environment
     "name_prefix": var.name_prefix
     "application": var.application_name
+    "service_name": "baseline-micronaut"
     "uuid": filemd5("../static/grafana/dashboard.tpl")
   })
 }

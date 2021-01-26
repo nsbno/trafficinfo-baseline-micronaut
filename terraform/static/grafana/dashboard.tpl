@@ -11,9 +11,9 @@
         "type": "dashboard"
       },
       {
-        "datasource": "trafficinfo-prod",
+        "datasource": "${name_prefix}-${environment}",
         "dimensions": {
-          "ServiceName": "trafficinfo-baseline-micronaut"
+          "ServiceName": "${name_prefix}-${service_name}"
         },
         "enable": false,
         "iconColor": "rgba(255, 96, 96, 1)",
@@ -38,7 +38,7 @@
 			"bars": false,
 			"dashLength": 10,
 			"dashes": false,
-			"datasource": "trafficinfo-prod",
+			"datasource": "${name_prefix}-${environment}",
 			"editable": true,
 			"error": false,
 			"fieldConfig": {
@@ -87,8 +87,8 @@
 			"steppedLine": false,
 			"targets": [{
 				"dimensions": {
-					"ClusterName": "trafficinfo-ecs-cluster",
-					"ServiceName": "trafficinfo-baseline-micronaut"
+					"ClusterName": "${name_prefix}-ecs-cluster",
+					"ServiceName": "${name_prefix}-${service_name}"
 				},
 				"metricName": "CPUUtilization",
 				"namespace": "AWS/ECS",
@@ -103,7 +103,7 @@
 			"timeFrom": null,
 			"timeRegions": [],
 			"timeShift": null,
-			"title": "CPUUtilization (cluster trafficinfo-ecs-cluster, service trafficinfo-baseline-micronaut)",
+			"title": "CPUUtilization (cluster ${name_prefix}-ecs-cluster, service ${name_prefix}-${service_name})",
 			"tooltip": {
 				"msResolution": true,
 				"shared": true,
@@ -143,7 +143,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "trafficinfo-prod",
+          "datasource": "${name_prefix}-${environment}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -175,8 +175,8 @@
           "targets": [
             {
               "dimensions": {
-                "ClusterName": "trafficinfo-ecs-cluster",
-                "ServiceName": "trafficinfo-baseline-micronaut"
+                "ClusterName": "${name_prefix}-ecs-cluster",
+                "ServiceName": "${name_prefix}-${service_name}"
               },
               "metricName": "MemoryUtilization",
               "namespace": "AWS/ECS",
@@ -190,7 +190,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "MemoryUtilization (cluster trafficinfo-ecs-cluster, service trafficinfo-baseline-micronaut)",
+          "title": "MemoryUtilization (cluster ${name_prefix}-ecs-cluster, service ${name_prefix}-${service_name})",
           "tooltip": {
             "msResolution": true,
             "shared": true,
