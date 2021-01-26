@@ -132,6 +132,8 @@ resource "grafana_dashboard" "dashboard_in_folder" {
   config_json = templatefile("../static/grafana/dashboard.tpl", {
     "name": title("${var.application_name} ${var.environment}")
     "environment": var.environment
+    "name_prefix": var.name_prefix
+    "application": var.application_name
     "uuid": filemd5("../static/grafana/dashboard.tpl")
   })
 }

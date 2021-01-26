@@ -21,6 +21,10 @@
   "schemaVersion": 25,
   "style": "dark",
   "tags": [
+    "terraform",
+    "${name}",
+    "${environment}",
+    "${name_prefix}"
   ],
   "templating": {
     "list": []
