@@ -43,4 +43,7 @@ module "trafficinfo-baseline-micronaut" {
   application_name     = local.application_name
   task_container_image = "latest"
   tags                 = local.tags
+  grafana_create_dashboard = true
+#  grafana_use_existing_folder = 53
+#  grafana_folder_name = "Trafficinfo > Daniel Test"
 }
