@@ -127,3 +127,11 @@ resource "grafana_folder" "collection" {
   title = title("${var.name_prefix} ${var.application_name}")
 }
 
+resource "grafana_dashboard" "dashboard_in_folder" {
+  folder = grafana_folder.collection.id
+  config_json = templatefile("../static/grafana/dashboard.tpl", {
+    "name": title("${var.application_name} ${var.environment}")
+    "environment": var.environment
+    "uuid": filemd5("../static/grafana/dashboard.tpl")
+  })
+}
