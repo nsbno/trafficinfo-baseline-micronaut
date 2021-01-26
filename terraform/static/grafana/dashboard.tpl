@@ -11,9 +11,9 @@
         "type": "dashboard"
       },
       {
-        "datasource": "$datasource",
+        "datasource": "trafficinfo-prod",
         "dimensions": {
-          "ServiceName": "$service"
+          "ServiceName": "trafficinfo-baseline-micronaut"
         },
         "enable": false,
         "iconColor": "rgba(255, 96, 96, 1)",
@@ -21,7 +21,7 @@
         "name": "Alarms",
         "namespace": "AWS/ECS",
         "period": "",
-        "region": "$region",
+        "region": "eu-west-1",
         "statistics": [
           "Average"
         ]
@@ -139,7 +139,117 @@
 				"align": false,
 				"alignLevel": null
 			}
-		}
+		},
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "trafficinfo-prod",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "id": 2,
+          "isNew": true,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "dimensions": {
+                "ClusterName": "trafficinfo-ecs-cluster",
+                "ServiceName": "trafficinfo-baseline-micronaut"
+              },
+              "metricName": "MemoryUtilization",
+              "namespace": "AWS/ECS",
+              "period": "",
+              "refId": "A",
+              "region": "eu-west-1",
+              "statistics": [
+                "Average"
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "MemoryUtilization (cluster trafficinfo-ecs-cluster, service trafficinfo-baseline-micronaut)",
+          "tooltip": {
+            "msResolution": true,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true,
+            "mode": "time",
+            "name": null,
+            "values": [],
+            "buckets": null
+          },
+          "yaxes": [
+            {
+              "format": "percent",
+              "label": null,
+              "logBase": 1,
+              "max": 100,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "gridPos": {
+            "x": 0,
+            "y": 14,
+            "w": 24,
+            "h": 7
+          },
+          "options": {
+            "dataLinks": []
+          },
+          "thresholds": [],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          },
+          "fillGradient": 0,
+          "dashes": false,
+          "hiddenSeries": false,
+          "dashLength": 10,
+          "spaceLength": 10,
+          "timeRegions": []
+        }
   ],
   "schemaVersion": 25,
   "style": "dark",
