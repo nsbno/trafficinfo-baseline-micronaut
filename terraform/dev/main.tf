@@ -22,7 +22,7 @@ provider "aws" {
 
 # Grafana API Token stored in Secrets Manager.
 data "aws_secretsmanager_secret_version" "grafana" {
-  secret_id = "grafana_api_token"
+  secret_id = "grafana"
 }
 
 # needed by ecs-microservice module to create a Grafana Dashboard for microservice.
