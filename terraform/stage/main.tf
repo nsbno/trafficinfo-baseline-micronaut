@@ -37,9 +37,9 @@ data "aws_secretsmanager_secret_version" "grafana" {
 
 # needed by ecs-microservice module to create a Grafana Dashboard for microservice.
 provider "grafana" {
-  url    = "https://grafana.test.common-services.vydev.io/"
-  auth   = data.aws_secretsmanager_secret_version.grafana.secret_string
-  org_id = 1
+  url    = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["url"]
+  auth   = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["api_token"]
+  org_id = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["org_id"]
 }
 
 data "aws_ssm_parameter" "version" {
