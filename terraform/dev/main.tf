@@ -19,9 +19,15 @@ provider "aws" {
   allowed_account_ids = ["469515120670"]
 }
 
+
+# Grafana API Token stored in Secrets Manager.
+data "aws_secretsmanager_secret_version" "grafana" {
+  secret_id = "grafana_api_token"
+}
+
 provider "grafana" {
   url    = "https://grafana.test.common-services.vydev.io/"
-  auth   = "eyJrIjoieHFiWDdLNkVPSU1JWmNoUVFURzBuNEZEZGRNRmY0b3UiLCJuIjoidHJhZmZpY2luZm8iLCJpZCI6MX0="
+  auth   = data.aws_secretsmanager_secret_version.grafana.secret_string
   org_id = 1
 }
 
@@ -43,7 +49,4 @@ module "trafficinfo-baseline-micronaut" {
   application_name     = local.application_name
   task_container_image = "latest"
   tags                 = local.tags
-  grafana_create_dashboard = true
-#  grafana_use_existing_folder = 53
-#  grafana_folder_name = "Trafficinfo > Daniel Test"
 }

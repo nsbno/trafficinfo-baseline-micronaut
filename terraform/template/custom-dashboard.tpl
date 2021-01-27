@@ -33,7 +33,47 @@
   "graphTooltip": 0,
   "id": 45,
   "links": [],
-  "panels": [{
+  "panels": [
+        {
+          "content": "\n# Custom Dashboard for ${name_prefix}-${service_name}\n\nFor markdown syntax help: [commonmark.org/help](https://commonmark.org/help/)\n\n\n\n",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 5,
+          "mode": "markdown",
+          "targets": [
+            {
+              "alias": "",
+              "dimensions": {},
+              "expression": "",
+              "id": "",
+              "matchExact": true,
+              "metricName": "",
+              "namespace": "",
+              "period": "",
+              "refId": "A",
+              "region": "default",
+              "statistics": [
+                "Average"
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Documentation",
+          "type": "text",
+          "datasource": null
+        },
+        {
 			"aliasColors": {},
 			"bars": false,
 			"dashLength": 10,
@@ -47,14 +87,14 @@
 				},
 				"overrides": []
 			},
-			"fill": 1,
+			"fill": 2,
 			"fillGradient": 0,
 			"grid": {},
 			"gridPos": {
 				"h": 7,
 				"w": 24,
 				"x": 0,
-				"y": 0
+				"y": 4
 			},
 			"hiddenSeries": false,
 			"id": 1,
@@ -148,7 +188,7 @@
           "error": false,
           "fill": 1,
           "grid": {},
-          "id": 2,
+          "id": 3,
           "isNew": true,
           "legend": {
             "alignAsTable": true,
@@ -225,7 +265,7 @@
           ],
           "gridPos": {
             "x": 0,
-            "y": 14,
+            "y": 11,
             "w": 24,
             "h": 7
           },

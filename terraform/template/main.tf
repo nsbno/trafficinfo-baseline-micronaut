@@ -24,7 +24,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=TRAFFICINFO-487.central.cognito/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=2564906/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -107,6 +107,15 @@ module "ecs-microservice" {
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
+
+
+  ## Configure Grafana Dashboard, just enable generation
+  # and use default values for all the other
+  # grafana_create_dashboard = true
+
+  # grafana_template_file = "${path.module}/custom-dashboard.tpl" # OPTIONAL
+  # grafana_folder_name = "Some Name" # OPTIONAL
+  # grafana_use_existing_folder = 123 # OPTIONAL
 }
 
 # TODO: Resources from `trafficinfo-aws/terraform/modules/template/{kernel-kms.tf,svc-baseline.tf}`
@@ -121,22 +130,4 @@ resource "aws_kms_key" "baseline_params_key" {}
 resource "aws_kms_alias" "baseline_params_key_alias" {
   target_key_id = aws_kms_key.baseline_params_key.key_id
   name          = "alias/${var.name_prefix}-${var.application_name}_params_key"
-}
-
-resource "grafana_folder" "collection" {
-  count = (var.grafana_use_existing_folder==-1 && var.grafana_create_dashboard == true) ? 1 : 0
-  title = length(var.grafana_folder_name)>0 ? var.grafana_folder_name : title("${var.name_prefix} > ${var.application_name}")
-}
-
-resource "grafana_dashboard" "dashboard_in_folder" {
-  count = var.grafana_create_dashboard == true ? 1 : 0
-  folder = var.grafana_use_existing_folder>0 ? var.grafana_use_existing_folder : grafana_folder.collection[0].id
-  config_json = templatefile(var.grafana_template_file, {
-    "name": title("${var.application_name} ${var.environment}")
-    "environment": var.environment
-    "name_prefix": var.name_prefix
-    "application": var.application_name
-    "service_name": "baseline-micronaut"
-    "uuid": filemd5("../static/grafana/dashboard.tpl")
-  })
 }

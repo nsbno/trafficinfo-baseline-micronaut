@@ -30,6 +30,18 @@ locals {
   }
 }
 
+# Grafana API Token stored in Secrets Manager.
+data "aws_secretsmanager_secret_version" "grafana" {
+  secret_id = "grafana_api_token"
+}
+
+# needed by ecs-microservice module to create a Grafana Dashboard for microservice.
+provider "grafana" {
+  url    = "https://grafana.test.common-services.vydev.io/"
+  auth   = data.aws_secretsmanager_secret_version.grafana.secret_string
+  org_id = 1
+}
+
 data "aws_ssm_parameter" "version" {
   name = "/${local.name_prefix}/${local.name_prefix}-${local.application_name}"
 }
