@@ -114,8 +114,8 @@ module "ecs-microservice" {
   # grafana_create_dashboard = true
 
   # grafana_template_file = "${path.module}/custom-dashboard.tpl" # OPTIONAL
-  # grafana_folder_name = "Some Name" # OPTIONAL
-  # grafana_use_existing_folder = 123 # OPTIONAL
+  # grafana_folder_name = "Some Name" # OPTIONAL display name for folder.
+  # grafana_use_existing_folder = 123 # OPTIONAL folder id found in grafana
 }
 
 # TODO: Resources from `trafficinfo-aws/terraform/modules/template/{kernel-kms.tf,svc-baseline.tf}`
