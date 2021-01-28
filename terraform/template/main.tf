@@ -23,7 +23,8 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=afa60af/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=aaca67e/ecs-microservice"
+  environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
     id   = local.shared_config.ecs_cluster_id
@@ -105,6 +106,15 @@ module "ecs-microservice" {
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
+
+
+  ## Configure Grafana Dashboard, just enable generation
+  # and use default values for all the other
+  # grafana_create_dashboard = true
+
+  # grafana_template_file = "${path.module}/custom-dashboard.tpl" # OPTIONAL
+  # grafana_folder_name = "Some Name" # OPTIONAL display name for folder.
+  # grafana_use_existing_folder = 123 # OPTIONAL folder id found in grafana
 }
 
 # TODO: Resources from `trafficinfo-aws/terraform/modules/template/{kernel-kms.tf,svc-baseline.tf}`

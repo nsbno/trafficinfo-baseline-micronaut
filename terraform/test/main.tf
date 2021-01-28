@@ -20,8 +20,26 @@ provider "aws" {
 }
 
 locals {
+  environment      = "test"
   name_prefix      = "trafficinfo"
   application_name = "baseline-micronaut"
+  tags = {
+    terraform   = "true"
+    environment = local.environment
+    application = "${local.name_prefix}-${local.application_name}"
+  }
+}
+
+# Grafana API Token stored in Secrets Manager.
+data "aws_secretsmanager_secret_version" "grafana" {
+  secret_id = "grafana"
+}
+
+# needed by ecs-microservice module to create a Grafana Dashboard for microservice.
+provider "grafana" {
+  url    = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["url"]
+  auth   = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["api_token"]
+  org_id = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["org_id"]
 }
 
 data "aws_ssm_parameter" "version" {
@@ -29,13 +47,10 @@ data "aws_ssm_parameter" "version" {
 }
 
 module "trafficinfo-baseline-micronaut" {
-  source           = "../template"
-  name_prefix      = local.name_prefix
-  application_name = local.application_name
+  source               = "../template"
+  environment          = local.environment
+  name_prefix          = local.name_prefix
+  application_name     = local.application_name
   task_container_image = "${data.aws_ssm_parameter.version.value}-SHA1"
-  tags = {
-    terraform   = "true"
-    environment = "test"
-    application = "${local.name_prefix}-${local.application_name}"
-  }
+  tags                 = local.tags
 }

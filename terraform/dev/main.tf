@@ -14,24 +14,41 @@ terraform {
 }
 
 provider "aws" {
-  version             = "3.21.0"
+  version = "3.21.0"
   region              = "eu-west-1"
   allowed_account_ids = ["469515120670"]
+}
+
+
+# Grafana API Token stored in Secrets Manager.
+data "aws_secretsmanager_secret_version" "grafana" {
+  secret_id = "grafana"
+}
+
+# needed by ecs-microservice module to create a Grafana Dashboard for microservice.
+provider "grafana" {
+  version = "1.8"
+  url    = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["url"]
+  auth   = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["api_token"]
+  org_id = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["org_id"]
 }
 
 locals {
   name_prefix      = "trafficinfo"
   application_name = "baseline-micronaut"
+  environment      = "dev"
+  tags = {
+    terraform   = "true"
+    environment = local.environment
+    application = "${local.name_prefix}-${local.application_name}"
+  }
 }
 
 module "trafficinfo-baseline-micronaut" {
-  source           = "../template"
-  name_prefix      = local.name_prefix
-  application_name = local.application_name
+  environment          = local.environment
+  source               = "../template"
+  name_prefix          = local.name_prefix
+  application_name     = local.application_name
   task_container_image = "latest"
-  tags = {
-    terraform   = "true"
-    environment = "dev"
-    application = "${local.name_prefix}-${local.application_name}"
-  }
+  tags                 = local.tags
 }
