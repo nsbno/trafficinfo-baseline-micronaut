@@ -13,7 +13,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("application")
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
-    id("org.sonarqube") version "3.0"
+    id("org.sonarqube") version "3.1"
     id("jacoco")
 }
 
@@ -78,7 +78,7 @@ dependencies {
     implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
-    implementation("io.micronaut.aws:micronaut-aws-parameter-store:2.2.4")
+    implementation("io.micronaut.aws:micronaut-aws-parameter-store")
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
 
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -99,7 +99,7 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-ssm:1.11.892")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     /**
@@ -113,7 +113,7 @@ dependencies {
 
     testImplementation("org.assertj:assertj-core:3.18.1")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.3")
+    testImplementation("io.mockk:mockk:1.10.5")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")

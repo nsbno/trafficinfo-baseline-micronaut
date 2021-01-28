@@ -25,7 +25,6 @@ provider "aws" {
 
 data "aws_caller_identity" "current-account" {}
 data "aws_region" "current" {}
-data "aws_availability_zones" "main" {}
 
 locals {
   current_account_id = data.aws_caller_identity.current-account.account_id
