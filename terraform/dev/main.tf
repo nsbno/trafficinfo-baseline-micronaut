@@ -14,6 +14,7 @@ terraform {
 }
 
 provider "aws" {
+  version = "3.21.0"
   region              = "eu-west-1"
   allowed_account_ids = ["469515120670"]
 }
@@ -26,6 +27,7 @@ data "aws_secretsmanager_secret_version" "grafana" {
 
 # needed by ecs-microservice module to create a Grafana Dashboard for microservice.
 provider "grafana" {
+  version = "1.8"
   url    = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["url"]
   auth   = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["api_token"]
   org_id = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["org_id"]
