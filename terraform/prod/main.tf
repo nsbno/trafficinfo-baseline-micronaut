@@ -29,9 +29,9 @@ data "aws_ssm_parameter" "version" {
 }
 
 module "trafficinfo-baseline-micronaut" {
-  source           = "../template"
-  name_prefix      = local.name_prefix
-  application_name = local.application_name
+  source               = "../template"
+  name_prefix          = local.name_prefix
+  application_name     = local.application_name
   task_container_image = "${data.aws_ssm_parameter.version.value}-SHA1"
   tags = {
     terraform   = "true"
