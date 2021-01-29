@@ -114,7 +114,7 @@ module "ecs-microservice" {
   # send slack notifications here.
   cognito_slack_webhook = "https://hooks.slack.com/services/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"
 
-  # upload configs to S3 here
+  # upload configs to S3 here, this is the default value.
   cognito_bucket = "vydev-delegated-cognito-staging"
 
   enable_elasticcloud = true
