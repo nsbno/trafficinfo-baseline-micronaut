@@ -2,10 +2,28 @@ data "aws_caller_identity" "current-account" {}
 data "aws_region" "current" {}
 
 locals {
+  cognito_test_account = "231176028624"
   current_account_id = data.aws_caller_identity.current-account.account_id
   current_region     = data.aws_region.current.name
   service_account_id = "929368261477"
   shared_config      = jsondecode(data.aws_ssm_parameter.shared_config.value)
+
+  cognito_resource_server_identifier_base = "https://services.trafficinfo.vydev.io"
+  resource_server_scopes = {
+    read_scope = {
+      "scope_name" : "read"
+      "scope_description" : "read scope for the service"
+    }
+    write_scope = {
+      "scope_name" : "write"
+      "scope_description" : "write scope for the service."
+    }
+  }
+
+  app_client_scopes = [
+    "https://services.${local.shared_config.hosted_zone_name}/whoami/read",
+    "https://services.${local.shared_config.hosted_zone_name}/${var.application_name}/read"
+  ]
 }
 
 ##################################
@@ -23,7 +41,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=aaca67e/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=8e327d2/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -86,23 +104,18 @@ module "ecs-microservice" {
   create_app_client = 1
 
   # resource server scopes, just for testing.
-  resource_server_scopes = {
-    read_scope = {
-      "scope_name" : "read"
-      "scope_description" : "read scope for the service"
-    }
-    write_scope = {
-      "scope_name" : "write"
-      "scope_description" : "write scope for the service."
-    }
-  }
+  resource_server_scopes = local.resource_server_scopes
 
   # To generate a appclient, you need at least one scope for it.
   # Baseline has access to the Whoami Service, and also itself.
-  app_client_scopes = [
-    "https://services.${local.shared_config.hosted_zone_name}/whoami/read",
-    "https://services.${local.shared_config.hosted_zone_name}/${var.application_name}/read"
-  ]
+  app_client_scopes = local.app_client_scopes
+
+  # To configure delegated Cognito config
+  # send slack notifications here.
+  cognito_slack_webhook = "https://hooks.slack.com/services/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"
+
+  # upload configs to S3 here
+  cognito_bucket = "vydev-delegated-cognito-staging"
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
