@@ -96,7 +96,7 @@ dependencies {
     /**
      * Third-party dependencies.
      */
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.892")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.946")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
