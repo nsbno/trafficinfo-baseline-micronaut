@@ -23,3 +23,20 @@ variable "task_container_image" {
   description = "The name of the container image that should be deployed"
   type        = string
 }
+
+variable "cognito_account_id" {
+  description = "The Central Cognito account to retrieve client credentials from."
+  type        = string
+}
+
+variable "cognito_override_env" {
+  description = "The Central Cognito account to retrieve client credentials from."
+  type        = string
+  default     = ""
+}
+
+variable "cognito_bucket" {
+  description = "(Optional) Configure where to upload delegated cognito config. Default is vydev-delegated-cognito-staging."
+  type        = string
+  default     = "vydev-delegated-cognito-staging"
+}
