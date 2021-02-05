@@ -54,4 +54,5 @@ module "trafficinfo-baseline-micronaut" {
   task_container_image = "${data.aws_ssm_parameter.version.value}-SHA1"
   tags                 = local.tags
   cognito_account_id   = "231176028624"
+//  cognito_account_id   = ""
 }
