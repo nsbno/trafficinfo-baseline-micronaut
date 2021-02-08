@@ -53,6 +53,10 @@ module "trafficinfo-baseline-micronaut" {
   application_name     = local.application_name
   task_container_image = "${data.aws_ssm_parameter.version.value}-SHA1"
   tags                 = local.tags
-  cognito_account_id   = "214014793664"
 
+  # The Stage Delegated Cognito
+  # cognito_account_id   = "214014793664"
+  # hard coded against the only delegated cognito env we have for the moment.
+  cognito_account_id   = "231176028624"
+  cognito_override_env = "test"
 }

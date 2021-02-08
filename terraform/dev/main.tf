@@ -51,5 +51,11 @@ module "trafficinfo-baseline-micronaut" {
   application_name     = local.application_name
   task_container_image = "latest"
   tags                 = local.tags
-  cognito_account_id   = "834626710667"
+
+  # The Dev environment.
+  # cognito_account_id   = "834626710667"
+  # hard coded against the only delegated cognito env we have for the moment.
+  cognito_account_id   = "231176028624"
+  cognito_override_env = "test"
+
 }
