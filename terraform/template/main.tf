@@ -206,12 +206,14 @@ resource "time_sleep" "wait_for_credentials" {
   }
 }
 
+# The client credentials that are stored in Central Cognito.
 data "aws_secretsmanager_secret_version" "microservice_client_credentials" {
   depends_on = [aws_s3_bucket_object.delegated-cognito-config[0], time_sleep.wait_for_credentials[0]]
   count = length(var.cognito_account_id)>0 ? 1 : 0
   secret_id = "arn:aws:secretsmanager:eu-west-1:${var.cognito_account_id}:secret:${local.current_account_id}-${var.name_prefix}-${var.application_name}"
 }
 
+# Store client credentials from Central Cognito in SSM so that the microservice can read it.
 resource "aws_ssm_parameter" "client_id" {
   count = length(var.cognito_account_id)>0 ? 1 : 0
   name      = "/${var.name_prefix}/config/${var.application_name}/client_id"
@@ -224,6 +226,7 @@ resource "aws_ssm_parameter" "client_id" {
   overwrite = true
 }
 
+# Store client credentials from Central Cognito in SSM so that the microservice can read it.
 resource "aws_ssm_parameter" "client_secret" {
   count = length(var.cognito_account_id)>0 ? 1 : 0
   name      = "/${var.name_prefix}/config/${var.application_name}/client_secret"
