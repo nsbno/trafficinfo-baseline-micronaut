@@ -1,7 +1,5 @@
 # TODO replace all <placeholders>
 terraform {
-  required_version = "=0.14.7"
-
   backend "s3" {
     key            = "trafficinfo-baseline-micronaut/main.tfstate"
     bucket         = "929368261477-terraform-state"
