@@ -50,7 +50,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=3a33c7c/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=e61cf640ed8b3ea3726b0a8339d5b4a4dd0614df/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -127,9 +127,9 @@ module "ecs-microservice" {
 
   # this is the account id to cognito where client credentials
   # for the microservice are retrieved from secrets manager.
-  cognito_account_id = var.cognito_central_account_id
-  cognito_env = var.cognito_central_override_env
-  cognito_use_central = var.cognito_central_enable
+  cognito_central_account_id = var.cognito_central_account_id
+  cognito_central_env = var.cognito_central_override_env
+  cognito_central_enable = var.cognito_central_enable
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
