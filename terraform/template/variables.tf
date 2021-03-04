@@ -24,19 +24,26 @@ variable "task_container_image" {
   type        = string
 }
 
-variable "cognito_account_id" {
-  description = "The Central Cognito account to retrieve client credentials from."
-  type        = string
-}
-
-variable "cognito_override_env" {
-  description = "The Central Cognito account to retrieve client credentials from."
+variable "cognito_central_account_id" {
+  description = "(Optional) The Central Cognito account to retrieve client credentials from. Default is empty string."
   type        = string
   default     = ""
 }
 
-variable "cognito_bucket" {
+variable "cognito_central_override_env" {
+  description = "(Optional) The Central Cognito account to retrieve client credentials from. Default is empty string."
+  type        = string
+  default     = ""
+}
+
+variable "cognito_central_bucket" {
   description = "(Optional) Configure where to upload delegated cognito config. Default is vydev-delegated-cognito-staging."
   type        = string
   default     = "vydev-delegated-cognito-staging"
+}
+
+variable "cognito_central_enable" {
+  description = "(Optional) Use the Central Cognito instance. Default is False."
+  type        = bool
+  default     = false
 }

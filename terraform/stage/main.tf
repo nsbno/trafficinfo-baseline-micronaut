@@ -55,8 +55,8 @@ module "trafficinfo-baseline-micronaut" {
   tags                 = local.tags
 
   # The Stage Delegated Cognito
-  # cognito_account_id   = "214014793664"
+  # cognito_central_account_id   = "214014793664"
   # hard coded against the only delegated cognito env we have for the moment.
-  cognito_account_id   = "231176028624"
-  cognito_override_env = "test"
+  cognito_central_account_id   = "231176028624"
+  cognito_central_override_env = "test"
 }

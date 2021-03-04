@@ -50,7 +50,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=7fc4e14/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=3a33c7c/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -82,6 +82,9 @@ module "ecs-microservice" {
   schema = templatefile("../static/openapi/baseline.yml", {
     hosted_zone_name = local.shared_config.hosted_zone_name
     basePath         = var.application_name
+
+    # TODO this must be toggleable between central and local cognito config.
+    # store central cognito user_pool_arn in shared configuration as well
     provider_arn     = local.shared_config.user_pool_arn
   })
 
@@ -102,6 +105,9 @@ module "ecs-microservice" {
   # with authentication and authorization.
   #
   # Cognito user pool to create resources in.
+  # TODO
+  # this must be toggleable between central and local cognito config.
+  # store central cognito user_pool_id in shared configuration as well
   user_pool_id = local.shared_config.user_pool_id
 
   cognito_resource_server_identifier_base = local.cognito_resource_server_identifier_base
@@ -121,8 +127,9 @@ module "ecs-microservice" {
 
   # this is the account id to cognito where client credentials
   # for the microservice are retrieved from secrets manager.
-  cognito_account_id = var.cognito_account_id
-  cognito_env = var.cognito_override_env
+  cognito_account_id = var.cognito_central_account_id
+  cognito_env = var.cognito_central_override_env
+  cognito_use_central = var.cognito_central_enable
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
