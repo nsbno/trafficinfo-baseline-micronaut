@@ -12,8 +12,8 @@ plugins {
 
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("application")
-    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
-    id("org.sonarqube") version "3.1"
+    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("org.sonarqube") version "3.1.1"
     id("jacoco")
 }
 
@@ -74,7 +74,7 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-discovery-client")
     implementation("io.micronaut.aws:micronaut-aws-common")
-    implementation("io.micronaut.configuration:micronaut-micrometer-registry-cloudwatch:1.3.1")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-cloudwatch")
     implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
@@ -96,11 +96,11 @@ dependencies {
     /**
      * Third-party dependencies.
      */
-    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.892")
+    implementation("com.amazonaws:aws-java-sdk-ssm:1.11.964")
     implementation("no.cantara.aws:sqs-util:0.7.6")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("ch.qos.logback:logback-classic")
 
     /**
      * Test dependency configurations.
@@ -108,12 +108,12 @@ dependencies {
     testAnnotationProcessor("io.micronaut:micronaut-inject-java")
     testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
-    testImplementation("org.assertj:assertj-core:3.18.1")
+    testImplementation("org.assertj:assertj-core")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.5")
+    testImplementation("io.mockk:mockk:1.10.6")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")

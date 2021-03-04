@@ -1,6 +1,6 @@
 # TODO replace all <placeholders>
 terraform {
-  required_version = "= 0.12.24"
+  required_version = "=0.14.7"
 
   backend "s3" {
     key            = "trafficinfo-baseline-micronaut/main.tfstate"
@@ -14,7 +14,6 @@ terraform {
 }
 
 provider "aws" {
-  version = "3.26.0"
   region              = "eu-west-1"
   allowed_account_ids = ["469515120670"]
 }
@@ -27,7 +26,6 @@ data "aws_secretsmanager_secret_version" "grafana" {
 
 # needed by ecs-microservice module to create a Grafana Dashboard for microservice.
 provider "grafana" {
-  version = "1.8"
   url    = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["url"]
   auth   = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["api_token"]
   org_id = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["org_id"]

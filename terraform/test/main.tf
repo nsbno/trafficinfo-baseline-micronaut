@@ -1,6 +1,6 @@
 # TODO replace all <placeholders>
 terraform {
-  required_version = "= 0.12.24"
+  required_version = ">=0.13.6"
 
   backend "s3" {
     key            = "trafficinfo-baseline-micronaut/main.tfstate"
@@ -14,7 +14,6 @@ terraform {
 }
 
 provider "aws" {
-  version             = "3.26.0"
   region              = "eu-west-1"
   allowed_account_ids = ["535719329059"]
 }
