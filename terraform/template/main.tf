@@ -7,6 +7,19 @@ locals {
   service_account_id = "929368261477"
   shared_config      = jsondecode(data.aws_ssm_parameter.shared_config.value)
 
+  # User pool in local cognito account to use when using a local cognito.
+  user_pool_id = local.shared_config.user_pool_id
+
+  # User pool in central cognito account to use when using a central cognito.
+  # TODO should put the central id into the shared config as well.
+  # Hard coded until added to shared_config
+  cognito_central_user_pool_id = "eu-west-1_Z53b9AbeT"
+  cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:${var.cognito_central_account_id}:userpool/${local.cognito_central_user_pool_id}"
+
+  # For cognito configuration to Cognito
+  # Toggle value used for provider and userpool by cognito_central_enable
+  provider_arn = var.cognito_central_enable ? local.cognito_central_provider_arn : local.shared_config.user_pool_arn
+
   cognito_resource_server_identifier_base = "https://services.${local.shared_config.hosted_zone_name}"
   resource_server_scopes = {
     read_scope = {
@@ -21,7 +34,7 @@ locals {
       "scope_name" : "update"
       "scope_description" : "Update scope for the service."
     }
-   delete_scope = {
+    delete_scope = {
       "scope_name" : "delete"
       "scope_description" : "Delete scope for the service."
     }
@@ -50,7 +63,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=e61cf640ed8b3ea3726b0a8339d5b4a4dd0614df/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=2b8935a5b112f1c7f386b5573ada157081859a6a/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -83,9 +96,7 @@ module "ecs-microservice" {
     hosted_zone_name = local.shared_config.hosted_zone_name
     basePath         = var.application_name
 
-    # TODO this must be toggleable between central and local cognito config.
-    # store central cognito user_pool_arn in shared configuration as well
-    provider_arn     = local.shared_config.user_pool_arn
+    provider_arn = local.provider_arn
   })
 
   base_path   = var.application_name
@@ -105,10 +116,8 @@ module "ecs-microservice" {
   # with authentication and authorization.
   #
   # Cognito user pool to create resources in.
-  # TODO
-  # this must be toggleable between central and local cognito config.
-  # store central cognito user_pool_id in shared configuration as well
-  user_pool_id = local.shared_config.user_pool_id
+  # This will be used to create resource servers in the local account cognito instance.
+  user_pool_id = local.user_pool_id
 
   cognito_resource_server_identifier_base = local.cognito_resource_server_identifier_base
 
@@ -127,9 +136,15 @@ module "ecs-microservice" {
 
   # this is the account id to cognito where client credentials
   # for the microservice are retrieved from secrets manager.
+  #
+  # TODO account_id, userpool_id and override env should
+  # probably be loaded from the shared_config instead to have a
+  # shared set of values for all services.  Would reduce needed
+  # number of parameters to the template.
   cognito_central_account_id = var.cognito_central_account_id
-  cognito_central_env = var.cognito_central_override_env
-  cognito_central_enable = var.cognito_central_enable
+  cognito_central_env        = var.cognito_central_override_env
+  cognito_central_enable     = var.cognito_central_enable
+  cognito_central_user_pool_id = local.cognito_central_user_pool_id
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
