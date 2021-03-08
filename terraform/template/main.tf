@@ -111,7 +111,6 @@ module "ecs-microservice" {
   ## Configure Grafana Dashboard, just enable generation
   # and use default values for all the other
   grafana_create_dashboard = true
-  grafana_folder_name = title("${var.name_prefix} / ${var.environment} / ${var.application_name }")
 
   # grafana_template_file = "${path.module}/custom-dashboard.tpl" # OPTIONAL
   # grafana_folder_name = "Some Name" # OPTIONAL display name for folder.
