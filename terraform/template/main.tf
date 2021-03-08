@@ -23,7 +23,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=d36538d/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=d56e35d4490d183c407d6623494ad0c285c53e8/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -110,7 +110,8 @@ module "ecs-microservice" {
 
   ## Configure Grafana Dashboard, just enable generation
   # and use default values for all the other
-  # grafana_create_dashboard = true
+  grafana_create_dashboard = true
+  grafana_folder_name = title("${var.name_prefix} / ${var.environment} / ${var.application_name }")
 
   # grafana_template_file = "${path.module}/custom-dashboard.tpl" # OPTIONAL
   # grafana_folder_name = "Some Name" # OPTIONAL display name for folder.
