@@ -149,14 +149,8 @@ module "ecs-microservice" {
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
 
-
-  ## Configure Grafana Dashboard, just enable generation
-  # and use default values for all the other
-  # grafana_create_dashboard = true
-
-  # grafana_template_file = "${path.module}/custom-dashboard.tpl" # OPTIONAL
-  # grafana_folder_name = "Some Name" # OPTIONAL display name for folder.
-  # grafana_use_existing_folder = 123 # OPTIONAL folder id found in grafana
+  # Enable generation of standard dashboards with ecs-microservice module.
+  grafana_create_dashboard = true
 }
 
 resource "aws_kms_key" "baseline_params_key" {}
