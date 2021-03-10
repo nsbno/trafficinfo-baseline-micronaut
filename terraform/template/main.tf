@@ -63,7 +63,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=2b8935a5b112f1c7f386b5573ada157081859a6a/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=e299c7ef13e402a9463d47b41a0db05fe9d744ba/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -122,10 +122,10 @@ module "ecs-microservice" {
   cognito_resource_server_identifier_base = local.cognito_resource_server_identifier_base
 
   # Enabled to create a resource server for the microservice in Cognito.
-  create_resource_server = 1
+  create_resource_server = true
 
   # Enabled to create an app client for the microservice in Cognito..
-  create_app_client = 1
+  create_app_client = true
 
   # resource server scopes, just for testing.
   resource_server_scopes = local.resource_server_scopes
