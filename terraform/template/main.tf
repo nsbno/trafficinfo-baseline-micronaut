@@ -11,10 +11,8 @@ locals {
   user_pool_id = local.shared_config.user_pool_id
 
   # User pool in central cognito account to use when using a central cognito.
-  # TODO should put the central id into the shared config as well.
-  # Hard coded until added to shared_config
-  cognito_central_user_pool_id = "eu-west-1_Z53b9AbeT"
-  cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:${var.cognito_central_account_id}:userpool/${local.cognito_central_user_pool_id}"
+  cognito_central_user_pool_id = local.shared_config.cognito_central_user_pool_id
+  cognito_central_provider_arn = local.shared_config.cognito_central_provider_arn
 
   # For cognito configuration to Cognito
   # Toggle value used for provider and userpool by cognito_central_enable
@@ -63,7 +61,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=e299c7ef13e402a9463d47b41a0db05fe9d744ba/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=ed12a1eaaf1ef421933b00fbe77bf60dd68ede3b/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -136,11 +134,6 @@ module "ecs-microservice" {
 
   # this is the account id to cognito where client credentials
   # for the microservice are retrieved from secrets manager.
-  #
-  # TODO account_id, userpool_id and override env should
-  # probably be loaded from the shared_config instead to have a
-  # shared set of values for all services.  Would reduce needed
-  # number of parameters to the template.
   cognito_central_account_id = var.cognito_central_account_id
   cognito_central_env        = var.cognito_central_override_env
   cognito_central_enable     = var.cognito_central_enable
