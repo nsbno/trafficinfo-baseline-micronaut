@@ -61,7 +61,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=ed12a1eaaf1ef421933b00fbe77bf60dd68ede3b/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=867aa199a1ad7c689bad62393414774484b796a2/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
