@@ -43,7 +43,7 @@ variable "cognito_central_bucket" {
 }
 
 variable "cognito_central_enable" {
-  description = "(Optional) Use the Central Cognito instance. Default is False."
+  description = "(Optional) Use the Central Cognito instance. Default is True."
   type        = bool
-  default     = false
+  default     = true
 }
