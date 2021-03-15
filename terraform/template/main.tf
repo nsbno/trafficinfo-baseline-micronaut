@@ -144,6 +144,9 @@ module "ecs-microservice" {
 
   # Enable generation of standard dashboards with ecs-microservice module.
   grafana_create_dashboard = true
+
+  # Enable x-ray tracing.
+  api_gateway_enable_xray = true
 }
 
 resource "aws_kms_key" "baseline_params_key" {}
