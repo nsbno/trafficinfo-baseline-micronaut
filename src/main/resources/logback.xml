@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="no/vy/trafficinfo/common/logging/base.xml"/>
 
-    <logger name="io.micronaut.http.server.netty" level="WARN"/>
-    <logger name="io.micronaut.http.client" level="WARN"/>
-    <logger name="io.micronaut" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
-    <logger name="org.apache" level="INFO"/>
-    <logger name="com.amazonaws" level="INFO"/>
-
-    <logger name="io.micronaut.security" level="TRACE"/>
-    <logger name="io.micronaut.discovery.aws.parameterstore" level="TRACE"/>
-    <logger name="io.micronaut.security.token.jwt.validator" level="TRACE"/>
+    <logger name="io.micronaut.http.server.netty" level="DEBUG"/>
+    <logger name="io.micronaut.security" level="DEBUG"/>
 
     <!--
     <logger name="io.micronaut.security" level="DEBUG"/>
     <logger name="io.micronaut.http.server.netty.NettyHttpServer" level="WARN"/>
+    <logger name="io.micronaut.security" level="DEBUG"/>
+    <logger name="io.micronaut.http.client" level="TRACE"/>
     -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
-        </encoder>
-    </appender>
 
-    <root level="TRACE">
-        <appender-ref ref="STDOUT"/>
-    </root>
 </configuration>
+
