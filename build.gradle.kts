@@ -91,7 +91,7 @@ dependencies {
      * Trafficinfo Common Dependencies.
      */
     implementation("no.vy.trafficinfo.common:logging:0.0.2")
-    implementation("no.vy.trafficinfo.common:security:0.1.0")
+    implementation("no.vy.trafficinfo.common:security:0.1.1")
 
     /**
      * Third-party dependencies.
