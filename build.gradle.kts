@@ -91,7 +91,7 @@ dependencies {
      * Trafficinfo Common Dependencies.
      */
     implementation("no.vy.trafficinfo.common:logging:0.0.2")
-    implementation("no.vy.trafficinfo.common:security:0.1.1")
+    implementation("no.vy.trafficinfo.common:security:0.1.2")
 
     /**
      * Third-party dependencies.
@@ -113,7 +113,7 @@ dependencies {
 
     testImplementation("org.assertj:assertj-core")
     testImplementation("com.github.tomakehurst:wiremock:2.27.2")
-    testImplementation("io.mockk:mockk:1.10.6")
+    testImplementation("io.mockk:mockk:1.11.0")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
