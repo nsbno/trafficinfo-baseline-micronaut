@@ -16,6 +16,6 @@ import no.vy.trafficinfo.common.security.client.filters.AccessTokenAuth
 @Client("whoami")
 interface WhoamiClient : WhoamiOperations {
 
-    @Get("/whoami")
+    @Get("/")
     override fun whoami(): Single<String>
 }
