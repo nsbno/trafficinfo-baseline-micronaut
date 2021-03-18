@@ -61,7 +61,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=a9b6c0b155d559d8e723df186216ad639764d243/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=1b8be0f/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -136,8 +136,7 @@ module "ecs-microservice" {
   # for the microservice are retrieved from secrets manager.
   cognito_central_account_id = var.cognito_central_account_id
   cognito_central_env        = var.cognito_central_override_env
-  cognito_central_bucket     = ""      # disable cognito s3 upload
-  cognito_central_enable     = false   # disable cognito pipeline
+  cognito_central_enable     = var.cognito_central_enable
   cognito_central_user_pool_id = local.cognito_central_user_pool_id
 
   enable_elasticcloud = true
