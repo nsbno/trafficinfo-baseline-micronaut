@@ -52,11 +52,5 @@ module "trafficinfo-baseline-micronaut" {
   tags                 = local.tags
 
   # The Test Delegated Cognito environment.
-  # hard coded against the only delegated cognito env we have for the moment.
-  # TODO probably add this to shared_config and remove variables.
   cognito_central_account_id   = "231176028624"
-  cognito_central_override_env = "test"
-
-  # use the secret credentials from central cognito
-  cognito_central_enable = true
 }
