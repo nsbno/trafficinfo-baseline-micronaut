@@ -53,7 +53,7 @@ module "trafficinfo-baseline-micronaut" {
 
   # The Delegated Cognito Prod environment
   cognito_central_account_id   = "387958190215"
-  cognito_central_provider_arn = "eu-west-1_e6o46c1oE"
-  cognito_central_user_pool_id = "arn:aws:cognito-idp:eu-west-1:387958190215:userpool/eu-west-1_e6o46c1oE"
+  cognito_central_user_pool_id = "eu-west-1_e6o46c1oE"
+  cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:387958190215:userpool/eu-west-1_e6o46c1oE"
 
 }
