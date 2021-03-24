@@ -18,7 +18,8 @@ locals {
   # Toggle value used for provider and userpool by cognito_central_enable
   provider_arn = var.cognito_central_enable ? local.cognito_central_provider_arn : local.shared_config.user_pool_arn
 
-  cognito_resource_server_identifier_base = "https://services${trimprefix(local.shared_config.hosted_zone_name, var.environment)}"
+  # make resource server same in all envs. f.ex. services.trafficinfo.vydev.io
+  cognito_resource_server_identifier_base = "https://services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
   resource_server_scopes = {
     read_scope = {
       "scope_name" : "read"
