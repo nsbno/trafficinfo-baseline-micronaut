@@ -11,8 +11,8 @@ locals {
   user_pool_id = local.shared_config.user_pool_id
 
   # User pool in central cognito account to use when using a central cognito.
-  cognito_central_user_pool_id = local.shared_config.cognito_central_user_pool_id
-  cognito_central_provider_arn = local.shared_config.cognito_central_provider_arn
+  cognito_central_user_pool_id = length(var.cognito_central_user_pool_id)>9 ? var.cognito_central_user_pool_id : local.shared_config.cognito_central_user_pool_id
+  cognito_central_provider_arn = length(var.cognito_central_provider_arn)>9 ? var.cognito_central_provider_arn : local.shared_config.cognito_central_provider_arn
 
   # For cognito configuration to Cognito
   # Toggle value used for provider and userpool by cognito_central_enable
