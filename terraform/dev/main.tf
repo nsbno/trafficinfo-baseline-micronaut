@@ -49,9 +49,7 @@ module "trafficinfo-baseline-micronaut" {
   tags                 = local.tags
 
   # The Dev environment.
-  # cognito_central_account_id   = "834626710667"
-  # hard coded against test until Erlend has created the dev environment.
-  cognito_central_account_id   = "231176028624"
-  cognito_central_override_env = "test"
-
+  cognito_central_account_id   = "834626710667"
+  cognito_central_user_pool_id = "eu-west-1_0AvVv5Wyk"
+  cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:834626710667:userpool/eu-west-1_0AvVv5Wyk"
 }

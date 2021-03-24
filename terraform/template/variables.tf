@@ -47,3 +47,15 @@ variable "cognito_central_enable" {
   type        = bool
   default     = true
 }
+
+variable "cognito_central_user_pool_id" {
+  description = "(Optional) Override the shared config user pool id."
+  type        = string
+  default     = ""
+}
+
+variable "cognito_central_provider_arn" {
+  description = "(Optional) Override the shared config provider arn."
+  type        = string
+  default     = ""
+}

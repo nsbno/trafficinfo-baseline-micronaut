@@ -53,4 +53,7 @@ module "trafficinfo-baseline-micronaut" {
 
   # The Stage Delegated Cognito
   cognito_central_account_id   = "214014793664"
+  cognito_central_user_pool_id = "eu-west-1_AUYQ679zW"
+  cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:214014793664:userpool/eu-west-1_AUYQ679zW"
+
 }
