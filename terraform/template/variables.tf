@@ -59,3 +59,9 @@ variable "cognito_central_provider_arn" {
   type        = string
   default     = ""
 }
+
+variable "cognito_central_resource_server_identifier" {
+  description = "(Optional) Configure the base identifier used by central cognito when creating resource servers."
+  type        = string
+  default     = ""
+}

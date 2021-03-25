@@ -13,6 +13,7 @@ locals {
   # User pool in central cognito account to use when using a central cognito.
   cognito_central_user_pool_id = length(var.cognito_central_user_pool_id)>0 ? var.cognito_central_user_pool_id : local.shared_config.cognito_central_user_pool_id
   cognito_central_provider_arn = length(var.cognito_central_provider_arn)>0 ? var.cognito_central_provider_arn : local.shared_config.cognito_central_provider_arn
+  cognito_central_resource_server_identifier = length(var.cognito_central_resource_server_identifier)>0 ? var.cognito_central_resource_server_identifier : local.shared_config.cognito_central_resource_server_identifier
 
   # For cognito configuration to Cognito
   # Toggle value used for provider and userpool by cognito_central_enable
@@ -62,7 +63,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=4283cca/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=efa8c74/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -139,6 +140,7 @@ module "ecs-microservice" {
   cognito_central_env        = var.cognito_central_override_env
   cognito_central_enable     = var.cognito_central_enable
   cognito_central_user_pool_id = local.cognito_central_user_pool_id
+  cognito_central_resource_server_identifier = local.cognito_central_resource_server_identifier
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
