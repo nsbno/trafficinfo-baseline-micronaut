@@ -150,7 +150,7 @@ module "ecs-microservice" {
 
   # Enable x-ray tracing.
   api_gateway_enable_xray = true
-} 
+}
 
 resource "aws_kms_key" "baseline_params_key" {}
 resource "aws_kms_alias" "baseline_params_key_alias" {
