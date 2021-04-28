@@ -63,7 +63,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=efa8c74/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=f02cad1/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -150,7 +150,7 @@ module "ecs-microservice" {
 
   # Enable x-ray tracing.
   api_gateway_enable_xray = true
-}
+} 
 
 resource "aws_kms_key" "baseline_params_key" {}
 resource "aws_kms_alias" "baseline_params_key_alias" {
