@@ -45,6 +45,7 @@ locals {
     "${local.cognito_resource_server_identifier_base}/${var.application_name}/write",
     "${local.cognito_resource_server_identifier_base}/${var.application_name}/update",
     "${local.cognito_resource_server_identifier_base}/${var.application_name}/delete",
+    "https://services.trafficinfo.vydev.io/operating-trainroute/operating-train-route",
   ]
 }
 
