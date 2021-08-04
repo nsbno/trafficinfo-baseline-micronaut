@@ -7,6 +7,12 @@ import io.micronaut.security.annotation.Secured
 import io.micronaut.security.authentication.Authentication
 import io.micronaut.security.rules.SecurityRule
 import io.reactivex.Single
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.extensions.Extension
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
 import no.vy.trafficinfo.baseline.micronaut.services.CallbackClient
 import no.vy.trafficinfo.baseline.micronaut.services.WhoamiClient
@@ -58,15 +64,58 @@ class SecuredController {
      * To test A2A communication to Whoami with authentication.
      * Should propagate the incoming access token by default.
      */
+    @Operation(
+        summary = "To test A2A communication to Whoami with authentication. " +
+            "Should propagate the incoming access token by default.",
+        responses = arrayOf(
+            ApiResponse(
+                responseCode = "200",
+                content = arrayOf(
+                    Content(
+                        mediaType = "application/json"
+                    )
+                ),
+                description = "A successful request which return a list of Nominal Dates."
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = arrayOf(
+                    Content(
+                        mediaType = "application/problem+json"
+                    )
+                ),
+                description = "A successful request which return a list of Nominal Dates."
+
+            ),
+        extensions = arrayOf(
+            Extension(
+                name = "x-amazon-apigateway-integration",
+                properties = [
+                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                    ExtensionProperty(name = "uri", value = "https://svclb.\${hosted_zone_name}/\${basePath}/secured/whoami"),
+                    ExtensionProperty(name = "httpMethod", value = "GET"),
+                    ExtensionProperty(name = "type", value = "http_proxy")
+                ]
+            ),
+            Extension(
+                name = "x-amazon-apigateway-request-validator",
+
+                properties = [
+                    ExtensionProperty(
+                        name = "x-amazon-apigateway-request-validator",
+                        value = "Validate body, query string parameters, and headers"
+                    )
+                ]
+            )
+        )
+    )
     @Get("/whoami")
     @Produces(MediaType.APPLICATION_JSON)
-/*
     @RolesAllowed(
             "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
             "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
             "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
             "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
-*/
     fun securedWhoami(): Single<String> {
         return whoamiClient.whoami()
     }
