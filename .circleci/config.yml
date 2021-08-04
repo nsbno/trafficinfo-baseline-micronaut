@@ -19,7 +19,7 @@ orbs:
 jobs:
   build-gradle:
     docker:
-      - image:  gradle:5.6.2-jdk12
+      - image:  gradle:jdk15-hotspot
     working_directory: ~/repo
     steps:
       - checkout
