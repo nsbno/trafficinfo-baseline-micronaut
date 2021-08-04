@@ -65,7 +65,7 @@ workflows:
           context: trafficinfo
           ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
           requires:
-            - trafficinfo/build
+            - build-gradle
           post-steps:
             - trafficinfo/slack-failure
 
@@ -83,7 +83,7 @@ workflows:
             branches:
               only: master
           requires:
-            - trafficinfo/build
+            - build-gradle
 
           post-steps:
             - trafficinfo/slack-failure
