@@ -16,12 +16,47 @@ orbs:
   stepfunction-ci: vydev/ciorb@2.0.4
   trafficinfo: vydev/trafficinfo-orb@0.1.0
 
+jobs:
+  build-gradle:
+    docker:
+      - image:  gradle:5.6.2-jdk12
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v3-tc-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v3-tc-dependencies-
+      - run: ./gradlew --stacktrace clean test assemble jacocoTestReport sonar -Pversion="${CIRCLE_SHA1}" -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v3-tc-dependencies-{{ checksum "build.gradle" }}
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - build
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+      - store_artifacts:
+          path: build/reports/tests/test
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
       - stepfunction-ci/timestamp
-      - trafficinfo/build:
+      - build-gradle:
           context: trafficinfo
           post-steps:
             - trafficinfo/slack-failure
