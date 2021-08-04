@@ -26,14 +26,14 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v3-tc-dependencies-{{ checksum "build.gradle" }}
+            - v3-tc-dependencies-{{ checksum "build.gradle.kts" }}
             # fallback to using the latest cache if no exact match is found
             - v3-tc-dependencies-
       - run: ./gradlew --stacktrace clean test assemble jacocoTestReport sonar -Pversion="${CIRCLE_SHA1}" -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$CIRCLE_PROJECT_REPONAME
       - save_cache:
           paths:
             - ~/.gradle
-          key: v3-tc-dependencies-{{ checksum "build.gradle" }}
+          key: v3-tc-dependencies-{{ checksum "build.gradle.kts" }}
       - persist_to_workspace:
           root: ./
           paths:
