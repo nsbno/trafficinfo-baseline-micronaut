@@ -81,4 +81,4 @@ object Application {
         System.setProperty("aws.profile", awsProfile)
         log.info("AWS profile $awsProfile set")
     }
-<}
+}
