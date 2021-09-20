@@ -22,7 +22,9 @@ workflows:
     jobs:
       - stepfunction-ci/timestamp
       - trafficinfo/build:
-          context: trafficinfo
+          context:
+            - trafficinfo
+            - nexus
           post-steps:
             - trafficinfo/slack-failure
 
