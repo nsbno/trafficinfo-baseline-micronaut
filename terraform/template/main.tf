@@ -108,8 +108,8 @@ module "ecs-microservice" {
   sns_subscribe_topics = []
   encryption_keys      = [aws_kms_key.baseline_params_key.arn]
   s3_read_buckets      = []
-  alarms_degraded_sns_topic_arn = [local.shared_config.alarm_sns_topic_arn]
-  alarms_critical_sns_topic_arn = [local.shared_config.alarm_sns_topic_arn]
+  alarms_degraded_sns_topic_arn = [local.shared_config.alarm_degraded_sns_topic_arn]
+  alarms_critical_sns_topic_arn = [local.shared_config.alarm_critical_sns_topic_arn]
   hosted_zone_name     = local.shared_config.hosted_zone_name
 
   ##################
