@@ -63,7 +63,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=f02cad1/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=6adeed8/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -108,7 +108,8 @@ module "ecs-microservice" {
   sns_subscribe_topics = []
   encryption_keys      = [aws_kms_key.baseline_params_key.arn]
   s3_read_buckets      = []
-  alarms_sns_topic_arn = [local.shared_config.alarm_sns_topic_arn]
+  alarms_degraded_sns_topic_arn = [local.shared_config.alarm_sns_topic_arn]
+  alarms_critical_sns_topic_arn = [local.shared_config.alarm_sns_topic_arn]
   hosted_zone_name     = local.shared_config.hosted_zone_name
 
   ##################
