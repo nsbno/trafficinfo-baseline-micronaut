@@ -86,7 +86,8 @@ class SecuredController {
                 ),
                 description = "A successful request which return a list of Nominal Dates."
 
-            ),
+            )
+        ),
         extensions = arrayOf(
             Extension(
                 name = "x-amazon-apigateway-integration",
