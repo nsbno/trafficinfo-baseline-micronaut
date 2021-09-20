@@ -63,7 +63,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=6adeed8/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=6fb18c7232a0a77ed03d7e2eec7fc9339ae32900/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -108,9 +108,12 @@ module "ecs-microservice" {
   sns_subscribe_topics = []
   encryption_keys      = [aws_kms_key.baseline_params_key.arn]
   s3_read_buckets      = []
-  alarms_degraded_sns_topic_arn = [local.shared_config.alarm_degraded_sns_topic_arn]
-  alarms_critical_sns_topic_arn = [local.shared_config.alarm_critical_sns_topic_arn]
   hosted_zone_name     = local.shared_config.hosted_zone_name
+
+  ##################
+  # PagerDuty endpoints for service to send alarms.
+  pager_duty_critical_endpoint = "https://events.pagerduty.com/integration/ca3fc8293d2c450ed05225325e852f5a/enqueue"
+  pager_duty_degraded_endpoint = "https://events.pagerduty.com/integration/4fa87dd7e01d410dc0337836e1abca39/enqueue"
 
   ##################
   # Added Cognito configuration as example of how to configura a service
