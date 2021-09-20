@@ -11,9 +11,9 @@ locals {
   user_pool_id = local.shared_config.user_pool_id
 
   # User pool in central cognito account to use when using a central cognito.
-  cognito_central_user_pool_id = length(var.cognito_central_user_pool_id)>0 ? var.cognito_central_user_pool_id : local.shared_config.cognito_central_user_pool_id
-  cognito_central_provider_arn = length(var.cognito_central_provider_arn)>0 ? var.cognito_central_provider_arn : local.shared_config.cognito_central_provider_arn
-  cognito_central_resource_server_identifier = length(var.cognito_central_resource_server_identifier)>0 ? var.cognito_central_resource_server_identifier : local.shared_config.cognito_central_resource_server_identifier
+  cognito_central_user_pool_id               = length(var.cognito_central_user_pool_id) > 0 ? var.cognito_central_user_pool_id : local.shared_config.cognito_central_user_pool_id
+  cognito_central_provider_arn               = length(var.cognito_central_provider_arn) > 0 ? var.cognito_central_provider_arn : local.shared_config.cognito_central_provider_arn
+  cognito_central_resource_server_identifier = length(var.cognito_central_resource_server_identifier) > 0 ? var.cognito_central_resource_server_identifier : local.shared_config.cognito_central_resource_server_identifier
 
   # For cognito configuration to Cognito
   # Toggle value used for provider and userpool by cognito_central_enable
@@ -112,8 +112,8 @@ module "ecs-microservice" {
 
   ##################
   # PagerDuty endpoints for service to send alarms.
-  pager_duty_critical_endpoint = "https://events.pagerduty.com/integration/ca3fc8293d2c450ed05225325e852f5a/enqueue"
-  pager_duty_degraded_endpoint = "https://events.pagerduty.com/integration/4fa87dd7e01d410dc0337836e1abca39/enqueue"
+  pager_duty_critical_endpoint = var.pager_duty_critical_endpoint
+  pager_duty_degraded_endpoint = var.pager_duty_degraded_endpoint
 
   ##################
   # Added Cognito configuration as example of how to configura a service
@@ -140,10 +140,10 @@ module "ecs-microservice" {
 
   # this is the account id to cognito where client credentials
   # for the microservice are retrieved from secrets manager.
-  cognito_central_account_id = var.cognito_central_account_id
-  cognito_central_env        = var.cognito_central_override_env
-  cognito_central_enable     = var.cognito_central_enable
-  cognito_central_user_pool_id = local.cognito_central_user_pool_id
+  cognito_central_account_id                 = var.cognito_central_account_id
+  cognito_central_env                        = var.cognito_central_override_env
+  cognito_central_enable                     = var.cognito_central_enable
+  cognito_central_user_pool_id               = local.cognito_central_user_pool_id
   cognito_central_resource_server_identifier = local.cognito_central_resource_server_identifier
 
   enable_elasticcloud = true
