@@ -15,4 +15,4 @@ RUN chmod 755 $HOME/*.sh && \
 EXPOSE 8080
 
 WORKDIR /home/$USER
-CMD [ "./runapp.sh"]
+CMD [ "./runapp.not_working"]
