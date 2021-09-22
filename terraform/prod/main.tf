@@ -55,4 +55,8 @@ module "trafficinfo-baseline-micronaut" {
   cognito_central_account_id   = "387958190215"
   cognito_central_user_pool_id = "eu-west-1_e6o46c1oE"
   cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:387958190215:userpool/eu-west-1_e6o46c1oE"
+
+  # Subscribe alarms to PagerDuty endpoints.
+  pager_duty_critical_endpoint = "https://events.pagerduty.com/integration/ca3fc8293d2c450ed05225325e852f5a/enqueue"
+  pager_duty_degraded_endpoint = "https://events.pagerduty.com/integration/4fa87dd7e01d410dc0337836e1abca39/enqueue"
 }
