@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.extensions.Extension
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
 import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
 import no.vy.trafficinfo.baseline.micronaut.services.CallbackClient
@@ -86,7 +85,8 @@ class SecuredController {
                 ),
                 description = "A successful request which return a list of Nominal Dates."
 
-            ),
+            )
+        ),
         extensions = arrayOf(
             Extension(
                 name = "x-amazon-apigateway-integration",
@@ -112,10 +112,11 @@ class SecuredController {
     @Get("/whoami")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(
-            "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
-            "https://services.trafficinfo.vydev.io/baseline-micronaut/read")
+        "https://services.dev.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.test.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.stage.trafficinfo.vydev.io/baseline-micronaut/read",
+        "https://services.trafficinfo.vydev.io/baseline-micronaut/read"
+    )
     fun securedWhoami(): Single<String> {
         return whoamiClient.whoami()
     }

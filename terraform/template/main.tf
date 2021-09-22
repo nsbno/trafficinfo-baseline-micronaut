@@ -11,9 +11,9 @@ locals {
   user_pool_id = local.shared_config.user_pool_id
 
   # User pool in central cognito account to use when using a central cognito.
-  cognito_central_user_pool_id = length(var.cognito_central_user_pool_id)>0 ? var.cognito_central_user_pool_id : local.shared_config.cognito_central_user_pool_id
-  cognito_central_provider_arn = length(var.cognito_central_provider_arn)>0 ? var.cognito_central_provider_arn : local.shared_config.cognito_central_provider_arn
-  cognito_central_resource_server_identifier = length(var.cognito_central_resource_server_identifier)>0 ? var.cognito_central_resource_server_identifier : local.shared_config.cognito_central_resource_server_identifier
+  cognito_central_user_pool_id               = length(var.cognito_central_user_pool_id) > 0 ? var.cognito_central_user_pool_id : local.shared_config.cognito_central_user_pool_id
+  cognito_central_provider_arn               = length(var.cognito_central_provider_arn) > 0 ? var.cognito_central_provider_arn : local.shared_config.cognito_central_provider_arn
+  cognito_central_resource_server_identifier = length(var.cognito_central_resource_server_identifier) > 0 ? var.cognito_central_resource_server_identifier : local.shared_config.cognito_central_resource_server_identifier
 
   # For cognito configuration to Cognito
   # Toggle value used for provider and userpool by cognito_central_enable
@@ -63,7 +63,7 @@ data "aws_ssm_parameter" "shared_config" {
 #                                #
 ##################################
 module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=f02cad1/ecs-microservice"
+  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=3d0c6068a1340ee81815af11997d3b2c9f3e7783/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
   ecs_cluster = {
@@ -108,8 +108,12 @@ module "ecs-microservice" {
   sns_subscribe_topics = []
   encryption_keys      = [aws_kms_key.baseline_params_key.arn]
   s3_read_buckets      = []
-  alarms_sns_topic_arn = [local.shared_config.alarm_sns_topic_arn]
   hosted_zone_name     = local.shared_config.hosted_zone_name
+
+  ##################
+  # PagerDuty endpoints for service to send alarms.
+  pager_duty_critical_endpoint = var.pager_duty_critical_endpoint
+  pager_duty_degraded_endpoint = var.pager_duty_degraded_endpoint
 
   ##################
   # Added Cognito configuration as example of how to configura a service
@@ -136,10 +140,10 @@ module "ecs-microservice" {
 
   # this is the account id to cognito where client credentials
   # for the microservice are retrieved from secrets manager.
-  cognito_central_account_id = var.cognito_central_account_id
-  cognito_central_env        = var.cognito_central_override_env
-  cognito_central_enable     = var.cognito_central_enable
-  cognito_central_user_pool_id = local.cognito_central_user_pool_id
+  cognito_central_account_id                 = var.cognito_central_account_id
+  cognito_central_env                        = var.cognito_central_override_env
+  cognito_central_enable                     = var.cognito_central_enable
+  cognito_central_user_pool_id               = local.cognito_central_user_pool_id
   cognito_central_resource_server_identifier = local.cognito_central_resource_server_identifier
 
   enable_elasticcloud = true
