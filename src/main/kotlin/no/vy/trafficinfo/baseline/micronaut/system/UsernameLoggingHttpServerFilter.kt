@@ -16,7 +16,7 @@ import org.slf4j.MDC
  * TODO move this to common-logging for reuse.
  */
 @Filter("/**")
-class UsernameLoggingHttpServerFilter(val securityService: SecurityService) : HttpServerFilter {
+class UsernameLoggingHttpServerFilter(private val securityService: SecurityService) : HttpServerFilter {
     private val log: Logger = LoggerFactory.getLogger(UsernameLoggingHttpServerFilter::class.java)
 
     // make sure the filter is executed last to contain the current logged in user.
