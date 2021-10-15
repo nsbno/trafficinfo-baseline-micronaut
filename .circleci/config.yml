@@ -25,8 +25,7 @@ workflows:
           context:
             - trafficinfo
             - nexus
-          jdk_version: 16
-          gradle_version: 7.2
+          jdk_version: "16"
           post-steps:
             - trafficinfo/slack-failure
 
