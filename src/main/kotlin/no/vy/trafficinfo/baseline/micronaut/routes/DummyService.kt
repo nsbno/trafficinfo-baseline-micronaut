@@ -10,7 +10,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 /**
- * Just a fake service to send dummy TIS messages.
+ * Just a fake service that creates messages to route direct:start in Camel.
+ * It spams Camel with 100 messages per second to see how it handles it.
+ * The message it sends is a hard coded ReasonCodes message from TIOS.
  */
 @Singleton
 class DummyService {

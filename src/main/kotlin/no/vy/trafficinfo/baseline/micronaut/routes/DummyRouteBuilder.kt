@@ -9,19 +9,15 @@ import org.slf4j.LoggerFactory
 import jakarta.inject.Singleton
 import java.util.concurrent.TimeUnit
 
+/**
+ * A simple Camel Route that received an incoming
+ * request on direct:start and calls a Bean that logs it.
+ */
 @Singleton
 class DummyRouteBuilder : RouteBuilder() {
 
     @Throws(Exception::class)
     override fun configure() {
-        val poolProfile = ThreadPoolProfile("masterPoolProfile")
-        poolProfile.maxPoolSize = 100
-        poolProfile.maxQueueSize = 100
-        poolProfile.poolSize = 100
-        poolProfile.keepAliveTime = 1
-        poolProfile.timeUnit = TimeUnit.MINUTES
-        context.executorServiceManager.defaultThreadPoolProfile = poolProfile
-
         onException()
             .handled(true)
             .maximumRedeliveries(2)
