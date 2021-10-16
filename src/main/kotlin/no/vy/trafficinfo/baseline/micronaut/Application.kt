@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
 @OpenAPIDefinition(
     info = Info(
         title = "Micronaut Baseline",
-        version = "1.0",
+        version = "3.1",
         description = "Micronaut Baseline project used as tempalate for new microservices.",
         contact = Contact(url = "https://vy.no", name = "Daniel Engfeldt", email = "daniel.engfeldt@vy.no")
     ),
@@ -60,8 +60,9 @@ object Application {
     fun main(args: Array<String>) {
 // FIXME: 08.07.2021 this should be configurable by args or system properties
 // to be toggleable externally on / off.
-//      initAwsCredentials()
+        initAwsCredentials()
 
+        // Start Micronaut
         Micronaut.build()
             .packages("no.vy.trafficinfo.baseline.micronaut")
             .mainClass(Application.javaClass)

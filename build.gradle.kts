@@ -24,6 +24,7 @@ val spekVersion: String by project
 val artifactGroup = group
 val artifactVersion = version
 val targetJvmVersion: String by project
+val camelVersion: String by project
 
 fun getProperty(name: String): String? {
     return if (project.properties[name] != null)
@@ -124,6 +125,16 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
+
+    /**
+     * Camel dependencies
+     */
+    implementation(enforcedPlatform("org.apache.camel:camel-bom:$camelVersion"))
+    implementation("org.apache.camel:camel-main")
+    implementation("org.apache.camel:camel-log")
+    implementation("org.apache.camel:camel-direct")
+    implementation("org.apache.camel:camel-bean")
+    implementation("org.apache.camel:camel-micrometer")
 
     /**
      * Test dependency configurations.
