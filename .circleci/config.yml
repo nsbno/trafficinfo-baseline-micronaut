@@ -76,7 +76,6 @@ workflows:
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
-            - stepfunction-ci/timestamp
           post-steps:
             - trafficinfo/slack-failure
 
