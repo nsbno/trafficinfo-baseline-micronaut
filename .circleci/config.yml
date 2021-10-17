@@ -13,8 +13,8 @@ parameters:
 
 
 orbs:
-  stepfunction-ci: vydev/ciorb@2.0.4
-  trafficinfo: vydev/trafficinfo-orb@0.1.0
+  stepfunction-ci: vydev/ciorb@2.0.5
+  trafficinfo: vydev/trafficinfo-orb@0.2.0
 
 workflows:
   version: 2
@@ -25,6 +25,7 @@ workflows:
           context:
             - trafficinfo
             - nexus
+          jdk_version: "16"
           post-steps:
             - trafficinfo/slack-failure
 

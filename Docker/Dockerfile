@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk15:jdk-15.0.1_9-alpine
+FROM adoptopenjdk/openjdk16:jdk-16.0.2_7-alpine
 ENV USER=appuser
 ENV JAVA_HOME=/opt/java/openjdk \
     HOME=/home/$USER \

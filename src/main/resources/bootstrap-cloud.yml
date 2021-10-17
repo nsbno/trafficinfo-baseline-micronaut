@@ -5,8 +5,8 @@ micronaut:
     enabled: true
 
   metrics:
-    # "Disables" client metrics by setting path to an unused path
     http:
+      # "Disables" client metrics by setting path to an unused path
       client:
         path: /do-not-log-client-requests
 
