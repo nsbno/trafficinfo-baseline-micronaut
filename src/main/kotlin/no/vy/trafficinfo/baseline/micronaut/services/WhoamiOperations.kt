@@ -1,7 +1,7 @@
 package no.vy.trafficinfo.baseline.micronaut.services
 
-import io.reactivex.Single
+import reactor.core.publisher.Mono
 
 interface WhoamiOperations {
-    fun whoami(): Single<String>
+    fun whoami(): Mono<String>
 }

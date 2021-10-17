@@ -2,8 +2,7 @@ package no.vy.trafficinfo.baseline.micronaut.services
 
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client
-import io.reactivex.Single
-import no.vy.trafficinfo.common.security.client.filters.AccessTokenAuth
+import reactor.core.publisher.Mono
 
 /**
  * Client to call WHOAMI service for testing.
@@ -12,10 +11,10 @@ import no.vy.trafficinfo.common.security.client.filters.AccessTokenAuth
  * token has been retrieved from Cognito, and if the token is missing or has
  * expired retrieves a new one from Cognito.
  */
-@AccessTokenAuth
+// @AccessTokenAuth
 @Client("whoami")
 interface WhoamiClient : WhoamiOperations {
 
     @Get("/")
-    override fun whoami(): Single<String>
+    override fun whoami(): Mono<String>
 }

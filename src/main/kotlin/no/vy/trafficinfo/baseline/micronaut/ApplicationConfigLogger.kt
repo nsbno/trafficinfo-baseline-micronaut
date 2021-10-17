@@ -5,8 +5,8 @@ import io.micronaut.context.env.Environment
 import io.micronaut.context.env.PropertySource
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.regex.Pattern
 import javax.annotation.PostConstruct
+import java.util.regex.Pattern
 
 /**
  * Dump all configuration to log after context has been created.
@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct
  * function will be executed.
  */
 @Context
-class ApplicationConfigLogger(val environment: Environment) {
+class ApplicationConfigLogger(private val environment: Environment) {
     private val log: Logger = LoggerFactory.getLogger(ApplicationConfigLogger::class.java)
 
     // mask sensitive information  that should not be printed to the logs.
@@ -64,21 +64,44 @@ class ApplicationConfigLogger(val environment: Environment) {
      * @param level is how deep it has recursively traversed.
      * @return a String generated from the input Map.
      */
-    private fun prettyPrintMap(input: Map<String, Any>, level: Int): String = input.entries.map {
-        when (it.value) {
+    private fun prettyPrintMap(input: Map<*, *>, level: Int): String = input.entries.joinToString("\n") {
+        when (val value = it.value) {
             is List<*> -> {
-                (it.value as List<Any>).map {
-                    prettyPrintMap(it as Map<String, Any>, level + 1)
-                }
+                indent("${it.key} = \n" + prettyPrintList(value, level + 1), level)
             }
             is Map<*, *> -> {
-                prettyPrintMap(it.value as Map<String, Any>, level + 1)
+                prettyPrintMap(value, level + 1)
             }
             else -> {
                 indent("${it.key} = ${it.value}", level)
             }
         }
-    }.joinToString("\n")
+    }
+
+    /**
+     * Convert list to String recursively on all values.
+     * All items in the input list will be converted to String and returned.
+     * If the value is itself a List or Map the function will recursively
+     * call the appropriate function and convert the value again to a String
+     * and for each level it will indent the generated String to show the level.
+     *
+     * @param input is the List to convert to string.
+     * @param level is how deep it has recursively traversed.
+     * @return a String generated from the input Map.
+     */
+    private fun prettyPrintList(input: List<*>, level: Int): String = input.joinToString("\n") {
+        when (it) {
+            is List<*> -> {
+                prettyPrintList(it, level + 1)
+            }
+            is Map<*, *> -> {
+                prettyPrintMap(it, level + 1)
+            }
+            else -> {
+                indent("- $it", level)
+            }
+        }
+    }
 
     /**
      * Ident the input with a given number of spaces.
@@ -109,7 +132,7 @@ class ApplicationConfigLogger(val environment: Environment) {
         for (pattern in this.maskPatterns) {
             if (pattern.matcher(key).matches()) {
                 val valueString = value.toString()
-                return if (valueString.length > 0) valueString.first() + "*****" else "******"
+                return if (valueString.isNotEmpty()) valueString.first() + "*****" else "******"
             }
         }
         return value

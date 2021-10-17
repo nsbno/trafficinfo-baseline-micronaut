@@ -25,12 +25,12 @@ import org.slf4j.LoggerFactory
         description = "Micronaut Baseline project used as tempalate for new microservices.",
         contact = Contact(url = "https://vy.no", name = "Daniel Engfeldt", email = "daniel.engfeldt@vy.no")
     ),
-    servers = arrayOf(
+    servers = [
         Server(url = "https://services.trafficinfo.vydev.io/micronaut-baseline", description = "production"),
         Server(url = "https://services.stage.trafficinfo.vydev.io/micronaut-baseline", description = "stage"),
         Server(url = "https://services.test.trafficinfo.vydev.io/micronaut-baseline", description = "test"),
-        Server(url = "https://services.dev.trafficinfo.vydev.io/micronaut-baseline", description = "dev"),
-    ),
+        Server(url = "https://services.dev.trafficinfo.vydev.io/micronaut-baseline", description = "dev")
+    ],
     externalDocs = ExternalDocumentation(
         description = "Internal Application Documentation",
         url = "https://vygruppen.atlassian.net/wiki/spaces/TRAFFICINFO/pages/3793586330/Developer"
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory
     type = SecuritySchemeType.APIKEY,
     scheme = "bearer",
     `in` = SecuritySchemeIn.HEADER,
-    extensions = arrayOf(
+    extensions = [
         Extension(
             name = "x-amazon-apigateway-authorizer",
             properties = [
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory
                 ExtensionProperty(name = "type", value = "cognito_user_pools"),
             ]
         )
-    )
+    ]
 )
 object Application {
     private val log: Logger = LoggerFactory.getLogger(Application::class.java)

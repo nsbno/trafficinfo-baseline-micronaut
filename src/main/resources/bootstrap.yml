@@ -6,6 +6,9 @@ micronaut:
 
   metrics:
     enabled: true
+    export:
+      cloudwatch:
+        enabled: false
 
   # distributed config only enabled in cloud environment
   config-client:
