@@ -3,11 +3,9 @@ package no.vy.trafficinfo.baseline.micronaut.routes
 import org.apache.camel.Exchange
 import org.apache.camel.LoggingLevel
 import org.apache.camel.builder.RouteBuilder
-import org.apache.camel.spi.ThreadPoolProfile
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import jakarta.inject.Singleton
-import java.util.concurrent.TimeUnit
 
 /**
  * A simple Camel Route that received an incoming
@@ -30,7 +28,7 @@ class DummyRouteBuilder : RouteBuilder() {
             .to("log:no.vy.trafficinfo.baseline?level=INFO&groupInterval=5000&groupDelay=5000&groupActiveOnly=false")
             .to("micrometer:timer:timer?action=start")
             .bean(SomeBean())
-            .to("micrometer:timer:timer?action=stop");
+            .to("micrometer:timer:timer?action=stop")
     }
 
     /**
