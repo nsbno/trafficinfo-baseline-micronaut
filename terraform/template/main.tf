@@ -154,6 +154,7 @@ module "ecs-microservice" {
 
   # Enable x-ray tracing.
   api_gateway_enable_xray = true
+  alarms_to_slack_function_name = ""
 }
 
 resource "aws_kms_key" "baseline_params_key" {}
