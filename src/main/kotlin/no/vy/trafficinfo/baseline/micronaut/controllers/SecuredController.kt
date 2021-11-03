@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.extensions.Extension
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.vy.trafficinfo.baseline.micronaut.domain.Health
 import no.vy.trafficinfo.baseline.micronaut.services.CallbackClient
 import no.vy.trafficinfo.baseline.micronaut.services.WhoamiClient
@@ -103,6 +104,12 @@ class SecuredController {
                         value = "Validate body, query string parameters, and headers"
                     )
                 ]
+            )
+        ],
+        security = [
+            SecurityRequirement(
+                name = "cognito_auth",
+                scopes = ["https://services.\${hosted_zone_name}/\${basePath}/read"]
             )
         ]
     )
