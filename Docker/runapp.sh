@@ -3,7 +3,7 @@ set -e
 
 # The module to start.
 # Replace this with your own modulename (from module-info)
-APP_JAR="baseline.jar"
+APP_JAR="application/application.jar"
 JAVA_PARAMS="-XshowSettings:vm"
 
 echo " --- RUNNING $(basename "$0") $(date -u "+%Y-%m-%d %H:%M:%S Z") --- "

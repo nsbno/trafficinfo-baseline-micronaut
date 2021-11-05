@@ -4,4 +4,4 @@
 
 # allowed files in the docker build context
 !Docker/runapp.sh
-!build/libs/*.jar
+!build/docker/layers/
