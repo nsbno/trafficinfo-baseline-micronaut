@@ -30,11 +30,15 @@ class ApplicationConfigLogger(private val environment: Environment) {
     @PostConstruct
     fun logConfig() {
         log.info("Application Configuration - BOF")
+        printMicronautVersion()
         printEnvironments()
         printConfigSources()
         printConfigProperties()
         log.info("Application Configuration - EOF")
     }
+
+    // print the active micronaut version.
+    private fun printMicronautVersion() = log.info("Micronaut (v${ io.micronaut.core.version.VersionUtils.getMicronautVersion() ?: "" })")
 
     // print the active mironaut environments.
     private fun printEnvironments() = log.info("Environments: ${environment.activeNames}")

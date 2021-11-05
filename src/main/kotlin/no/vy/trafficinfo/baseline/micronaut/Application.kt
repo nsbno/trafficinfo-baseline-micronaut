@@ -65,6 +65,7 @@ object Application {
         Micronaut.build()
             .packages("no.vy.trafficinfo.baseline.micronaut")
             .mainClass(Application.javaClass)
+            .banner(false)
             .start()
     }
 
