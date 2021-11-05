@@ -45,6 +45,12 @@ import org.slf4j.LoggerFactory
     `in` = SecuritySchemeIn.HEADER,
     extensions = [
         Extension(
+            name = "",
+            properties = [
+                ExtensionProperty(name = "x-amazon-apigateway-authtype", value = "cognito_user_pools")
+            ]
+        ),
+        Extension(
             name = "x-amazon-apigateway-authorizer",
             properties = [
                 ExtensionProperty(name = "providerARNs", value = "[\"\${provider_arn}\"]", parseValue = true),
