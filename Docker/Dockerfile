@@ -1,7 +1,6 @@
 FROM adoptopenjdk/openjdk16:jdk-16.0.2_7-alpine
 ENV USER=appuser
-ENV JAVA_HOME=/opt/java/openjdk \
-    HOME=/home/$USER \
+ENV HOME=/home/$USER \
     CONTEXT_PATH=/baseline-micronaut
 
 RUN adduser -S $USER
@@ -14,5 +13,5 @@ RUN chmod 755 $HOME/*.sh && \
 
 EXPOSE 8080
 
-WORKDIR /home/$USER
-CMD [ "./runapp.sh"]
+WORKDIR $HOME
+CMD [ "./runapp.sh" ]
