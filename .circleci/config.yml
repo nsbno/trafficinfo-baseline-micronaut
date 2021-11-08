@@ -13,7 +13,7 @@ parameters:
 
 
 orbs:
-  stepfunction-ci: vydev/ciorb@2.0.5
+  stepfunction-ci: vydev/ciorb@2.2.0
   trafficinfo: vydev/trafficinfo-orb@0.2.1
 
 workflows:
@@ -31,6 +31,7 @@ workflows:
 
       - stepfunction-ci/build-docker:
           context: trafficinfo
+          enable_buildkit: true
           ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
           requires:
             - trafficinfo/build
