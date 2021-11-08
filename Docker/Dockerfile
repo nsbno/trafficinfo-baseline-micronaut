@@ -1,10 +1,12 @@
 FROM adoptopenjdk/openjdk16:jdk-16.0.2_7-alpine
 ENV USER=appuser
-ENV HOME=/home/$USER \
+ENV GROUP=$USER \
+    HOME=/home/$USER \
     CONTEXT_PATH=/baseline-micronaut
 
 RUN apk add --no-cache su-exec && \
-    adduser -S $USER && \
+    addgroup -S $GROUP && \
+    adduser -S $USER -G $GROUP && \
     chown -R $USER $HOME
 
 WORKDIR $HOME
