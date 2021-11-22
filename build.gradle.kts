@@ -8,7 +8,6 @@
 plugins {
     kotlin("jvm")
     kotlin("kapt")
-    id("com.github.johnrengelman.shadow") version "7.1.0"
     id("io.micronaut.application") version "2.0.6"
     id("org.jetbrains.kotlin.plugin.allopen")
     id("jacoco")
@@ -181,19 +180,6 @@ tasks {
         kotlinOptions {
             jvmTarget = targetJvmVersion
             javaParameters = true
-        }
-    }
-
-    shadowJar {
-        mergeServiceFiles()
-        archiveFileName.set("baseline.jar")
-        manifest {
-            attributes(
-                mapOf(
-                    "Implementation-Title" to rootProject.name,
-                    "Implementation-Version" to artifactVersion
-                )
-            )
         }
     }
 

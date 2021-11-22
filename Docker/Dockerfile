@@ -1,17 +1,23 @@
 FROM adoptopenjdk/openjdk16:jdk-16.0.2_7-alpine
 ENV USER=appuser
-ENV HOME=/home/$USER \
+ENV GROUP=$USER \
+    HOME=/home/$USER \
     CONTEXT_PATH=/baseline-micronaut
 
-RUN adduser -S $USER
-RUN apk add --no-cache su-exec
-
-# Replace baseline.jar with your applications JAR file (defined in build.gradle.kts)
-COPY Docker/runapp.sh build/libs/baseline.jar $HOME/
-RUN chmod 755 $HOME/*.sh && \
+RUN apk add --no-cache su-exec && \
+    addgroup -S $GROUP && \
+    adduser -S $USER -G $GROUP && \
     chown -R $USER $HOME
+
+WORKDIR $HOME
 
 EXPOSE 8080
 
-WORKDIR $HOME
+COPY --chown=$USER Docker/runapp.sh $HOME/
+RUN chmod 755 $HOME/*.sh
+
+COPY --chown=$USER build/docker/layers/libs $HOME/application/libs
+COPY --chown=$USER build/docker/layers/resources $HOME/application/resources
+COPY --chown=$USER build/docker/layers/application.jar $HOME/application/application.jar
+
 CMD [ "./runapp.sh" ]
