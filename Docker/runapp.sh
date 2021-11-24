@@ -2,11 +2,19 @@
 set -e
 
 # The module to start.
-# Replace this with your own modulename (from module-info)
 APP_JAR="application/application.jar"
-JAVA_PARAMS="-XshowSettings:vm"
 
 echo " --- RUNNING $(basename "$0") $(date -u "+%Y-%m-%d %H:%M:%S Z") --- "
 set -x
 
-exec su-exec "$USER:$GROUP" "$JAVA_HOME/bin/java" "$JAVA_PARAMS $JAVA_PARAMS_OVERRIDE" -Dlogback.configurationFile=logback-cloud.xml -jar "$APP_JAR"
+# Print some debug info about the JVM and Heap
+exec su-exec "$USER:$GROUP" "$JAVA_HOME/bin/java" \
+  -XX:MaxRAMPercentage=80 \
+  -XX:+PrintFlagsFinal \
+  -version | grep Heap
+
+# Start the application.
+exec su-exec "$USER:$GROUP" "$JAVA_HOME/bin/java" \
+  -XX:MaxRAMPercentage=80 \
+  -Dlogback.configurationFile=logback-cloud.xml \
+  -jar "$APP_JAR"
