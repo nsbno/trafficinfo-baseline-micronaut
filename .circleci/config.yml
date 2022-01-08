@@ -20,7 +20,7 @@ orbs:
 jobs:
   install-sdkman:
     docker:
-      - image: cimg/base
+      - image: cimg/base:2021.02
     steps:
       - sdkman/setup-sdkman
 
