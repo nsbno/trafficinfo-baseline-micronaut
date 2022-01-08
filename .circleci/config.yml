@@ -42,6 +42,7 @@ workflows:
             - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
             - run: sdk version
             - run: sdk install java 17.0.1-tem
+            - run: ./gradlew -q javaToolchains
           post-steps:
             - trafficinfo/slack-failure
 
