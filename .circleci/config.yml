@@ -34,6 +34,8 @@ workflows:
             - trafficinfo
             - nexus
           jdk_version: "16"
+          requires:
+            - install-sdkman
           post-steps:
             - trafficinfo/slack-failure
 
