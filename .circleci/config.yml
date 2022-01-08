@@ -18,6 +18,8 @@ orbs:
   sdkman: joshdholtz/sdkman@0.2.0
 
 jobs:
+  # This job is only temporarily used until
+  # a better way of installing Eclipse Temurin has been found.
   install-sdkman:
     docker:
       - image: cimg/base:2021.02
