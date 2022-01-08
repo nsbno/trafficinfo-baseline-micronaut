@@ -25,6 +25,8 @@ jobs:
       - image: cimg/base:2021.02
     steps:
       - sdkman/setup-sdkman
+      - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
+      - run: sdk version
 
 workflows:
   version: 2
