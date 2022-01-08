@@ -41,6 +41,7 @@ workflows:
             - run: curl -s "https://get.sdkman.io" | bash
             - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
             - run: sdk version
+            - run: sdk install java 17.0.1-tem
           post-steps:
             - trafficinfo/slack-failure
 
