@@ -8,7 +8,7 @@
 plugins {
     kotlin("jvm")
     kotlin("kapt")
-    id("io.micronaut.application") version "2.0.8"
+    id("io.micronaut.application") version "3.1.1"
     id("org.jetbrains.kotlin.plugin.allopen")
     id("jacoco")
     id("org.sonarqube") version "3.3"
