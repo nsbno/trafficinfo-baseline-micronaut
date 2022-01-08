@@ -15,18 +15,9 @@ parameters:
 orbs:
   stepfunction-ci: vydev/ciorb@2.2.0
   trafficinfo: vydev/trafficinfo-orb@0.2.1
-  sdkman: joshdholtz/sdkman@0.2.0
 
 jobs:
-  # This job is only temporarily used until
-  # a better way of installing Eclipse Temurin has been found.
-  install-sdkman:
-    docker:
-      - image: cimg/base:2021.02
-    steps:
-      - run: curl -s "https://get.sdkman.io" | bash
-      - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
-      - run: sdk version
+
 
 workflows:
   version: 2
@@ -37,11 +28,13 @@ workflows:
             - trafficinfo
             - nexus
           jdk_version: "17"
+          # This steps is only temporarily used until
+          # a better way of installing Eclipse Temurin has been found.
           pre-steps:
             - run: curl -s "https://get.sdkman.io" | bash
             - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
             - run: sdk version
-            - run: sdk install java 17.0.1-tem
+            - run: sdk install java 21.3.0.r17-grl
           post-steps:
             - trafficinfo/slack-failure
             - run: ./gradlew -q javaToolchains
