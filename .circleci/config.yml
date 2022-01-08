@@ -22,7 +22,6 @@ workflows:
   build-and-deploy:
     jobs:
       - sdkman/setup-sdkman
-      - stepfunction-ci/timestamp
       - trafficinfo/build:
           context:
             - trafficinfo
@@ -80,7 +79,6 @@ workflows:
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
-            - stepfunction-ci/timestamp
           post-steps:
             - trafficinfo/slack-failure
 
