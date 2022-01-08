@@ -17,11 +17,18 @@ orbs:
   trafficinfo: vydev/trafficinfo-orb@0.2.1
   sdkman: joshdholtz/sdkman@0.2.0
 
+jobs:
+  install-sdkman:
+    docker:
+      - image: cimg/base
+    steps:
+      - sdkman/setup-sdkman
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - sdkman/setup-sdkman
+      - install-sdkman
       - trafficinfo/build:
           context:
             - trafficinfo
