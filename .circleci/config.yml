@@ -24,7 +24,7 @@ jobs:
     docker:
       - image: cimg/base:2021.02
     steps:
-      - sdkman/setup-sdkman
+      - run: curl -s "https://get.sdkman.io" | bash
       - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
       - run: sdk version
 
@@ -32,14 +32,15 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - install-sdkman
       - trafficinfo/build:
           context:
             - trafficinfo
             - nexus
           jdk_version: "17"
-          requires:
-            - install-sdkman
+          pre-steps:
+            - run: curl -s "https://get.sdkman.io" | bash
+            - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
+            - run: sdk version
           post-steps:
             - trafficinfo/slack-failure
 
