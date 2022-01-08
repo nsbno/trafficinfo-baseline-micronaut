@@ -33,7 +33,7 @@ workflows:
           context:
             - trafficinfo
             - nexus
-          jdk_version: "16"
+          jdk_version: "17"
           requires:
             - install-sdkman
           post-steps:
