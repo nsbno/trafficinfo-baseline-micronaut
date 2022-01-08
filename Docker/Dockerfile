@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk16:jre-16.0.1_9-alpine
+FROM eclipse-temurin:17.0.1_12-jre-alpine
 ENV USER=appuser
 ENV GROUP=$USER \
     HOME=/home/$USER \
