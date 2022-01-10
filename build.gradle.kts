@@ -12,7 +12,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen")
     id("jacoco")
     id("org.sonarqube") version "3.3"
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
 }
 
 group = "no.vy.trafficinfo.baseline.micronaut"
