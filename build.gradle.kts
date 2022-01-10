@@ -65,12 +65,10 @@ kotlin {
         "--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
         "--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"
     )
-}
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-        vendor.set(JvmVendorSpec.GRAAL_VM)
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
+        this.vendor.set(JvmVendorSpec.GRAAL_VM)
     }
 }
 
