@@ -16,18 +16,28 @@ orbs:
   stepfunction-ci: vydev/ciorb@2.2.0
   trafficinfo: vydev/trafficinfo-orb@0.2.1
 
+jobs:
+
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - stepfunction-ci/timestamp
       - trafficinfo/build:
           context:
             - trafficinfo
             - nexus
-          jdk_version: "16"
+          jdk_version: "17"
+          # This steps is only temporarily used until
+          # a better way of installing Eclipse Temurin has been found.
+          pre-steps:
+            - run: curl -s "https://get.sdkman.io" | bash
+            - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
+            - run: sdk version
+            - run: sdk install java 21.3.0.r17-grl
           post-steps:
             - trafficinfo/slack-failure
+            - run: ./gradlew -q javaToolchains
 
       - stepfunction-ci/build-docker:
           context: trafficinfo
@@ -78,7 +88,6 @@ workflows:
           requires:
             - stepfunction-ci/build-docker
             - stepfunction-ci/upload-artifacts
-            - stepfunction-ci/timestamp
           post-steps:
             - trafficinfo/slack-failure
 

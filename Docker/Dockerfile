@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk16:jre-16.0.1_9-alpine
+FROM eclipse-temurin:17.0.1_12-jre-alpine
 ENV USER=appuser
 ENV GROUP=$USER \
     HOME=/home/$USER \
@@ -16,8 +16,8 @@ EXPOSE 8080
 COPY --chown=$USER Docker/runapp.sh $HOME/
 RUN chmod 755 $HOME/*.sh
 
-COPY --chown=$USER build/docker/layers/libs $HOME/application/libs
-COPY --chown=$USER build/docker/layers/resources $HOME/application/resources
-COPY --chown=$USER build/docker/layers/application.jar $HOME/application/application.jar
+COPY --chown=$USER build/docker/main/layers/libs $HOME/application/libs
+COPY --chown=$USER build/docker/main/layers/resources $HOME/application/resources
+COPY --chown=$USER build/docker/main/layers/application.jar $HOME/application/application.jar
 
 CMD [ "./runapp.sh" ]
