@@ -8,7 +8,7 @@
 plugins {
     kotlin("jvm")
     kotlin("kapt")
-    id("io.micronaut.application") version "2.0.8"
+    id("io.micronaut.application") version "3.1.1"
     id("org.jetbrains.kotlin.plugin.allopen")
     id("jacoco")
     id("org.sonarqube") version "3.3"
@@ -65,6 +65,11 @@ kotlin {
         "--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
         "--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"
     )
+
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
+        this.vendor.set(JvmVendorSpec.GRAAL_VM)
+    }
 }
 
 dependencies {
