@@ -1,5 +1,5 @@
 /**
- * Gradle build file.
+ * Gradle build file...
  * Building the microservice with the Kotlin plugin for gradle.
  *
  * @see <a href="https://kotlinlang.org/docs/reference/using-gradle.html">Using Gradle in Official Kotlin doc.</a
