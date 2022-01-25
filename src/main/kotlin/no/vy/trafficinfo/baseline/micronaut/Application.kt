@@ -59,33 +59,34 @@ import org.slf4j.LoggerFactory
         )
     ]
 )
+/**
+ * ## Application
+ * <p>
+ * This microservice runs in Amazon ECS Fargate in the cloud.
+ * </p>
+ *
+ * <p>
+ * This service uses the default AWS Credentials Providers to authenticate
+ * against AWS. While running as a container in ECS it will use the
+ * ContainerCredentialsProvider and get the permissions configured
+ * to the attached task role to the task.
+ *
+ * For local development profiles are very easy to use for authentication.
+ * Set AWS Credentials Profile to be used when doing local development.
+ * This will enable the service to use your local credentials to gain
+ * access to the AWS account that you have logged into.
+ * </p>
+ *
+ * @see https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html
+ */
 object Application {
-    private val log: Logger = LoggerFactory.getLogger(Application::class.java)
 
     @JvmStatic
     fun main(args: Array<String>) {
-// FIXME: 08.07.2021 this should be configurable by args or system properties
-// to be toggleable externally on / off.
-//      initAwsCredentials()
-
         Micronaut.build()
             .packages("no.vy.trafficinfo.baseline.micronaut")
             .mainClass(Application.javaClass)
             .banner(false)
             .start()
-    }
-
-    /**
-     * Set AWS Credentials Profile to be used when doing local development.
-     * This will enable the service to use your local credentials to gain
-     * access to the AWS account that you have logged into.
-     *
-     * It will still fail if the service accesses databases and such that
-     * reside in the internal VPC in the account that has no external access.
-     */
-    private fun initAwsCredentials() {
-        val awsProfile = "dev"
-        System.setProperty("aws.profile", awsProfile)
-        log.info("AWS profile $awsProfile set")
     }
 }
