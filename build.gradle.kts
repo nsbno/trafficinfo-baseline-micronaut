@@ -160,6 +160,30 @@ jacoco {
 }
 
 tasks {
+
+    // configure graalvm native-image to include reflection classes.
+    // needed by AWS SDK https://aws.amazon.com/blogs/developer/graalvm-native-image-support-in-the-aws-sdk-for-java-2-x/
+    graalvmNative {
+        binaries {
+            named("main") {
+                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/sqs/reflect-config.json")
+                buildArgs.add("-H:+ReportUnsupportedElementsAtRuntime")
+                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/sdk-core/reflect-config.json")
+                buildArgs.add("-H:ResourceConfigurationResources=META-INF/native-image/software.amazon.awssdk/sdk-core/resource-config.json")
+                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/apache-client/reflect-config.json ")
+                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/apache-client/reflect-config.json ")
+                buildArgs.add("-H:DynamicProxyConfigurationResources=META-INF/native-image/software.amazon.awssdk/apache-client/proxy-config.json")
+                buildArgs.add("-H:ClassInitialization=org.slf4j:build_time")
+            }
+        }
+    }
+
+    // use Google Distroless mostly-static image when generating the
+    // native-image build Dockerfile.
+    dockerfileNative {
+        baseImage("gcr.io/distroless/cc-debian11")
+    }
+
     jacocoTestReport {
         reports {
             xml.required.set(true)
