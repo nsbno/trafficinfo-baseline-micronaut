@@ -35,9 +35,6 @@ micronaut:
               url: ${jwksUrl}
             trafficinfoCognito:
               url: ${trafficinfoJwksUrl}
-      writer:
-        header:
-          enabled: true
       propagation:
         # propagate only to known services
         # the access token should be treated like normal credentials and not must not be
