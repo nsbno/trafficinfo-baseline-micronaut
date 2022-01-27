@@ -8,10 +8,8 @@ micronaut:
   # and contain the url to the public endpoint where public keys are published
   # to verify signatures in JWT token.
   security:
-    enabled: true
-    token:
-      basic-auth:
-        enabled: false
+    basic-auth:
+      enabled: false
 
   http:
     services:
