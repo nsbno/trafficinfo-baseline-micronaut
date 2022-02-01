@@ -61,6 +61,23 @@ module "cognito" {
   ]
 }
 
+module "api_gateway" {
+  source = "github.com/nsbno/terraform-aws-api-gateway?ref=0.1.0"
+
+  name_prefix      = var.name_prefix
+  application_name = var.application_name
+
+  domain_name = "services.${local.shared_config.hosted_zone_name}"
+  base_path   = var.application_name
+
+  schema = templatefile("../static/openapi/driftstjenester-backend.yml", {
+    hosted_zone_name = local.shared_config.hosted_zone_name
+    base_path        = var.application_name
+  })
+
+  enable_xray = true
+}
+
 module "ecs-microservice" {
   source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=d952ae1830215a98513089c8fa19c7307fee3b10/ecs-microservice"
   environment        = var.environment
@@ -91,18 +108,6 @@ module "ecs-microservice" {
   }
   alb_priority = 340
 
-  schema = templatefile("../static/openapi/baseline.yml", {
-    hosted_zone_name = local.shared_config.hosted_zone_name
-    basePath         = var.application_name
-
-    provider_arn = local.provider_arn
-  })
-
-  base_path   = var.application_name
-  domain_name = "services.${local.shared_config.hosted_zone_name}"
-
-  tags = var.tags
-
   sqs_queues           = []
   sns_subscribe_topics = []
   encryption_keys      = [aws_kms_key.baseline_params_key.arn]
@@ -120,8 +125,6 @@ module "ecs-microservice" {
   # Enable generation of standard dashboards with ecs-microservice module.
   grafana_create_dashboard = true
 
-  # Enable x-ray tracing.
-  api_gateway_enable_xray = true
   alarms_to_slack_function_name = ""
 }
 
