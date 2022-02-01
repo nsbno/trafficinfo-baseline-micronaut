@@ -104,23 +104,40 @@ module "service" {
   }
 }
 
+resource "aws_lb_listener_rule" "service" {
+  listener_arn = local.shared_config.lb_listener_arn
+  priority     = 340
+
+  action {
+    type = "forward"
+    target_group_arn = module.service.target_group_arns["main"]
+  }
+
+  condition {
+    path_pattern {
+      values = ["/${var.application_name}/*"]
+    }
+  }
+}
+
+resource "aws_security_group_rule" "alb_to_service" {
+  security_group_id = module.service.security_group_id
+
+  source_security_group_id = local.shared_config.lb_security_group_id
+  from_port                = module.service.application_container.port
+  to_port                  = module.service.application_container.port
+  protocol                 = "tcp"
+  type                     = "ingress"
+}
+
+
 module "ecs-microservice" {
   source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=d952ae1830215a98513089c8fa19c7307fee3b10/ecs-microservice"
   environment        = var.environment
   application-config = "" # Not being used by anything
-  alb = {
-    arn               = local.shared_config.lb_arn
-    arn_suffix        = local.shared_config.lb_arn_suffix
-    security_group_id = local.shared_config.lb_security_group_id
-  }
-  alb_http_listener = {
-    arn = local.shared_config.lb_listener_arn
-  }
-  alb_priority = 340
 
   sqs_queues           = []
   sns_subscribe_topics = []
-  encryption_keys      = [aws_kms_key.baseline_params_key.arn]
   s3_read_buckets      = []
   hosted_zone_name     = local.shared_config.hosted_zone_name
 
@@ -136,10 +153,4 @@ module "ecs-microservice" {
   grafana_create_dashboard = true
 
   alarms_to_slack_function_name = ""
-}
-
-resource "aws_kms_key" "baseline_params_key" {}
-resource "aws_kms_alias" "baseline_params_key_alias" {
-  target_key_id = aws_kms_key.baseline_params_key.key_id
-  name          = "alias/${var.name_prefix}-${var.application_name}_params_key"
 }
