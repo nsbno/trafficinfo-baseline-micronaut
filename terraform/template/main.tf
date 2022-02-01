@@ -7,45 +7,8 @@ locals {
   service_account_id = "929368261477"
   shared_config      = jsondecode(data.aws_ssm_parameter.shared_config.value)
 
-  # User pool in local cognito account to use when using a local cognito.
-  user_pool_id = local.shared_config.user_pool_id
-
-  # User pool in central cognito account to use when using a central cognito.
-  cognito_central_user_pool_id               = length(var.cognito_central_user_pool_id) > 0 ? var.cognito_central_user_pool_id : local.shared_config.cognito_central_user_pool_id
-  cognito_central_provider_arn               = length(var.cognito_central_provider_arn) > 0 ? var.cognito_central_provider_arn : local.shared_config.cognito_central_provider_arn
-  cognito_central_resource_server_identifier = length(var.cognito_central_resource_server_identifier) > 0 ? var.cognito_central_resource_server_identifier : local.shared_config.cognito_central_resource_server_identifier
-
-  # For cognito configuration to Cognito
-  # Toggle value used for provider and userpool by cognito_central_enable
-  provider_arn = var.cognito_central_enable ? local.cognito_central_provider_arn : local.shared_config.user_pool_arn
-
   # make resource server same in all envs. f.ex. services.trafficinfo.vydev.io
-  cognito_resource_server_identifier_base = "https://services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
-  resource_server_scopes = {
-    read_scope = {
-      "scope_name" : "read"
-      "scope_description" : "read scope for the service"
-    }
-    write_scope = {
-      "scope_name" : "write"
-      "scope_description" : "write scope for the service."
-    }
-    update_scope = {
-      "scope_name" : "update"
-      "scope_description" : "Update scope for the service."
-    }
-    delete_scope = {
-      "scope_name" : "delete"
-      "scope_description" : "Delete scope for the service."
-    }
-  }
-
-  app_client_scopes = [
-    "${local.cognito_resource_server_identifier_base}/${var.application_name}/read",
-    "${local.cognito_resource_server_identifier_base}/${var.application_name}/write",
-    "${local.cognito_resource_server_identifier_base}/${var.application_name}/update",
-    "${local.cognito_resource_server_identifier_base}/${var.application_name}/delete",
-  ]
+  cognito_base_url = "https://services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
 }
 
 ##################################
@@ -62,6 +25,42 @@ data "aws_ssm_parameter" "shared_config" {
 # Microservice                   #
 #                                #
 ##################################
+module "cognito" {
+  source = "github.com/nsbno/terraform-aws-central-cognito?ref=0.1.0"
+
+  name_prefix = var.name_prefix
+  application_name = var.application_name
+
+  environment = var.environment
+
+  resource_server_base_url = local.cognito_base_url
+  resource_server_scopes   = {
+    read_scope = {
+      name = "read"
+      description = "Read scope for the service"
+    }
+    write_scope = {
+      name = "write"
+      description = "Write scope for the service."
+    }
+    update_scope = {
+      name = "update"
+      description = "Update scope for the service."
+    }
+    delete_scope = {
+      name = "delete"
+      description = "Delete scope for the service."
+    }
+  }
+
+  user_pool_client_scopes = [
+    "${local.cognito_base_url}/${var.application_name}/read",
+    "${local.cognito_base_url}/${var.application_name}/write",
+    "${local.cognito_base_url}/${var.application_name}/update",
+    "${local.cognito_base_url}/${var.application_name}/delete",
+  ]
+}
+
 module "ecs-microservice" {
   source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=d952ae1830215a98513089c8fa19c7307fee3b10/ecs-microservice"
   environment        = var.environment
@@ -114,37 +113,6 @@ module "ecs-microservice" {
   # PagerDuty endpoints for service to send alarms.
   pager_duty_critical_endpoint = var.pager_duty_critical_endpoint
   pager_duty_degraded_endpoint = var.pager_duty_degraded_endpoint
-
-  ##################
-  # Added Cognito configuration as example of how to configura a service
-  # with authentication and authorization.
-  #
-  # Cognito user pool to create resources in.
-  # This will be used to create resource servers in the local account cognito instance.
-  user_pool_id = local.user_pool_id
-
-  cognito_resource_server_identifier_base = local.cognito_resource_server_identifier_base
-
-  # Enabled to create a resource server for the microservice in Cognito.
-  create_resource_server = true
-
-  # Enabled to create an app client for the microservice in Cognito..
-  create_app_client = true
-
-  # resource server scopes, just for testing.
-  resource_server_scopes = local.resource_server_scopes
-
-  # To generate a appclient, you need at least one scope for it.
-  # Baseline has access to the Whoami Service, and also itself.
-  app_client_scopes = local.app_client_scopes
-
-  # this is the account id to cognito where client credentials
-  # for the microservice are retrieved from secrets manager.
-  cognito_central_account_id                 = var.cognito_central_account_id
-  cognito_central_env                        = var.cognito_central_override_env
-  cognito_central_enable                     = var.cognito_central_enable
-  cognito_central_user_pool_id               = local.cognito_central_user_pool_id
-  cognito_central_resource_server_identifier = local.cognito_central_resource_server_identifier
 
   enable_elasticcloud = true
   lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
