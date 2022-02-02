@@ -84,7 +84,7 @@ data "aws_ecr_repository" "this" {
 }
 
 module "service" {
-  source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.3.1"
+  source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.4.0"
 
   name_prefix = var.application_name
 
@@ -99,35 +99,15 @@ module "service" {
     protocol = "HTTP"
   }
 
+  lb_listeners = [{
+    listener_arn = local.shared_config.lb_listener_arn
+    security_group_id = local.shared_config.lb_security_group_id
+    path_pattern = "/${var.application_name}/*"
+  }]
+
   lb_health_check = {
     path = "${var.application_name}/health"
   }
-}
-
-resource "aws_lb_listener_rule" "service" {
-  listener_arn = local.shared_config.lb_listener_arn
-  priority     = 340
-
-  action {
-    type = "forward"
-    target_group_arn = module.service.target_group_arns["main"]
-  }
-
-  condition {
-    path_pattern {
-      values = ["/${var.application_name}/*"]
-    }
-  }
-}
-
-resource "aws_security_group_rule" "alb_to_service" {
-  security_group_id = module.service.security_group_id
-
-  source_security_group_id = local.shared_config.lb_security_group_id
-  from_port                = module.service.application_container.port
-  to_port                  = module.service.application_container.port
-  protocol                 = "tcp"
-  type                     = "ingress"
 }
 
 
