@@ -110,27 +110,23 @@ module "service" {
   }
 }
 
+module "service_permissions" {
+  source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.0.1"
 
-module "ecs-microservice" {
-  source             = "github.com/nsbno/terraform-aws-trafficinfo?ref=d952ae1830215a98513089c8fa19c7307fee3b10/ecs-microservice"
-  environment        = var.environment
-  application-config = "" # Not being used by anything
+  task_role = module.service.task_role_id
 
-  sqs_queues           = []
-  sns_subscribe_topics = []
-  s3_read_buckets      = []
-  hosted_zone_name     = local.shared_config.hosted_zone_name
+  sns = [
+    {
+      arn = "arn:1234"
+      operations = ["subscribe", "publish"]
+    }
+  ]
 
-  ##################
-  # PagerDuty endpoints for service to send alarms.
-  pager_duty_critical_endpoint = var.pager_duty_critical_endpoint
-  pager_duty_degraded_endpoint = var.pager_duty_degraded_endpoint
+  sqs = []
 
-  enable_elasticcloud = true
-  lambda_elasticcloud = local.shared_config.lambda_elasticsearch_alias
+  s3 = []
 
-  # Enable generation of standard dashboards with ecs-microservice module.
-  grafana_create_dashboard = true
+  dynamodb = []
 
-  alarms_to_slack_function_name = ""
+  kms = []
 }
