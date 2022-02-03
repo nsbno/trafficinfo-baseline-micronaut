@@ -1,10 +1,3 @@
-locals {
-  service_account_id = "929368261477"
-  shared_config      = jsondecode(data.aws_ssm_parameter.shared_config.value)
-
-  # make resource server same in all envs. f.ex. services.trafficinfo.vydev.io
-  cognito_base_url = "https://services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
-}
 
 ##################################
 #                                #
@@ -15,11 +8,19 @@ data "aws_ssm_parameter" "shared_config" {
   name = "/trafficinfo/shared_application_config"
 }
 
+locals {
+  shared_config      = jsondecode(data.aws_ssm_parameter.shared_config.value)
+}
+
 ##################################
 #                                #
 # Required Services              #
 #                                #
 ##################################
+locals {
+  cognito_base_url = "https://services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
+}
+
 module "cognito" {
   source = "github.com/nsbno/terraform-aws-central-cognito?ref=0.1.0"
 
@@ -79,7 +80,7 @@ module "api_gateway" {
 #                                #
 ##################################
 data "aws_ecr_repository" "this" {
-  registry_id = local.service_account_id
+  registry_id = local.shared_config.service_account_id
   name        = "${var.name_prefix}-${var.application_name}"
 }
 
@@ -111,24 +112,12 @@ module "service" {
 }
 
 module "service_permissions" {
-  source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.0.1"
+  source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.1.0"
 
   task_role = module.service.task_role_id
 
-  sns = [
-    {
-      arn = "arn:1234"
-      operations = ["subscribe", "publish"]
-    }
-  ]
-
-  sqs = []
-
-  s3 = []
-
-  dynamodb = []
-
-  kms = []
+  // TODO: Put your required resources in here!
+  //       Check the module's documentation for more info.
 }
 
 ##################################
