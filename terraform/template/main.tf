@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
 
 ##################################
 #                                #
@@ -125,6 +127,14 @@ module "service_permissions" {
 
   task_role = module.service.task_role_id
 
+  ssm_parameters = [
+    {
+      // Allow to get the application config
+      arn = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.config_path}/*"
+      permissions = ["get"]
+    }
+  ]
+
   // TODO: Put your required resources in here!
   //       Check the module's documentation for more info.
 }
@@ -168,4 +178,42 @@ module "logs_to_elasticcloud" {
 
   log_group_name = module.service.log_group_name
   lambda_alias = local.shared_config.lambda_elasticsearch_alias
+}
+
+/*
+ * == Config
+ *
+ * Share configuration for the application(s) to use
+ */
+locals {
+  config_path = "/config/${var.application_name}"
+
+  config_parameters = {
+    "/redis/uri" = {
+      value = "rediss://${module.redis.primary_endpoint_address}"
+    }
+    "/cognito/clientId" = {
+      value = module.cognito.client_id
+      secret = true
+    }
+    "/cognito/clientSecret" = {
+      value = module.cognito.client_secret
+      secret = true
+    }
+    "/cognito/jwksUrl" = {
+      value = module.cognito.jwks_url
+    }
+    "/cognito/url" = {
+      value = "https://auth.${local.shared_config.hosted_zone_name}"
+    }
+  }
+}
+
+resource "aws_ssm_parameter" "configuration" {
+  for_each = local.config_parameters
+
+  name  = "${local.config_path}${each.key}"
+  value = each.value.value
+
+  type  = try(each.value.secret, false) ? "String" : "SecureString"
 }
