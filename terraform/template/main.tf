@@ -74,6 +74,15 @@ module "api_gateway" {
   enable_xray = true
 }
 
+module "redis" {
+  source = "github.com/nsbno/terraform-aws-redis?ref=0.1.0"
+
+  application_name = var.application_name
+  security_group_ids = [module.service.security_group_id]
+
+  subnet_ids = local.shared_config.private_subnet_ids
+}
+
 ##################################
 #                                #
 # The Service                    #
@@ -126,15 +135,19 @@ module "service_permissions" {
 #                                #
 ##################################
 module "grafana_dashboard" {
-  source = "github.com/nsbno/terraform-aws-grafana-dashboard?ref=0.0.1"
+  source = "github.com/nsbno/terraform-aws-grafana-dashboard?ref=0.1.0"
 
   name_prefix      = var.name_prefix
   application_name = var.application_name
   environment      = var.environment
+
+  ecs_cluster = local.shared_config.ecs_cluster_name
+  rds_instances = local.shared_config.rds_instance_id
+  elasticache_group = module.redis.id
 }
 
 module "alarms" {
-  source = "github.com/nsbno/terraform-aws-service-alarms?ref=0.0.1"
+  source = "github.com/nsbno/terraform-aws-service-alarms?ref=0.1.0"
 
   load_balancers = []
   target_groups = []
