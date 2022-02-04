@@ -10,13 +10,13 @@ parameters:
   ecr_repo_name:
     type: string
     default: "trafficinfo-baseline-micronaut"
-
+  deployment_repo:
+    type: string
+    default: "trafficinfo-baseline-terraform"
 
 orbs:
   stepfunction-ci: vydev/ciorb@2.2.0
   trafficinfo: vydev/trafficinfo-orb@0.2.1
-
-jobs:
 
 
 workflows:
@@ -82,6 +82,7 @@ workflows:
           context: trafficinfo
           s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
           pipeline_name: << pipeline.parameters.pipeline_name >>
+          deployment_repo: << pipeline.parameters.deployment_repo >>
           filters:
             branches:
               only: master
