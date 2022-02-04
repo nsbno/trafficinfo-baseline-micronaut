@@ -7,7 +7,7 @@ data "aws_caller_identity" "current" {}
 #                                #
 ##################################
 data "aws_ssm_parameter" "shared_config" {
-  name = "/trafficinfo/shared_application_config"
+  name = "/${var.name_prefix}/shared_application_config"
 }
 
 locals {
