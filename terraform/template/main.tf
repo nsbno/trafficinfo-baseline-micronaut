@@ -152,28 +152,33 @@ module "grafana_dashboard" {
   elasticache_group = module.redis.id
 }
 
-module "alarms" {
-  source = "github.com/nsbno/terraform-aws-service-alarms?ref=0.1.0"
+module "alb_alarms" {
+  source = "github.com/nsbno/terraform-aws-alarms//modules/alb?ref=0.1.0"
 
-  load_balancers = []
-  target_groups = []
-  ecs_cluster = ""
-  api_gateway = ""
+  name_prefix = "my-application"
+  target_group_arn_suffix = module.service.target_group_arn_suffixes[0]
+  load_balancer_arn_suffix = local.shared_config.lb_arn
+
+  alarm_sns_topic_arns = []
 }
 
-module "alarms_to_slack" {
-  source = "github.com/nsbno/terraform-aws-cloudwatch-slack-alarms?ref=0.0.1"
+module "api_gateway_alarms" {
+  source = "github.com/nsbno/terraform-aws-alarms//modules/api-gateway?ref=0.1.0"
+
+  name_prefix = "my-application"
+  api_name = module.api_gateway.name
+
+  alarm_sns_topic_arns = []
 }
 
-module "alarms_to_pager_duty" {
-  source = "github.com/nsbno/terraform-aws-cloudwatch-pager-duty-alarms?ref=0.0.1"
-}
+module "ecs_service_alarms" {
+  source = "github.com/nsbno/terraform-aws-alarms//modules/ecs-service?ref=0.1.0"
 
-module "logs_to_elasticcloud" {
-  source = "github.com/nsbno/terraform-aws-elasticcloud?ref=0.0.1/modules/send_logs"
+  name_prefix = "my-application"
+  ecs_cluster_name = local.shared_config.ecs_cluster_name
+  ecs_service_name = var.application_name
 
-  log_group_name = module.service.log_group_name
-  lambda_alias = local.shared_config.lambda_elasticsearch_alias
+  alarm_sns_topic_arns = []
 }
 
 /*
