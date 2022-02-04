@@ -93,6 +93,10 @@ data "aws_ecr_repository" "this" {
   name        = "${var.name_prefix}-${var.application_name}"
 }
 
+data "aws_ssm_parameter" "version" {
+  name = "/${var.name_prefix}/${var.name_prefix}-${var.application_name}"
+}
+
 module "service" {
   source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.4.0"
 
@@ -104,7 +108,7 @@ module "service" {
 
   application_container = {
     name     = "main"
-    image    = "${data.aws_ecr_repository.this.repository_url}:${var.task_container_image}"
+    image    = "${data.aws_ecr_repository.this.repository_url}:${data.aws_ssm_parameter.version.value}"
     port     = 8080
     protocol = "HTTP"
   }

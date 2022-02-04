@@ -14,16 +14,13 @@ terraform {
 provider "aws" {
   region              = "eu-west-1"
   allowed_account_ids = ["336207361115"]
-}
 
-locals {
-  name_prefix      = "trafficinfo"
-  application_name = "baseline-micronaut"
-  environment      = "prod"
-  tags = {
-    terraform   = "true"
-    environment = local.environment
-    application = "${local.name_prefix}-${local.application_name}"
+  default_tags {
+    tags = {
+      terraform   = "true"
+      environment = local.environment
+      application = "${local.name_prefix}-${local.application_name}"
+    }
   }
 }
 
@@ -39,24 +36,17 @@ provider "grafana" {
   org_id = jsondecode(data.aws_secretsmanager_secret_version.grafana.secret_string)["org_id"]
 }
 
-data "aws_ssm_parameter" "version" {
-  name = "/${local.name_prefix}/${local.name_prefix}-${local.application_name}"
+locals {
+  environment      = "prod"
+  name_prefix      = "trafficinfo"
+  application_name = "baseline-micronaut"
 }
 
 module "trafficinfo-baseline-micronaut" {
-  source               = "../template"
-  environment          = local.environment
-  name_prefix          = local.name_prefix
-  application_name     = local.application_name
-  task_container_image = "${data.aws_ssm_parameter.version.value}-SHA1"
-  tags                 = local.tags
+  source = "../template"
 
-  # The Delegated Cognito Prod environment
-  cognito_central_account_id   = "387958190215"
-  cognito_central_user_pool_id = "eu-west-1_e6o46c1oE"
-  cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:387958190215:userpool/eu-west-1_e6o46c1oE"
+  name_prefix      = local.name_prefix
+  application_name = local.application_name
 
-  # Subscribe alarms to PagerDuty endpoints.
-  pager_duty_critical_endpoint = "https://events.pagerduty.com/integration/ca3fc8293d2c450ed05225325e852f5a/enqueue"
-  pager_duty_degraded_endpoint = "https://events.pagerduty.com/integration/4fa87dd7e01d410dc0337836e1abca39/enqueue"
+  environment = local.environment
 }
