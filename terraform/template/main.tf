@@ -211,5 +211,5 @@ resource "aws_ssm_parameter" "configuration" {
   name  = "${local.config_path}${each.key}"
   value = each.value.value
 
-  type  = try(each.value.secret, false) ? "String" : "SecureString"
+  type  = try(each.value.secret, false) ? "SecureString" : "String"
 }
