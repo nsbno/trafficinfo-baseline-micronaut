@@ -1,11 +1,11 @@
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
-##################################
-#                                #
-# Shared configuration           #
-#                                #
-##################################
+/*
+ * == Shared Config
+ *
+ * Get parameters that have been configured from the `<team>-aws` repository.
+ */
 data "aws_ssm_parameter" "shared_config" {
   name = "/${var.name_prefix}/shared_application_config"
 }
@@ -14,11 +14,11 @@ locals {
   shared_config      = jsondecode(data.aws_ssm_parameter.shared_config.value)
 }
 
-##################################
-#                                #
-# Required Services              #
-#                                #
-##################################
+/*
+ * == Required Services
+ *
+ * Various services that are required by the application
+ */
 locals {
   cognito_base_url = "https://services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
 }
@@ -85,11 +85,9 @@ module "redis" {
   subnet_ids = local.shared_config.private_subnet_ids
 }
 
-##################################
-#                                #
-# The Service                    #
-#                                #
-##################################
+/*
+ * == Application
+ */
 data "aws_ecr_repository" "this" {
   registry_id = local.shared_config.service_account_id
   name        = "${var.name_prefix}-${var.application_name}"
@@ -139,11 +137,9 @@ module "service_permissions" {
   //       Check the module's documentation for more info.
 }
 
-##################################
-#                                #
-# Monitoring                     #
-#                                #
-##################################
+/*
+ * == Monitoring and Alarms
+ */
 module "grafana_dashboard" {
   source = "github.com/nsbno/terraform-aws-grafana-dashboard?ref=0.1.0"
 
