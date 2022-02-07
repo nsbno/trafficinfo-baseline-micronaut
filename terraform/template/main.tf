@@ -12,6 +12,7 @@ data "aws_ssm_parameter" "shared_config" {
 
 locals {
   shared_config      = jsondecode(data.aws_ssm_parameter.shared_config.value)
+  service_account_id = "929368261477"
 }
 
 /*
@@ -90,15 +91,6 @@ module "redis" {
 /*
  * == Application
  */
-data "aws_ecr_repository" "this" {
-  registry_id = local.shared_config.service_account_id
-  name        = "${var.name_prefix}-${var.application_name}"
-}
-
-data "aws_ssm_parameter" "version" {
-  name = "/${var.name_prefix}/${var.name_prefix}-${var.application_name}"
-}
-
 module "service" {
   source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.4.0"
 
@@ -110,26 +102,26 @@ module "service" {
 
   application_container = {
     name     = "main"
-    image    = "${data.aws_ecr_repository.this.repository_url}:${data.aws_ssm_parameter.version.value}"
+    image    = "arn:aws:ecr:eu-west-1:${local.service_account_id}:repository/${var.name_prefix}-${var.application_name}:${var.application_image_tag}"
     port     = 8080
     protocol = "HTTP"
   }
 
   lb_listeners = [{
-    listener_arn = local.shared_config.lb_listener_arn
+    listener_arn = nonsensitive(local.shared_config.lb_listener_arn)
     security_group_id = local.shared_config.lb_security_group_id
     path_pattern = "/${var.application_name}/*"
   }]
 
   lb_health_check = {
-    path = "${var.application_name}/health"
+    path = "/${var.application_name}/health"
   }
 }
 
 module "service_permissions" {
   source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.1.0"
 
-  task_role = module.service.task_role_id
+  role_arn = module.service.task_role_arn
 
   ssm_parameters = [
     {
@@ -147,15 +139,13 @@ module "service_permissions" {
  * == Monitoring and Alarms
  */
 module "grafana_dashboard" {
-  source = "github.com/nsbno/terraform-aws-grafana-dashboard?ref=0.1.0"
+  source = "github.com/nsbno/terraform-grafana-service-dashboard?ref=0.1.0"
 
   name_prefix      = var.name_prefix
   application_name = var.application_name
   environment      = var.environment
 
   ecs_cluster = local.shared_config.ecs_cluster_name
-  rds_instances = local.shared_config.rds_instance_id
-  elasticache_group = module.redis.id
 }
 
 module "alb_alarms" {
@@ -172,7 +162,7 @@ module "api_gateway_alarms" {
   source = "github.com/nsbno/terraform-aws-alarms//modules/api-gateway?ref=0.1.0"
 
   name_prefix = "my-application"
-  api_name = module.api_gateway.name
+  api_name = module.api_gateway.rest_api_id
 
   alarm_sns_topic_arns = []
 }
