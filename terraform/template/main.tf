@@ -24,7 +24,7 @@ locals {
 }
 
 module "cognito" {
-  source = "github.com/nsbno/terraform-aws-central-cognito?ref=0.1.0"
+  source = "github.com/nsbno/terraform-aws-central-cognito?ref=0.2.1"
 
   name_prefix = var.name_prefix
   application_name = var.application_name
@@ -68,9 +68,11 @@ module "api_gateway" {
   domain_name = "services.${local.shared_config.hosted_zone_name}"
   base_path   = var.application_name
 
-  schema = templatefile("../static/openapi/driftstjenester-backend.yml", {
-    hosted_zone_name = local.shared_config.hosted_zone_name
-    base_path        = var.application_name
+  schema = templatefile("../static/openapi/baseline.yml", {
+    hosted_zone_name   = local.shared_config.hosted_zone_name
+    base_path          = var.application_name
+    user_pool_id       = module.cognito.user_pool_id
+    cognito_account_id = module.cognito.account_id
   })
 
   enable_xray = true
@@ -209,7 +211,7 @@ locals {
       value = module.cognito.jwks_url
     }
     "/cognito/url" = {
-      value = "https://auth.${local.shared_config.hosted_zone_name}"
+      value = module.cognito.auth_url
     }
   }
 }

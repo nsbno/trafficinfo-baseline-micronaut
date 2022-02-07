@@ -9,7 +9,7 @@ paths:
         200:
           description: "microservice health information response."
       x-amazon-apigateway-integration:
-        uri: "https://svclb.${hosted_zone_name}/${basePath}/health"
+        uri: "https://svclb.${hosted_zone_name}/${base_path}/health"
         passthroughBehavior: "when_no_match"
         httpMethod: "GET"
         type: "http_proxy"
@@ -27,7 +27,7 @@ paths:
       security:
         - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
       x-amazon-apigateway-integration:
-        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/health"
+        uri: "https://svclb.${hosted_zone_name}/${base_path}/secured/health"
         passthroughBehavior: "when_no_match"
         httpMethod: "GET"
         type: "http_proxy"
@@ -41,7 +41,7 @@ paths:
       security:
         - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
       x-amazon-apigateway-integration:
-        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/callback"
+        uri: "https://svclb.${hosted_zone_name}/${base_path}/secured/callback"
         passthroughBehavior: "when_no_match"
         httpMethod: "GET"
         type: "http_proxy"
@@ -55,7 +55,7 @@ paths:
       security:
         - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
       x-amazon-apigateway-integration:
-        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/whoami"
+        uri: "https://svclb.${hosted_zone_name}/${base_path}/secured/whoami"
         passthroughBehavior: "when_no_match"
         httpMethod: "GET"
         type: "http_proxy"
@@ -70,7 +70,7 @@ paths:
       security:
         - cognito_auth: ["https://services.${hosted_zone_name}/baseline-micronaut/read"]
       x-amazon-apigateway-integration:
-        uri: "https://svclb.${hosted_zone_name}/${basePath}/secured/self"
+        uri: "https://svclb.${hosted_zone_name}/${base_path}/secured/self"
         passthroughBehavior: "when_no_match"
         httpMethod: "GET"
         type: "http_proxy"
@@ -83,5 +83,5 @@ components:
       x-amazon-apigateway-authtype: "cognito_user_pools"
       x-amazon-apigateway-authorizer:
         providerARNs:
-          - "${provider_arn}"
+          - "arn:aws:cognito-idp:eu-west-1:${cognito_account_id}:userpool/${user_pool_id}"
         type: "cognito_user_pools"
