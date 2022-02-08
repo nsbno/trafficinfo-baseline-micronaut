@@ -92,7 +92,7 @@ module "redis" {
  * == Application
  */
 module "service" {
-  source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.4.0"
+  source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.4.1"
 
   name_prefix = var.application_name
 
@@ -119,9 +119,9 @@ module "service" {
 }
 
 module "service_permissions" {
-  source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.1.0"
+  source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.1.1"
 
-  role_arn = module.service.task_role_arn
+  role_name = module.service.task_role_name
 
   ssm_parameters = [
     {
