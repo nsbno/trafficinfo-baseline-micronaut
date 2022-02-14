@@ -52,12 +52,7 @@ module "cognito" {
     }
   }
 
-  user_pool_client_scopes = [
-    "${local.cognito_base_url}/${var.application_name}/read",
-    "${local.cognito_base_url}/${var.application_name}/write",
-    "${local.cognito_base_url}/${var.application_name}/update",
-    "${local.cognito_base_url}/${var.application_name}/delete",
-  ]
+  user_pool_client_scopes = []
 }
 
 module "api_gateway" {
@@ -151,7 +146,7 @@ module "grafana_dashboard" {
 module "alb_alarms" {
   source = "github.com/nsbno/terraform-aws-alarms//modules/alb?ref=0.1.0"
 
-  name_prefix = "my-application"
+  name_prefix = "${var.name_prefix}-${var.application_name}"
   target_group_arn_suffix = module.service.target_group_arn_suffixes[0]
   load_balancer_arn_suffix = local.shared_config.lb_arn
 
@@ -161,7 +156,7 @@ module "alb_alarms" {
 module "api_gateway_alarms" {
   source = "github.com/nsbno/terraform-aws-alarms//modules/api-gateway?ref=0.1.0"
 
-  name_prefix = "my-application"
+  name_prefix = "${var.name_prefix}-${var.application_name}"
   api_name = module.api_gateway.rest_api_id
 
   alarm_sns_topic_arns = []
@@ -170,7 +165,7 @@ module "api_gateway_alarms" {
 module "ecs_service_alarms" {
   source = "github.com/nsbno/terraform-aws-alarms//modules/ecs-service?ref=0.1.0"
 
-  name_prefix = "my-application"
+  name_prefix = "${var.name_prefix}-${var.application_name}"
   ecs_cluster_name = local.shared_config.ecs_cluster_name
   ecs_service_name = var.application_name
 
