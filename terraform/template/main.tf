@@ -89,7 +89,7 @@ module "redis" {
 module "service" {
   source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.4.1"
 
-  name_prefix = var.application_name
+  name_prefix = "${var.name_prefix}-${var.application_name}"
 
   vpc_id             = local.shared_config.vpc_id
   private_subnet_ids = local.shared_config.private_subnet_ids
@@ -121,9 +121,14 @@ module "service_permissions" {
   ssm_parameters = [
     {
       // Allow to get the application config
-      arn = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.config_path}/*"
+      arn = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.application_config_path}*"
       permissions = ["get"]
-    }
+    },
+    {
+      // Allow to get the application config
+      arn = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.base_config_path}/application*"
+      permissions = ["get"]
+    },
   ]
 
   // TODO: Put your required resources in here!
@@ -178,24 +183,25 @@ module "ecs_service_alarms" {
  * Share configuration for the application(s) to use
  */
 locals {
-  config_path = "/config/${var.application_name}"
+  base_config_path = "${var.name_prefix}/config"
+  application_config_path = "${local.base_config_path}/${var.application_name}"
 
   config_parameters = {
-    "/redis/uri" = {
+    "redis/uri" = {
       value = "rediss://${module.redis.primary_endpoint_address}"
     }
-    "/cognito/clientId" = {
+    "cognito/clientId" = {
       value = module.cognito.client_id
       secret = true
     }
-    "/cognito/clientSecret" = {
+    "cognito/clientSecret" = {
       value = module.cognito.client_secret
       secret = true
     }
-    "/cognito/jwksUrl" = {
+    "jwksUrl" = {
       value = module.cognito.jwks_url
     }
-    "/cognito/url" = {
+    "cognito/url" = {
       value = module.cognito.auth_url
     }
   }
@@ -204,7 +210,7 @@ locals {
 resource "aws_ssm_parameter" "configuration" {
   for_each = local.config_parameters
 
-  name  = "${local.config_path}${each.key}"
+  name  = "/${local.application_config_path}/${each.key}"
   value = each.value.value
 
   type  = try(each.value.secret, false) ? "SecureString" : "String"
