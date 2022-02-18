@@ -83,6 +83,15 @@ module "redis" {
   subnet_ids = local.shared_config.private_subnet_ids
 }
 
+resource "aws_cloudwatch_log_subscription_filter" "elasticcloud_logs" {
+  destination_arn = local.shared_config.lambda_elasticsearch_alias
+  filter_pattern  = ""
+
+  log_group_name  = "${var.name_prefix}-${var.application_name}"
+  name            = "ElasticsearchStream-${var.name_prefix}"
+  distribution    = "ByLogStream"
+}
+
 /*
  * == Application
  */
