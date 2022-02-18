@@ -138,6 +138,19 @@ module "service_permissions" {
 /*
  * == Monitoring and Alarms
  */
+module "alarm_setup" {
+  source = "github.com/nsbno/terraform-aws-alarm-setup?ref=0.1.0"
+
+  name_prefix = var.application_name
+
+  slack_lambda_name = "${var.name_prefix}-alarms-to-slack"
+  pager_duty_endpoint_urls = {
+    // TODO: Put your pager duty endpoints in here
+    critical = ""
+    degraded = ""
+  }
+}
+
 module "grafana_dashboard" {
   source = "github.com/nsbno/terraform-grafana-service-dashboard?ref=0.1.0"
 
@@ -155,7 +168,9 @@ module "alb_alarms" {
   target_group_arn_suffix = module.service.target_group_arn_suffixes[0]
   load_balancer_arn_suffix = local.shared_config.lb_arn
 
-  alarm_sns_topic_arns = []
+  alarm_sns_topic_arns = [
+    module.alarm_setup.critical_sns_arn
+  ]
 }
 
 module "api_gateway_alarms" {
@@ -164,7 +179,9 @@ module "api_gateway_alarms" {
   name_prefix = "${var.name_prefix}-${var.application_name}"
   api_name = module.api_gateway.rest_api_id
 
-  alarm_sns_topic_arns = []
+  alarm_sns_topic_arns = [
+    module.alarm_setup.degraded_sns_arn
+  ]
 }
 
 module "ecs_service_alarms" {
@@ -174,7 +191,9 @@ module "ecs_service_alarms" {
   ecs_cluster_name = local.shared_config.ecs_cluster_name
   ecs_service_name = var.application_name
 
-  alarm_sns_topic_arns = []
+  alarm_sns_topic_arns = [
+    module.alarm_setup.critical_sns_arn
+  ]
 }
 
 /*
