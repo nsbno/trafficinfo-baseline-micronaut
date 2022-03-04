@@ -14,8 +14,15 @@ terraform {
 provider "aws" {
   region              = "eu-west-1"
   allowed_account_ids = ["469515120670"]
-}
 
+  default_tags {
+    tags = {
+      terraform   = "true"
+      environment = local.environment
+      application = "${local.name_prefix}-${local.application_name}"
+    }
+  }
+}
 
 # Grafana API Token stored in Secrets Manager.
 data "aws_secretsmanager_secret_version" "grafana" {
@@ -30,26 +37,16 @@ provider "grafana" {
 }
 
 locals {
+  environment      = "dev"
   name_prefix      = "trafficinfo"
   application_name = "baseline-micronaut"
-  environment      = "dev"
-  tags = {
-    terraform   = "true"
-    environment = local.environment
-    application = "${local.name_prefix}-${local.application_name}"
-  }
 }
 
 module "trafficinfo-baseline-micronaut" {
-  environment          = local.environment
-  source               = "../template"
-  name_prefix          = local.name_prefix
-  application_name     = local.application_name
-  task_container_image = "latest"
-  tags                 = local.tags
+  source = "../template"
 
-  # The Dev environment.
-  cognito_central_account_id   = "834626710667"
-  cognito_central_user_pool_id = "eu-west-1_0AvVv5Wyk"
-  cognito_central_provider_arn = "arn:aws:cognito-idp:eu-west-1:834626710667:userpool/eu-west-1_0AvVv5Wyk"
+  name_prefix      = local.name_prefix
+  application_name = local.application_name
+
+  environment = local.environment
 }
