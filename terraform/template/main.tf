@@ -21,7 +21,7 @@ locals {
  * Various services that are required by the application
  */
 locals {
-  cognito_base_url = "https://services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
+  cognito_base_url = "services.${trimprefix(local.shared_config.hosted_zone_name, "${var.environment}.")}"
 }
 
 module "cognito" {
@@ -106,7 +106,7 @@ module "service" {
 
   application_container = {
     name     = "main"
-    image    = "arn:aws:ecr:eu-west-1:${local.service_account_id}:repository/${var.name_prefix}-${var.application_name}:${var.application_image_tag}"
+    image    = "${local.shared_config.ecr_base_urn}/${var.name_prefix}-${var.application_name}:${var.application_image_tag}"
     port     = 8080
     protocol = "HTTP"
   }
@@ -123,7 +123,7 @@ module "service" {
 }
 
 module "service_permissions" {
-  source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.1.1"
+  source = "github.com/nsbno/terraform-aws-service-permissions?ref=0.2.0"
 
   role_name = module.service.task_role_name
 
@@ -138,6 +138,13 @@ module "service_permissions" {
       arn = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.base_config_path}/application*"
       permissions = ["get"]
     },
+  ]
+
+  cloudwatch_metrics = [
+    {
+      arn = "*"
+      permissions = ["put"]
+    }
   ]
 
   // TODO: Put your required resources in here!
@@ -173,7 +180,7 @@ module "grafana_dashboard" {
 module "alb_alarms" {
   source = "github.com/nsbno/terraform-aws-alarms//modules/alb?ref=0.1.0"
 
-  name_prefix = "${var.name_prefix}-${var.application_name}"
+  name_prefix = module.service.log_group_name
   target_group_arn_suffix = module.service.target_group_arn_suffixes[0]
   load_balancer_arn_suffix = local.shared_config.lb_arn
 
