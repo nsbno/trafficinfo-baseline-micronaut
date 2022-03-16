@@ -96,7 +96,7 @@ resource "aws_cloudwatch_log_subscription_filter" "elasticcloud_logs" {
  * == Application
  */
 module "service" {
-  source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.4.1"
+  source = "github.com/nsbno/terraform-aws-ecs-service?ref=0.5.1"
 
   name_prefix = "${var.name_prefix}-${var.application_name}"
 
