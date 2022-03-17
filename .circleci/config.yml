@@ -15,7 +15,7 @@ parameters:
     default: "trafficinfo-baseline-terraform"
 
 orbs:
-  stepfunction-ci: vydev/ciorb@2.2.0
+  stepfunction-ci: vydev/ciorb@2.3.1
   trafficinfo: vydev/trafficinfo-orb@0.2.1
 
 
