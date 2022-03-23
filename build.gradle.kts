@@ -146,15 +146,6 @@ application {
     mainClass.set("no.vy.trafficinfo.baseline.micronaut.Application")
 }
 
-subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
-
-    // Optionally configure plugin
-    ktlint {
-        debug.set(true)
-    }
-}
-
 jacoco {
     toolVersion = "0.8.7"
 }
