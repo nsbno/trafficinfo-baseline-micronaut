@@ -52,7 +52,7 @@ import io.swagger.v3.oas.annotations.servers.Server
             name = "x-amazon-apigateway-authorizer",
             properties = [
                 ExtensionProperty(name = "providerARNs", value = "[\"\${provider_arn}\"]", parseValue = true),
-                ExtensionProperty(name = "type", value = "cognito_user_pools"),
+                ExtensionProperty(name = "type", value = "cognito_user_pools")
             ]
         )
     ]
