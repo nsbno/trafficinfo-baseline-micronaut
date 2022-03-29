@@ -8,8 +8,8 @@
 plugins {
     kotlin("jvm")
     kotlin("kapt")
-    id("io.micronaut.application") version "3.1.1"
-    id("org.jetbrains.kotlin.plugin.allopen")
+    kotlin("plugin.allopen")
+    id("io.micronaut.application") version "3.3.1"
     id("jacoco")
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
@@ -18,10 +18,8 @@ plugins {
 group = "no.vy.trafficinfo.baseline.micronaut"
 
 val version: String by project
+
 val micronautVersion: String by project
-val spekVersion: String by project
-val artifactGroup = group
-val artifactVersion = version
 val targetJvmVersion: String by project
 
 fun getProperty(name: String): String? {
@@ -42,6 +40,7 @@ repositories {
 }
 
 micronaut {
+    version(micronautVersion)
     runtime("netty")
     testRuntime("junit5")
     processing {
@@ -51,21 +50,6 @@ micronaut {
 }
 
 kotlin {
-    // Opens up the the required compiler packages to ensure KAPT works with JDK16
-    kotlinDaemonJvmArgs = listOf(
-        "-Dfile.encoding=UTF-8",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"
-    )
-
     jvmToolchain {
         (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
         this.vendor.set(JvmVendorSpec.GRAAL_VM)
@@ -84,13 +68,11 @@ dependencies {
      * micronaut-inject-java and micronaut-validation are omitted
      * due to the micronaut application plugin adding them by default.
      */
-    kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.openapi:micronaut-openapi")
     kapt("io.micronaut.security:micronaut-security")
-//    kapt("io.micronaut.micrometer:micronaut-micrometer-annotation")
+    kapt("io.micronaut.micrometer:micronaut-micrometer-annotation")
 
-    implementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
 
@@ -136,7 +118,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.assertj:assertj-core")
-    testImplementation("com.github.tomakehurst:wiremock:2.27.2")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.32.0")
     testImplementation("io.mockk:mockk:1.12.2")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -153,24 +135,18 @@ jacoco {
 tasks {
 
     // configure graalvm native-image to include reflection classes.
-    // needed by AWS SDK https://aws.amazon.com/blogs/developer/graalvm-native-image-support-in-the-aws-sdk-for-java-2-x/
+    // classes not auto-discovered needs to be added manually as either Proxy, Resource or reflect config json files.
     graalvmNative {
         binaries {
             named("main") {
-                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/sqs/reflect-config.json")
+//                verbose.set(true) // To see what configurations are auto-discovere by native-image when starting build.
                 buildArgs.add("-H:+ReportUnsupportedElementsAtRuntime")
-                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/sdk-core/reflect-config.json")
-                buildArgs.add("-H:ResourceConfigurationResources=META-INF/native-image/software.amazon.awssdk/sdk-core/resource-config.json")
-                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/apache-client/reflect-config.json ")
-                buildArgs.add("-H:ReflectionConfigurationResources=META-INF/native-image/software.amazon.awssdk/apache-client/reflect-config.json ")
-                buildArgs.add("-H:DynamicProxyConfigurationResources=META-INF/native-image/software.amazon.awssdk/apache-client/proxy-config.json")
                 buildArgs.add("-H:ClassInitialization=org.slf4j:build_time")
             }
         }
     }
 
-    // use Google Distroless mostly-static image when generating the
-    // native-image build Dockerfile.
+    // use Google Distroless mostly-static image when generating the native-image build Dockerfile.
     dockerfileNative {
         baseImage("gcr.io/distroless/cc-debian11")
     }
@@ -200,6 +176,17 @@ tasks {
         kotlinOptions {
             jvmTarget = targetJvmVersion
             javaParameters = true
+        }
+    }
+
+    runnerJar {
+        manifest {
+            attributes(
+                mapOf(
+                    "Implementation-Title" to rootProject.name,
+                    "Implementation-Version" to project.version
+                )
+            )
         }
     }
 

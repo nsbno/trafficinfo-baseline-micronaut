@@ -1,5 +1,5 @@
 *.java		text
-*.bat		text
+*.bat		text eol=crlf
 *.md		text
 *.json		text 
 *.xml		text
@@ -11,3 +11,4 @@ Docker/*    text
 gradlew     text
 *.properties	text
 *.xml		    text
+*.jar       binary

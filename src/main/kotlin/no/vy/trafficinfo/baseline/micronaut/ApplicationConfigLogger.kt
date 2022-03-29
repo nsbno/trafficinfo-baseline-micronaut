@@ -3,6 +3,9 @@ package no.vy.trafficinfo.baseline.micronaut
 import io.micronaut.context.annotation.Context
 import io.micronaut.context.env.Environment
 import io.micronaut.context.env.PropertySource
+import io.micronaut.core.version.VersionUtils.MICRONAUT_VERSION
+import io.micronaut.runtime.context.scope.refresh.RefreshEvent
+import io.micronaut.runtime.event.annotation.EventListener
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.annotation.PostConstruct
@@ -19,6 +22,7 @@ import java.util.regex.Pattern
  * @see logConfig When the Context has been created the logConfig
  * function will be executed.
  */
+@Suppress("Unused")
 @Context
 class ApplicationConfigLogger(private val environment: Environment) {
     private val log: Logger = LoggerFactory.getLogger(ApplicationConfigLogger::class.java)
@@ -26,6 +30,12 @@ class ApplicationConfigLogger(private val environment: Environment) {
     // mask sensitive information  that should not be printed to the logs.
     private val PROPERTY_NAMES_TO_MASK = arrayOf("password", "credential", "certificate", "key", "secret", "token")
     private val maskPatterns: List<Pattern> = PROPERTY_NAMES_TO_MASK.map { s -> Pattern.compile(".*$s.*", Pattern.CASE_INSENSITIVE) }
+
+    @EventListener
+    fun onRefreshEvent(event: RefreshEvent?) {
+        // Listen to the refresh event and print the updated configuration.
+        logConfig()
+    }
 
     @PostConstruct
     fun logConfig() {
@@ -38,7 +48,7 @@ class ApplicationConfigLogger(private val environment: Environment) {
     }
 
     // print the active micronaut version.
-    private fun printMicronautVersion() = log.info("Micronaut (v${ io.micronaut.core.version.VersionUtils.getMicronautVersion() ?: "" })")
+    private fun printMicronautVersion() = log.info("Micronaut (v${ MICRONAUT_VERSION ?: "???" })")
 
     // print the active mironaut environments.
     private fun printEnvironments() = log.info("Environments: ${environment.activeNames}")

@@ -30,11 +30,12 @@ workflows:
           jdk_version: "17"
           # This steps is only temporarily used until
           # a better way of installing Eclipse Temurin has been found.
+          # Graalvm update to 22.0.0.2 postponed until micronaut-gradle-plugin 3.3.2 which updates dockerFileNative with the same version
           pre-steps:
             - run: curl -s "https://get.sdkman.io" | bash
             - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
             - run: sdk version
-            - run: sdk install java 21.3.0.r17-grl
+            - run: sdk install java 21.3.0.r17-grl # See https://api.sdkman.io/2/candidates/java/linux/versions/list?installed= for available versions
           post-steps:
             - trafficinfo/slack-failure
             - run: ./gradlew -q javaToolchains
