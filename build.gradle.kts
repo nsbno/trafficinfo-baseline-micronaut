@@ -118,7 +118,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.assertj:assertj-core")
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.1")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
     testImplementation("io.mockk:mockk:1.12.2")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
