@@ -1,12 +1,13 @@
 package no.vy.trafficinfo.baseline.micronaut.domain
 
+import io.micronaut.context.event.ApplicationEventPublisher
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringService
 import jakarta.inject.Singleton
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicLong
 
-private const val MAX_SIZE = 100
+private const val MAX_SIZE = 10
 
 private val logger = KotlinLogging.logger {}
 
@@ -14,7 +15,10 @@ private val logger = KotlinLogging.logger {}
  *
  */
 @Singleton
-class ChangeEventRepository(private val randomStringService: RandomStringService) {
+class ChangeEventRepository(
+    private val randomStringService: RandomStringService,
+    private val eventPublisher: ApplicationEventPublisher<ChangeEvent>
+) {
 
     /* Used as a version count to number the generated updates */
     private val counter = AtomicLong()
@@ -23,7 +27,7 @@ class ChangeEventRepository(private val randomStringService: RandomStringService
     private val buffer = ArrayBlockingQueue<ChangeEvent>(MAX_SIZE)
 
     /**
-     * ## Create new ChangeEvent.
+     * ## Create new ChangeEvent and broadcast create event.
      */
     fun create(): ChangeEvent {
         val changeEvent = ChangeEvent(
@@ -38,6 +42,7 @@ class ChangeEventRepository(private val randomStringService: RandomStringService
 
         logger.info { "Create new ChangeEvent $changeEvent" }
         buffer.add(changeEvent)
+        eventPublisher.publishEventAsync(changeEvent)
         return changeEvent
     }
 

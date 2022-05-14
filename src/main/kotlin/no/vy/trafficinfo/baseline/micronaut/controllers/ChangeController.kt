@@ -20,6 +20,7 @@ import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Consumes
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.Produces
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
@@ -57,7 +58,7 @@ interface TestApi {
     /**
      * ## Return a single event.
      */
-    @Get(value = "/changes")
+    @Post(value = "/changes")
     @Consumes(MediaType.APPLICATION_JSON)
     fun changeEventMono(): Mono<ChangeEvent>
 }
@@ -65,8 +66,8 @@ interface TestApi {
 /**
  * # Controller that uses Flux and Mono to use Reactor features with Micronaut.
  * The controller expose two endpoints.
- * - changes
- * -
+ * - changes that returns APPLICATION_JSON_STREAM
+ * - changes that returns APPLICATION_JSON
  */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
@@ -107,9 +108,9 @@ class TestController(private val repo: ChangeEventRepository) : TestApi {
     }
 
     /**
-     * ## Return a single change event.
+     * ## Create and return a single change event.
      */
-    @Get("/changes")
+    @Post("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
     override fun changeEventMono(): Mono<ChangeEvent> {
