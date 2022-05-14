@@ -53,14 +53,21 @@ interface ChangeApi {
      */
     @Get(value = "/changes")
     @Consumes(MediaType.APPLICATION_JSON_STREAM)
-    fun changeEventFlux(): Flux<ChangeEvent>
+    fun changeEventUpdates(): Flux<ChangeEvent>
 
     /**
-     * ## Return a single event.
+     * ## Return all records from repository.
+     */
+    @Get(value = "/changes")
+    @Consumes(MediaType.APPLICATION_JSON)
+    fun changeEventsAll(): Flux<ChangeEvent>
+
+    /**
+     * ## Create and return a single event.
      */
     @Post(value = "/changes")
     @Consumes(MediaType.APPLICATION_JSON)
-    fun changeEventMono(): Mono<ChangeEvent>
+    fun changeEventCreate(): Mono<ChangeEvent>
 }
 
 /**
@@ -84,6 +91,10 @@ class ChangeController(private val repo: ChangeEventRepository) : ChangeApi {
             Queues.SMALL_BUFFER_SIZE, false
         )
 
+    /**
+     * Listen for ApplicationEvents where new
+     * ChangeEvents has been created.
+     */
     @EventListener
     fun onNewChangeEvent(event: ChangeEvent) {
         logger.info { "Received new ChangeEvent: $event" }
@@ -103,8 +114,18 @@ class ChangeController(private val repo: ChangeEventRepository) : ChangeApi {
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON_STREAM)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    override fun changeEventFlux(): Flux<ChangeEvent> {
+    override fun changeEventUpdates(): Flux<ChangeEvent> {
         return sink.asFlux()
+    }
+
+    /**
+     * ## Create and return a single change event.
+     */
+    @Get("/changes")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    override fun changeEventsAll(): Flux<ChangeEvent> {
+        return repo.all()
     }
 
     /**
@@ -113,7 +134,7 @@ class ChangeController(private val repo: ChangeEventRepository) : ChangeApi {
     @Post("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    override fun changeEventMono(): Mono<ChangeEvent> {
+    override fun changeEventCreate(): Mono<ChangeEvent> {
         return Mono.just(repo.create())
     }
 }

@@ -44,10 +44,10 @@ class ChangeControllerTest extends Specification {
     @Inject
     ChangeClient testClient
 
-    def "should stream as many records as requested"() {
+    def "should stream as many updates as requested"() {
         when:
         def result = testClient
-                .changeEventFlux()
+                .changeEventUpdates()
                 .take(3)
                 .collectList()
                 .block()
@@ -56,10 +56,22 @@ class ChangeControllerTest extends Specification {
         that(result.size(), equalTo(3))
     }
 
-    def "should get only one record as requested"() {
+    def "should stream as many records as requested"() {
         when:
         def result = testClient
-                .changeEventMono()
+            .changeEventsAll()
+            .take(3)
+            .collectList()
+            .block()
+
+        then: "we should gotten 3 items"
+        that(result.size(), equalTo(3))
+    }
+
+    def "should create new change event"() {
+        when:
+        def result = testClient
+                .changeEventCreate()
                 .block()
 
         then: "we should get a ChangeEvent"

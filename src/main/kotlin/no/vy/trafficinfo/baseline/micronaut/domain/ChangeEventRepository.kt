@@ -3,6 +3,7 @@ package no.vy.trafficinfo.baseline.micronaut.domain
 import io.micronaut.context.event.ApplicationEventPublisher
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringService
+import reactor.core.publisher.Flux
 import jakarta.inject.Singleton
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicLong
@@ -49,5 +50,5 @@ class ChangeEventRepository(
     /**
      * ## Return all values stored in buffer.
      */
-    fun all() = buffer.toList()
+    fun all() = Flux.fromIterable(buffer)
 }
