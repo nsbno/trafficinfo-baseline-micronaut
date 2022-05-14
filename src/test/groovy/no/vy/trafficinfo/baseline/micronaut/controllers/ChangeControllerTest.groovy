@@ -36,13 +36,13 @@ import static spock.util.matcher.HamcrestSupport.that
  * expected.
  */
 @MicronautTest
-class TestControllerTest extends Specification {
+class ChangeControllerTest extends Specification {
 
     @Client("/")
-    static interface TestClient extends TestApi {}
+    static interface ChangeClient extends ChangeApi {}
 
     @Inject
-    TestClient testClient
+    ChangeClient testClient
 
     def "should stream as many records as requested"() {
         when:

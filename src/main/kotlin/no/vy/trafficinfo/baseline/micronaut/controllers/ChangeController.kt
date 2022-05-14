@@ -41,7 +41,7 @@ private val logger = KotlinLogging.logger {}
  * Used to generate client to communicate with the
  * controller from the Unit Test.
  */
-interface TestApi {
+interface ChangeApi {
 
     /**
      * ## Return a stream of events.
@@ -71,7 +71,7 @@ interface TestApi {
  */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
-class TestController(private val repo: ChangeEventRepository) : TestApi {
+class ChangeController(private val repo: ChangeEventRepository) : ChangeApi {
 
     /* The sink where new events are broadcast from.
      * autoCancel is set to false so that the sink is
