@@ -16,10 +16,16 @@ class ChangeEventCreateJob(
 ) {
 
     /**
-     * ## Create and emit a new change event with a random string.
+     * ## Create a new change event in the repository.
+     *
+     * As a side effect the repository will broadcast
+     * the newly created ChangeEvent on the internal
+     * micronaut EventPublisher bus which the
+     * ChangeController listens for.
      */
     @Scheduled(fixedDelay = "1s")
     fun createEvent() {
+        logger.info { "Scheduler triggered create new ChangeEvent." }
         repo.create()
     }
 }
