@@ -28,7 +28,6 @@ interface ChangeEventRepository {
     fun all(): Flux<ChangeEvent>?
 }
 
-
 /**
  * # Array backed in-memory repo.
  * TODO Add more docu.
