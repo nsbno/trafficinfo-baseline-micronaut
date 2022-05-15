@@ -36,7 +36,7 @@ import static spock.util.matcher.HamcrestSupport.that
  * expected.
  */
 @MicronautTest
-class ChangeControllerTest extends Specification {
+class ChangeControllerSpec extends Specification {
 
     @Client("/")
     static interface ChangeClient extends ChangeApi {}

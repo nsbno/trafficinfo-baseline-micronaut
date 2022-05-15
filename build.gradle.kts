@@ -124,7 +124,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core") {
         exclude("org.codehaus.groovy:groovy-all")
     }
-    testImplementation("io.micronaut:micronaut-inject-groovy")
+    testImplementation("io.micronaut:micronaut-inject-java")
     testImplementation("io.micronaut.test:micronaut-test-spock")
     testImplementation("org.assertj:assertj-core")
 }

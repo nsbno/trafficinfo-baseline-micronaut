@@ -27,7 +27,7 @@ import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
-import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
+import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Sinks
@@ -72,13 +72,15 @@ interface ChangeApi {
 
 /**
  * # Controller that uses Flux and Mono to use Reactor features with Micronaut.
- * The controller expose two endpoints.
- * - changes that returns APPLICATION_JSON_STREAM
- * - changes that returns APPLICATION_JSON
+ * The controller expose three endpoints.
+ * - ChangeEvent updates as a APPLICATION_JSON_STREAM
+ * - all ChangeEvent from repo sa APPLICATION_JSON
+ * - insert new ChangeEvent
+ *
  */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
-class ChangeController(private val repo: ChangeEventRepository) : ChangeApi {
+class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi {
 
     /* The sink where new events are broadcast from.
      * autoCancel is set to false so that the sink is
