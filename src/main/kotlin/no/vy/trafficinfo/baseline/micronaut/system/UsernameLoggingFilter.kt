@@ -29,7 +29,7 @@ class UsernameLoggingFilter(private val securityService: SecurityService) : Http
         val user: String = if (request.userPrincipal.isPresent) request.userPrincipal.get().name else "anonymous"
         // propagate username to MDC context.s
         MDC.put("user", user)
-        
+
         return Flux.from(chain.proceed(request)).contextWrite {
             // propagate Reactor context from the HTTP filter to the controller’s coroutine:
             it.put("user", user)

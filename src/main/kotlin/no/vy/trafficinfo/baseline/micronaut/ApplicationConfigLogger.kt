@@ -6,10 +6,11 @@ import io.micronaut.context.env.PropertySource
 import io.micronaut.core.version.VersionUtils.MICRONAUT_VERSION
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent
 import io.micronaut.runtime.event.annotation.EventListener
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import javax.annotation.PostConstruct
 import java.util.regex.Pattern
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Dump all configuration to log after context has been created.
@@ -25,7 +26,6 @@ import java.util.regex.Pattern
 @Suppress("Unused")
 @Context
 class ApplicationConfigLogger(private val environment: Environment) {
-    private val log: Logger = LoggerFactory.getLogger(ApplicationConfigLogger::class.java)
 
     // mask sensitive information  that should not be printed to the logs.
     private val PROPERTY_NAMES_TO_MASK = arrayOf("password", "credential", "certificate", "key", "secret", "token")
@@ -39,32 +39,32 @@ class ApplicationConfigLogger(private val environment: Environment) {
 
     @PostConstruct
     fun logConfig() {
-        log.info("Application Configuration - BOF")
+        logger.info("Application Configuration - BOF")
         printMicronautVersion()
         printEnvironments()
         printConfigSources()
         printConfigProperties()
-        log.info("Application Configuration - EOF")
+        logger.info("Application Configuration - EOF")
     }
 
     // print the active micronaut version.
-    private fun printMicronautVersion() = log.info("Micronaut (v${ MICRONAUT_VERSION ?: "???" })")
+    private fun printMicronautVersion() = logger.info("Micronaut (v${MICRONAUT_VERSION ?: "???"})")
 
     // print the active mironaut environments.
-    private fun printEnvironments() = log.info("Environments: ${environment.activeNames}")
+    private fun printEnvironments() = logger.info("Environments: ${environment.activeNames}")
 
     // print the print config properties from all property sources.
     private fun printConfigProperties() = environment.propertySources
         .sortedBy { ps -> ps.order }
         .forEach { ps ->
-            log.info("Property Source '${ps.name}'\n${prettyPrintMap(getMaskedProperties(ps), 0)}")
+            logger.info("Property Source '${ps.name}'\n${prettyPrintMap(getMaskedProperties(ps), 0)}")
         }
 
     // print all config sources.
     private fun printConfigSources() = environment.propertySources
         .sortedBy { ps -> ps.order }
         .forEach { ps ->
-            log.info("${ps.order} ${ps.name}")
+            logger.info("${ps.order} ${ps.name}")
         }
 
     /**
@@ -83,9 +83,11 @@ class ApplicationConfigLogger(private val environment: Environment) {
             is List<*> -> {
                 indent("${it.key} = \n" + prettyPrintList(value, level + 1), level)
             }
+
             is Map<*, *> -> {
                 prettyPrintMap(value, level + 1)
             }
+
             else -> {
                 indent("${it.key} = ${it.value}", level)
             }
@@ -108,9 +110,11 @@ class ApplicationConfigLogger(private val environment: Environment) {
             is List<*> -> {
                 prettyPrintList(it, level + 1)
             }
+
             is Map<*, *> -> {
                 prettyPrintMap(it, level + 1)
             }
+
             else -> {
                 indent("- $it", level)
             }
