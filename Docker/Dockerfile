@@ -4,6 +4,14 @@ ENV GROUP=$USER \
     HOME=/home/$USER \
     CONTEXT_PATH=/baseline-micronaut
 
+# set timezone to Oslo, because otherwise it is set
+# to the location of the datacenter running fargate.
+ENV TZ=Europe/Oslo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Download elastic cloud apm agent
+RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.30.1/elastic-apm-agent-1.30.1.jar -O $HOME/elastic-apm-agent-1.30.1.jar
+
 RUN apk add --no-cache su-exec && \
     addgroup -S $GROUP && \
     adduser -S $USER -G $GROUP && \
