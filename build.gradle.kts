@@ -112,6 +112,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
+    implementation("co.elastic.apm:apm-agent-api:1.30.1")
 
     /**
      * Test dependency configurations.

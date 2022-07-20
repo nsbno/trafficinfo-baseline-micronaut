@@ -26,6 +26,7 @@ import io.micronaut.http.annotation.Header
 import io.micronaut.http.annotation.Produces
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
+import co.elastic.apm.api.Traced
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -56,6 +57,7 @@ class SecuredController {
     @Get("/secured")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured("https://services.trafficinfo.vydev.io/baseline/read")
+    @Traced
     fun get(): HttpResponse<Void> {
         logger.info { "User was authenticated and authorized successfully." }
         return HttpResponse.ok()
