@@ -8,6 +8,7 @@ import io.micronaut.http.filter.HttpServerFilter
 import io.micronaut.http.filter.ServerFilterChain
 import io.micronaut.security.utils.SecurityService
 import org.reactivestreams.Publisher
+import org.slf4j.MDC
 import reactor.core.publisher.Flux
 
 /**
@@ -15,7 +16,7 @@ import reactor.core.publisher.Flux
  * TODO move this to common-logging for reuse.
  */
 @Filter(Filter.MATCH_ALL_PATTERN)
-class UsernameLoggingHttpServerFilter(private val securityService: SecurityService) : HttpServerFilter {
+class UsernameLoggingFilter(private val securityService: SecurityService) : HttpServerFilter {
 
     // make sure the filter is executed last to contain the currently logged-in user.
     override fun getOrder(): Int = Ordered.LOWEST_PRECEDENCE
@@ -25,6 +26,13 @@ class UsernameLoggingHttpServerFilter(private val securityService: SecurityServi
      * If no user has been authenticated by security service set the username to anonymous.
      */
     override fun doFilter(request: HttpRequest<*>, chain: ServerFilterChain): Publisher<MutableHttpResponse<*>> {
-        return Flux.from(chain.proceed(request)).contextWrite { context -> context.put("user", securityService.username().orElse("anonymous")) }
+        val user: String = if (request.userPrincipal.isPresent) request.userPrincipal.get().name else "anonymous"
+        // propagate username to MDC context.s
+        MDC.put("user", user)
+        
+        return Flux.from(chain.proceed(request)).contextWrite {
+            // propagate Reactor context from the HTTP filter to the controller’s coroutine:
+            it.put("user", user)
+        }
     }
 }

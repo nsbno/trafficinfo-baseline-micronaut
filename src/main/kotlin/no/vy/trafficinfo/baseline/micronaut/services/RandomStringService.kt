@@ -4,7 +4,6 @@ import mu.KotlinLogging
 import kotlin.random.Random
 import jakarta.inject.Singleton
 
-/* Place definition above class declaration to make field static */
 private val logger = KotlinLogging.logger {}
 
 /* length of random string */

@@ -91,7 +91,6 @@ dependencies {
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
 
-    // implementation("io.micronaut.aws:micronaut-aws-sdk-v1") // Switch to this to use sdk-v1 from aws, Required by cantara sqs-util
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
     implementation("io.micronaut.aws:micronaut-aws-parameter-store")
 
@@ -106,7 +105,7 @@ dependencies {
     /**
      * Third-party dependencies.
      */
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.20")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
