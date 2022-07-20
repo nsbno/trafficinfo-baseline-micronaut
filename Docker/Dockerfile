@@ -9,9 +9,7 @@ ENV GROUP=$USER \
 ENV TZ=Europe/Oslo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Download elastic cloud apm agent
-RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.30.1/elastic-apm-agent-1.30.1.jar -O $HOME/elastic-apm-agent-1.30.1.jar
-
+# create app user.
 RUN apk add --no-cache su-exec && \
     addgroup -S $GROUP && \
     adduser -S $USER -G $GROUP && \
@@ -21,11 +19,15 @@ WORKDIR $HOME
 
 EXPOSE 8080
 
+# copy application files
 COPY --chown=$USER Docker/runapp.sh $HOME/
 RUN chmod 755 $HOME/*.sh
 
 COPY --chown=$USER build/docker/main/layers/libs $HOME/application/libs
 COPY --chown=$USER build/docker/main/layers/resources $HOME/application/resources
 COPY --chown=$USER build/docker/main/layers/application.jar $HOME/application/application.jar
+
+# Download elastic cloud apm agent
+RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.30.1/elastic-apm-agent-1.30.1.jar -O $HOME/elastic-apm-agent-1.30.1.jar
 
 CMD [ "./runapp.sh" ]
