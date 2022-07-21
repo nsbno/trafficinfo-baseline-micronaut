@@ -3,6 +3,7 @@
 micronaut:
   config-client:
     enabled: true
+    read-timeout: 30s
 
   metrics:
     http:
