@@ -9,6 +9,7 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     kotlin("plugin.allopen")
+    id("groovy")
     id("io.micronaut.application") version "3.3.1"
     id("jacoco")
     id("org.sonarqube") version "3.3"
@@ -41,8 +42,8 @@ repositories {
 
 micronaut {
     version(micronautVersion)
-    runtime("netty")
-    testRuntime("junit5")
+    runtime("jetty")
+    testRuntime("spock")
     processing {
         incremental(true)
         annotations("no.vy.trafficinfo.baseline.micronaut.*")
@@ -85,11 +86,11 @@ dependencies {
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-cloudwatch")
     implementation("io.micronaut.reactor:micronaut-reactor")
+    implementation("io.micronaut.reactor:micronaut-reactor-http-client")
 
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
 
-    // implementation("io.micronaut.aws:micronaut-aws-sdk-v1") // Switch to this to use sdk-v1 from aws, Required by cantara sqs-util
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
     implementation("io.micronaut.aws:micronaut-aws-parameter-store")
 
@@ -104,24 +105,28 @@ dependencies {
     /**
      * Third-party dependencies.
      */
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
+    implementation("co.elastic.apm:apm-agent-api:1.30.1")
 
     /**
      * Test dependency configurations.
      */
-    testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.assertj:assertj-core")
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
     testImplementation("io.mockk:mockk:1.12.2")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testCompileOnly(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    testImplementation("org.spockframework:spock-core") {
+        exclude("org.codehaus.groovy:groovy-all")
+    }
+    testImplementation("io.micronaut:micronaut-inject-java")
+    testImplementation("io.micronaut.test:micronaut-test-spock")
+    testImplementation("org.assertj:assertj-core")
 }
 
 application {

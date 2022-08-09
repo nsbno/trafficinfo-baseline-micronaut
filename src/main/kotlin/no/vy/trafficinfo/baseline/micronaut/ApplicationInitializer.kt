@@ -2,9 +2,10 @@ package no.vy.trafficinfo.baseline.micronaut
 
 import io.micronaut.discovery.event.ServiceReadyEvent
 import io.micronaut.runtime.event.annotation.EventListener
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import jakarta.inject.Singleton
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * This class listens for the ServiceReadyEvent.
@@ -20,15 +21,12 @@ import jakarta.inject.Singleton
 @Singleton
 class ApplicationInitializer {
 
-    companion object {
-        private val log: Logger = LoggerFactory.getLogger(ApplicationInitializer::class.java)
-    }
-
     /**
      * Listen for the application has started even.
      */
     @EventListener
     fun applicationStartedUp(serviceStartedEvent: ServiceReadyEvent) {
         // add something to happen after ServiceReadyEvent here.
+        logger.info { "application has started." }
     }
 }
