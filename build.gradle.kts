@@ -118,7 +118,7 @@ dependencies {
      * Test dependency configurations.
      */
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
-    testImplementation("io.mockk:mockk:1.12.2")
+    testImplementation("io.mockk:mockk:1.12.4")
 
     testCompileOnly(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     testImplementation("org.spockframework:spock-core") {
