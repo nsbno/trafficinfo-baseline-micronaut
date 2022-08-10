@@ -42,7 +42,7 @@ repositories {
 
 micronaut {
     version(micronautVersion)
-    runtime("jetty")
+    runtime("netty")
     testRuntime("spock")
     processing {
         incremental(true)
