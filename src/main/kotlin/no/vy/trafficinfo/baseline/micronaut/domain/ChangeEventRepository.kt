@@ -1,6 +1,7 @@
 package no.vy.trafficinfo.baseline.micronaut.domain
 
 import io.micronaut.context.event.ApplicationEventPublisher
+import io.micronaut.tracing.annotation.NewSpan
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringService
 import reactor.core.publisher.Flux
@@ -44,6 +45,8 @@ open class ChangeEventRepositoryImpl(
     /* hold last 100 generated random string in memory */
     private val buffer = ArrayBlockingQueue<ChangeEvent>(MAX_SIZE)
 
+
+    @NewSpan("repo-create")
     override fun create(): ChangeEvent {
         val changeEvent = ChangeEvent(
             randomStringService.randomString(),
@@ -61,5 +64,6 @@ open class ChangeEventRepositoryImpl(
         return changeEvent
     }
 
+    @NewSpan("repo-all")
     override fun all() = Flux.fromIterable(buffer)
 }

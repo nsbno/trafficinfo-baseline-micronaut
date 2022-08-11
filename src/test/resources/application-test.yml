@@ -1,3 +1,6 @@
-# enable security for tests.
+# enable dummy security for tests.
 micronaut.security.token.jwt.signatures.secret.generator.secret: pleaseChangeThisSecretForANewOne
 micronaut.security.token.jwt.claims-validators.audience: requiredAudience
+
+# disable APM x-ray reporting in tests
+micronaut.otel.enabled: false
