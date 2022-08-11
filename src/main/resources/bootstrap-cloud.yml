@@ -27,9 +27,3 @@ aws:
         # to use secure parameters, make sure the service has access to the key used to encrypt it
         useSecureParameters: true
         rootHierarchyPath: /trafficinfo/config
-
-# Configure Open Telemetry for AWS x-ray
-otel:
-  traces:
-    exporter: otlp
-  propagators: tracecontext, baggage, xray

@@ -58,9 +58,6 @@ kotlin {
 }
 
 dependencies {
-
-    annotationProcessor("io.micronaut.tracing:micronaut-tracing-opentelemetry-annotation")
-
     /**
      * Kotlin dependencies.
      */
@@ -83,6 +80,7 @@ dependencies {
     implementation("io.micronaut:micronaut-inject")
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-tracing")
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.discovery:micronaut-discovery-client")
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
@@ -99,16 +97,7 @@ dependencies {
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
     implementation("io.micronaut.problem:micronaut-problem-json")
 
-    // tracing
-    annotationProcessor("io.micronaut.tracing:micronaut-tracing-opentelemetry-annotation")
-    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
-    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
-    implementation("io.opentelemetry:opentelemetry-extension-aws")
-    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray")
-    implementation("io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2")
-
     /**
-     *
      * Trafficinfo Common Dependencies.
      */
     implementation("no.vy.trafficinfo.common:logging:0.0.3")
@@ -123,6 +112,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
+    implementation("co.elastic.apm:apm-agent-api:1.30.1")
 
     /**
      * Test dependency configurations.

@@ -27,4 +27,7 @@ COPY --chown=$USER build/docker/main/layers/libs $HOME/application/libs
 COPY --chown=$USER build/docker/main/layers/resources $HOME/application/resources
 COPY --chown=$USER build/docker/main/layers/application.jar $HOME/application/application.jar
 
+# Download elastic cloud apm agent
+RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.30.1/elastic-apm-agent-1.30.1.jar -O $HOME/elastic-apm-agent-1.30.1.jar
+
 CMD [ "./runapp.sh" ]
