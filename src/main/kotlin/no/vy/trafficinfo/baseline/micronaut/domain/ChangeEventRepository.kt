@@ -45,7 +45,6 @@ open class ChangeEventRepositoryImpl(
     /* hold last 100 generated random string in memory */
     private val buffer = ArrayBlockingQueue<ChangeEvent>(MAX_SIZE)
 
-
     @NewSpan("repo-create")
     override fun create(): ChangeEvent {
         val changeEvent = ChangeEvent(
