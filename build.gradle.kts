@@ -82,7 +82,6 @@ dependencies {
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut.tracing:micronaut-tracing-core")
-    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.discovery:micronaut-discovery-client")
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
