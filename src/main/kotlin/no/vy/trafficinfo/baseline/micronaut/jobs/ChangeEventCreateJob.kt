@@ -1,7 +1,6 @@
 package no.vy.trafficinfo.baseline.micronaut.jobs
 
 import io.micronaut.scheduling.annotation.Scheduled
-import co.elastic.apm.api.CaptureSpan
 import co.elastic.apm.api.Traced
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
