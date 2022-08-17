@@ -6,10 +6,11 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Filter
 import io.micronaut.http.filter.HttpServerFilter
 import io.micronaut.http.filter.ServerFilterChain
+import co.elastic.apm.api.ElasticApm
+import co.elastic.apm.api.Transaction
 import org.reactivestreams.Publisher
 import org.slf4j.MDC
 import reactor.core.publisher.Flux
-import java.util.UUID
 
 /**
  * Servlet filter to add tracing header to Logging.
@@ -25,18 +26,23 @@ class TracingLoggingFilter : HttpServerFilter {
      * Add TRACING uuid to request and return the tracing id in http response.
      */
     override fun doFilter(request: HttpRequest<*>, chain: ServerFilterChain): Publisher<MutableHttpResponse<*>> {
-        // create a random uuid as traceid if none sent in headers.
-        val uuid: String = if (request.getHeaders().contains("X-TRACE-ID")) request.getHeaders().get("X-TRACE-ID") else UUID.randomUUID().toString()
-
-        // put the trace uuid in MDC to use in logging.
-        MDC.put("trace", uuid)
-
-        return Flux.from(chain.proceed(request)).doOnNext { res ->
-            // add X-TRACE-ID to response to use in subsequent calls
-            res.headers.add("X-TRACE-ID", uuid)
-        }.contextWrite {
-            // propagate Reactor context from the HTTP filter to the controller’s coroutine:
-            it.put("tracingId", uuid)
+        val transaction = ElasticApm.startTransactionWithRemoteParent { request.getHeaders().get("X-TRACE-ID") }
+        try {
+            transaction.activate().use { scope ->
+                transaction.setName(request.uri.path)
+                transaction.setType(Transaction.TYPE_REQUEST)
+                MDC.put("trace", transaction.traceId)
+                return Flux.from(chain.proceed(request)).doOnNext { res ->
+                    res.headers.add("X-TRACE-ID", transaction.traceId)
+                }.contextWrite {
+                    it.put("tracingId", transaction.traceId)
+                }
+            }
+        } catch (e: Exception) {
+            transaction.captureException(e)
+            throw e
+        } finally {
+            transaction.end()
         }
     }
 }
