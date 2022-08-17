@@ -1,6 +1,8 @@
 package no.vy.trafficinfo.baseline.micronaut.jobs
 
 import io.micronaut.scheduling.annotation.Scheduled
+import co.elastic.apm.api.CaptureSpan
+import co.elastic.apm.api.Traced
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 import jakarta.inject.Singleton
@@ -24,6 +26,7 @@ class ChangeEventCreateJob(
      * ChangeController listens for.
      */
     @Scheduled(fixedDelay = "1s")
+    @Traced(value = "createEvent", type = "job")
     fun createEvent() {
         logger.info { "Scheduler triggered create new ChangeEvent." }
         repo.create()
