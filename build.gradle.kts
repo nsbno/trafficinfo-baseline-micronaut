@@ -38,6 +38,7 @@ repositories {
             password = getProperty("NEXUS_PASSWORD")
         }
     }
+    mavenCentral()
 }
 
 micronaut {
@@ -81,6 +82,7 @@ dependencies {
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut.tracing:micronaut-tracing-core")
+    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.discovery:micronaut-discovery-client")
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
@@ -112,7 +114,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
-    implementation("co.elastic.apm:apm-agent-api:1.30.1")
+    implementation("co.elastic.apm:apm-agent-api:1.33.0")
     implementation("co.elastic.apm:apm-opentracing:1.33.0")
 
     /**
