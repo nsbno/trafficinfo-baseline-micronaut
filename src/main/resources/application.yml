@@ -48,7 +48,7 @@ micronaut:
       read-timeout: 60s
     services:
       whoami:
-        url: https://services.test.trafficinfo.vydev.io
+        url: https://services.dev.trafficinfo.vydev.io
         path: /whoami
       baseline-micronaut:
         url: ${baseUrl}
