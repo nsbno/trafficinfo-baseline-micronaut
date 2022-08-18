@@ -6,11 +6,7 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Filter
 import io.micronaut.http.filter.HttpServerFilter
 import io.micronaut.http.filter.ServerFilterChain
-import co.elastic.apm.api.ElasticApm
-import co.elastic.apm.api.Transaction
 import org.reactivestreams.Publisher
-import org.slf4j.MDC
-import reactor.core.publisher.Flux
 
 /**
  * Servlet filter to add tracing header to Logging.
@@ -26,6 +22,8 @@ class TracingLoggingFilter : HttpServerFilter {
      * Add TRACING uuid to request and return the tracing id in http response.
      */
     override fun doFilter(request: HttpRequest<*>, chain: ServerFilterChain): Publisher<MutableHttpResponse<*>> {
+        return chain.proceed(request)
+/*
         val transaction = ElasticApm.startTransactionWithRemoteParent { request.getHeaders().get("X-TRACE-ID") }
         try {
             transaction.activate().use { scope ->
@@ -45,5 +43,6 @@ class TracingLoggingFilter : HttpServerFilter {
         } finally {
             transaction.end()
         }
+*/
     }
 }

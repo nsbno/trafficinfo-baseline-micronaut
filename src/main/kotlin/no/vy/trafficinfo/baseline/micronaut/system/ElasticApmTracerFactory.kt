@@ -1,4 +1,5 @@
 package no.vy.trafficinfo.baseline.micronaut.system
+/*
 
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Primary
@@ -23,4 +24,4 @@ class ElasticApmTracerFactory {
             }
         }
     }
-}
+}*/

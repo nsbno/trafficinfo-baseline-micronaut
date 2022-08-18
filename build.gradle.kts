@@ -113,8 +113,12 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
-    implementation("co.elastic.apm:apm-agent-api:1.33.0")
-    implementation("co.elastic.apm:apm-opentracing:1.33.0")
+
+    implementation("io.opentelemetry:opentelemetry-api")
+    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
+
+//    implementation("co.elastic.apm:apm-agent-api:1.33.0")
+//    implementation("co.elastic.apm:apm-opentracing:1.33.0")
 
     /**
      * Test dependency configurations.

@@ -25,7 +25,7 @@ import io.micronaut.http.annotation.Produces
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
-import co.elastic.apm.api.Traced
+import io.opentelemetry.extension.annotations.WithSpan
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
@@ -99,7 +99,6 @@ class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi 
      * ChangeEvents has been created.
      */
     @EventListener
-    @Traced
     fun onNewChangeEvent(event: ChangeEvent) {
         logger.info { "Received new ChangeEvent: $event" }
         if (sink.currentSubscriberCount() > 0) {
@@ -118,7 +117,7 @@ class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi 
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON_STREAM)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    @Traced
+    @WithSpan
     override fun changeEventUpdates(): Flux<ChangeEvent> {
         return sink.asFlux()
     }
@@ -129,7 +128,7 @@ class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi 
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    @Traced
+    @WithSpan
     override fun changeEventsAll(): Flux<ChangeEvent> {
         return repo.all()
     }
@@ -140,7 +139,7 @@ class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi 
     @Post("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    @Traced
+    @WithSpan
     override fun changeEventCreate(): Mono<ChangeEvent> {
         return Mono.just(repo.create())
     }

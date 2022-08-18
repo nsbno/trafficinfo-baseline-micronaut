@@ -2,8 +2,7 @@ package no.vy.trafficinfo.baseline.micronaut.jobs
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.scheduling.annotation.Scheduled
-import co.elastic.apm.api.CaptureSpan
-import co.elastic.apm.api.Traced
+import io.opentelemetry.extension.annotations.WithSpan
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 import jakarta.inject.Singleton
@@ -15,7 +14,7 @@ private val logger = KotlinLogging.logger {}
  */
 @Singleton
 @Introspected
-class ChangeEventCreateJob(
+open class ChangeEventCreateJob(
     private val repo: ChangeEventRepository
 ) {
 
@@ -28,9 +27,8 @@ class ChangeEventCreateJob(
      * ChangeController listens for.
      */
     @Scheduled(fixedDelay = "1s")
-    @Traced(type = "job")
-    @CaptureSpan(type = "job")
-    fun createEvent() {
+    @WithSpan
+    open fun createEvent() {
         logger.info { "Scheduler triggered create new ChangeEvent." }
         repo.create()
     }
