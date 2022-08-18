@@ -81,7 +81,7 @@ interface ChangeApi {
  */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
-class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi {
+open class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi {
 
     /* The sink where new events are broadcast from.
      * autoCancel is set to false so that the sink is
