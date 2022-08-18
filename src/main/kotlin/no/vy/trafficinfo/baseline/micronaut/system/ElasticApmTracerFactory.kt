@@ -41,7 +41,7 @@ class ElasticApmTracerFactory {
             .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
             .buildAndRegisterGlobal()
 
-        return openTelemetry.getTracer("instrumentation-library-name", "1.0.0"); s
+        return openTelemetry.getTracer("instrumentation-library-name", "1.0.0")
     }
 }
 /*
