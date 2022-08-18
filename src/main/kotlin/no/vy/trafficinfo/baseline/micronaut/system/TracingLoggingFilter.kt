@@ -29,6 +29,7 @@ class TracingLoggingFilter : HttpServerFilter {
         val transaction = ElasticApm.startTransactionWithRemoteParent { request.getHeaders().get("X-TRACE-ID") }
         try {
             transaction.activate().use { scope ->
+                transaction.startSpan()
                 transaction.setName(request.uri.path)
                 transaction.setType(Transaction.TYPE_REQUEST)
                 MDC.put("trace", transaction.traceId)
