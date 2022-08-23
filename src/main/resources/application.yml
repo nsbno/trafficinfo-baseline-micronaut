@@ -1,4 +1,7 @@
 micronaut:
+  otel:
+    enabled: true
+
   application:
     name: baseline-micronaut
   router:

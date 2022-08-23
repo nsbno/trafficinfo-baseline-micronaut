@@ -2,10 +2,14 @@ package no.vy.trafficinfo.baseline.micronaut.jobs
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.scheduling.annotation.Scheduled
+import io.micronaut.tracing.annotation.NewSpan
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.SpanKind
 import io.opentelemetry.extension.annotations.WithSpan
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 import jakarta.inject.Singleton
+
 
 private val logger = KotlinLogging.logger {}
 

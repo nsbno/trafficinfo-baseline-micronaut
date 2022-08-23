@@ -114,9 +114,10 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
 
-    annotationProcessor("io.micronaut.tracing:micronaut-tracing-opentelemetry-annotation")
-    implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:1.17.0-alpha")
+    implementation("io.opentelemetry:opentelemetry-extension-annotations")
+    implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
 
 //    implementation("co.elastic.apm:apm-agent-api:1.33.0")
