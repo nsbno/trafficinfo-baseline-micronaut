@@ -2,14 +2,12 @@ package no.vy.trafficinfo.baseline.micronaut.jobs
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.scheduling.annotation.Scheduled
-import io.micronaut.tracing.annotation.NewSpan
-import io.opentelemetry.api.trace.Span
-import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.extension.annotations.WithSpan
+import co.elastic.apm.api.ElasticApm
+import co.elastic.apm.api.Transaction
+import io.opentracing.Tracer
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 import jakarta.inject.Singleton
-
 
 private val logger = KotlinLogging.logger {}
 
@@ -19,7 +17,8 @@ private val logger = KotlinLogging.logger {}
 @Singleton
 @Introspected
 open class ChangeEventCreateJob(
-    private val repo: ChangeEventRepository
+    private val repo: ChangeEventRepository,
+    private val tracer: Tracer
 ) {
 
     /**
@@ -30,10 +29,21 @@ open class ChangeEventCreateJob(
      * micronaut EventPublisher bus which the
      * ChangeController listens for.
      */
-    @Scheduled(fixedDelay = "1s")
-    @WithSpan
+    @Scheduled(fixedDelay = "10s")
     open fun createEvent() {
-        logger.info { "Scheduler triggered create new ChangeEvent." }
-        repo.create()
+        val transaction: Transaction = ElasticApm.startTransaction()
+        try {
+            transaction.activate().use { scope ->
+                logger.info { "Scheduler triggered create new ChangeEvent." }
+                transaction.setName("Scheduler triggered create new ChangeEvent")
+                transaction.setType(Transaction.TYPE_REQUEST)
+                repo.create()
+            }
+        } catch (e: java.lang.Exception) {
+            transaction.captureException(e)
+            throw e
+        } finally {
+            transaction.end()
+        }
     }
 }

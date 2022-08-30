@@ -1,7 +1,5 @@
 package no.vy.trafficinfo.baseline.micronaut.services
 
-import io.opentelemetry.api.trace.SpanKind
-import io.opentelemetry.extension.annotations.WithSpan
 import mu.KotlinLogging
 import kotlin.random.Random
 import jakarta.inject.Singleton
@@ -23,7 +21,6 @@ open class RandomStringService {
     /**
      * ## Generate a random string.
      */
-    @WithSpan(kind = SpanKind.SERVER)
     open fun randomString() = (1..STRING_LENGTH)
         .map { i -> Random.nextInt(0, charPool.size) }
         .map(charPool::get)

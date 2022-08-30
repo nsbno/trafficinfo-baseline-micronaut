@@ -25,8 +25,6 @@ import io.micronaut.http.annotation.Produces
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
-import io.opentelemetry.api.trace.Span
-import io.opentelemetry.extension.annotations.WithSpan
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
@@ -118,7 +116,6 @@ open class ChangeController(private val repo: ChangeEventRepositoryImpl) : Chang
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON_STREAM)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    @WithSpan
     override fun changeEventUpdates(): Flux<ChangeEvent> {
         return sink.asFlux()
     }
@@ -130,16 +127,14 @@ open class ChangeController(private val repo: ChangeEventRepositoryImpl) : Chang
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
     override fun changeEventsAll(): Flux<ChangeEvent> {
-        val customizedSpan = Span.current()
-/*        customizedSpan.setAttribute("http.url", "http://unknown.host/couldNotFindRequestContext")
-        customizedSpan.setAttribute("http.flavor","1.1")
-        customizedSpan.setAttribute("net.peer.name","unknown.host")
-        customizedSpan.setAttribute("net.peer.port","8080")
-        customizedSpan.setAttribute("net.sock.peer.addr","1.2.3.4")
-        customizedSpan.setAttribute("http.status_code","200")*/
-        logger.info("customizedSpan: $customizedSpan")
-
         return repo.all()
+    }
+
+    @Get("/error")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    fun error(): Flux<ChangeEvent> {
+        throw RuntimeException("failed!!")
     }
 
     /**
@@ -148,7 +143,6 @@ open class ChangeController(private val repo: ChangeEventRepositoryImpl) : Chang
     @Post("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    @WithSpan
     override fun changeEventCreate(): Mono<ChangeEvent> {
         return Mono.just(repo.create())
     }

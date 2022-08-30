@@ -1,7 +1,4 @@
 micronaut:
-  otel:
-    enabled: true
-
   application:
     name: baseline-micronaut
   router:
@@ -82,4 +79,3 @@ jackson:
     adjustDatesToContextTimeZone: false
   json-view:
     enabled: true
-
