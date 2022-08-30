@@ -1,7 +1,6 @@
 package no.vy.trafficinfo.baseline.micronaut.domain
 
 import io.micronaut.context.event.ApplicationEventPublisher
-import io.micronaut.tracing.annotation.NewSpan
 import co.elastic.apm.api.Traced
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringService
