@@ -31,7 +31,7 @@ open class ChangeEventCreateJob(
     open fun createEvent() {
         val transaction: Transaction = ElasticApm.startTransaction()
         try {
-            transaction.activate().use { scope ->
+            transaction.startSpan().activate().use { scope ->
                 logger.info { "Scheduler triggered create new ChangeEvent." }
                 transaction.setName("Scheduler triggered create new ChangeEvent")
                 transaction.setType(Transaction.TYPE_REQUEST)
