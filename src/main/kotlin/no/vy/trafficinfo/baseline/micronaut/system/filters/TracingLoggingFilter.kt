@@ -1,4 +1,4 @@
-package no.vy.trafficinfo.baseline.micronaut.system
+package no.vy.trafficinfo.baseline.micronaut.system.filters
 
 import io.micronaut.core.order.Ordered
 import io.micronaut.http.HttpRequest
