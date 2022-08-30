@@ -31,11 +31,11 @@ class UsernameLoggingFilter(private val securityService: SecurityService) : Http
         ElasticApm.currentTransaction().setUser(user, "", user)
 
         // propagate username to MDC context.
-        MDC.put("user", user)
+        MDC.put("user.id", user)
 
         return Flux.from(chain.proceed(request)).contextWrite {
             // propagate Reactor context from the HTTP filter to the controller’s coroutine:
-            it.put("user", user)
+            it.put("user.id", user)
         }
     }
 }
