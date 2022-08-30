@@ -50,8 +50,6 @@ micronaut:
       whoami:
         url: https://services.dev.trafficinfo.vydev.io
         path: /whoami
-      baseline-micronaut:
-        url: ${baseUrl}
 
 # for overriding when doing local development
 jwksUrl: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_Z53b9AbeT/.well-known/jwks.json"

@@ -28,7 +28,7 @@ class UsernameLoggingFilter(private val securityService: SecurityService) : Http
      */
     override fun doFilter(request: HttpRequest<*>, chain: ServerFilterChain): Publisher<MutableHttpResponse<*>> {
         val user: String = if (request.userPrincipal.isPresent) request.userPrincipal.get().name else "anonymous"
-        ElasticApm.currentTransaction().setUser(user,"",user)
+        ElasticApm.currentTransaction().setUser(user, "", user)
 
         // propagate username to MDC context.
         MDC.put("user", user)

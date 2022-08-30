@@ -6,7 +6,6 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Filter
 import io.micronaut.http.filter.HttpServerFilter
 import io.micronaut.http.filter.ServerFilterChain
-import co.elastic.apm.api.ElasticApm
 import org.reactivestreams.Publisher
 
 /**
