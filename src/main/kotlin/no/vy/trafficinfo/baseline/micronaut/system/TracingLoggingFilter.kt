@@ -6,6 +6,7 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Filter
 import io.micronaut.http.filter.HttpServerFilter
 import io.micronaut.http.filter.ServerFilterChain
+import co.elastic.apm.api.ElasticApm
 import org.reactivestreams.Publisher
 
 /**
@@ -23,26 +24,5 @@ class TracingLoggingFilter : HttpServerFilter {
      */
     override fun doFilter(request: HttpRequest<*>, chain: ServerFilterChain): Publisher<MutableHttpResponse<*>> {
         return chain.proceed(request)
-/*
-        val transaction = ElasticApm.startTransactionWithRemoteParent { request.getHeaders().get("X-TRACE-ID") }
-        try {
-            transaction.activate().use { scope ->
-                transaction.startSpan()
-                transaction.setName(request.uri.path)
-                transaction.setType(Transaction.TYPE_REQUEST)
-                MDC.put("trace", transaction.traceId)
-                return Flux.from(chain.proceed(request)).doOnNext { res ->
-                    res.headers.add("X-TRACE-ID", transaction.traceId)
-                }.contextWrite {
-                    it.put("tracingId", transaction.traceId)
-                }
-            }
-        } catch (e: Exception) {
-            transaction.captureException(e)
-            throw e
-        } finally {
-            transaction.end()
-        }
-*/
     }
 }

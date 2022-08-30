@@ -21,7 +21,8 @@ class ElasticApmTracerFactory {
                 val httpUrl = ServerRequestContext.currentRequest<Any?>()
                     .map { request: HttpRequest<Any?> -> request.uri.toString() }
                     .orElse("http://unknown.host/couldNotFindRequestContext")
-                return spanBuilder.withTag("http.url", httpUrl)
+                return spanBuilder
+                    .withTag("http.url", httpUrl)
             }
         }
     }

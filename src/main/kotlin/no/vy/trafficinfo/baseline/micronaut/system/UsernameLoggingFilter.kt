@@ -7,6 +7,7 @@ import io.micronaut.http.annotation.Filter
 import io.micronaut.http.filter.HttpServerFilter
 import io.micronaut.http.filter.ServerFilterChain
 import io.micronaut.security.utils.SecurityService
+import co.elastic.apm.api.ElasticApm
 import org.reactivestreams.Publisher
 import org.slf4j.MDC
 import reactor.core.publisher.Flux
@@ -27,7 +28,9 @@ class UsernameLoggingFilter(private val securityService: SecurityService) : Http
      */
     override fun doFilter(request: HttpRequest<*>, chain: ServerFilterChain): Publisher<MutableHttpResponse<*>> {
         val user: String = if (request.userPrincipal.isPresent) request.userPrincipal.get().name else "anonymous"
-        // propagate username to MDC context.s
+        ElasticApm.currentTransaction().setUser(user,"",user)
+
+        // propagate username to MDC context.
         MDC.put("user", user)
 
         return Flux.from(chain.proceed(request)).contextWrite {

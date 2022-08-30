@@ -2,10 +2,14 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%cyan(%d{HH:mm:ss.SSS}) user=%X{user} [%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
+            <pattern>%cyan(%d{yyyy-MM-dd HH:mm:ss.SSS}) %gray(%X [%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="info">
+
+    <logger name="no.vy" level="DEBUG" />
+    <logger name="io.micronaut.security" level="DEBUG" />
+
+    <root level="warn">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
