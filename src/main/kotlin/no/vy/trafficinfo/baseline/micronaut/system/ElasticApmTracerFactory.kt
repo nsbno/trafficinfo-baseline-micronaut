@@ -5,6 +5,7 @@ import io.micronaut.context.annotation.Primary
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.context.ServerRequestContext
 import co.elastic.apm.opentracing.ElasticApmTracer
+import io.opentracing.Span
 import io.opentracing.Tracer
 import jakarta.inject.Singleton
 
