@@ -3,8 +3,9 @@ package no.vy.trafficinfo.baseline.micronaut.jobs
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
-import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
-import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
+import jakarta.inject.Named
+import no.vy.trafficinfo.baseline.micronaut.services.CreateEventService
+import no.vy.trafficinfo.baseline.micronaut.services.CreateEventServiceImpl
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -17,13 +18,14 @@ import spock.lang.Subject
 @MicronautTest
 class ChangeEventCreateJobSpec extends Specification {
 
-    @MockBean(ChangeEventRepositoryImpl)
-    ChangeEventRepository mockRepo() {
-        return Mock(ChangeEventRepository)
+    @MockBean(CreateEventServiceImpl)
+    @Named("create_event")
+    CreateEventService mockSvc() {
+        return Mock(CreateEventService)
     }
 
     @Inject
-    ChangeEventRepository repo
+    CreateEventService svc
 
     @Subject
     @Inject
@@ -37,13 +39,13 @@ class ChangeEventCreateJobSpec extends Specification {
     def "should create event"() {
 
         @Subject
-        def job = new ChangeEventCreateJob(repo)
+        def job = new ChangeEventCreateJob(svc)
 
         when:
         job.createEvent()
 
         then:
-        1 * repo.create()
+        1 * svc.createEvent()
     }
 
 }
