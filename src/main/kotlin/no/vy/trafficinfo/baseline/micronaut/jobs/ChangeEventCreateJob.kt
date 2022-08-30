@@ -4,7 +4,6 @@ import io.micronaut.core.annotation.Introspected
 import io.micronaut.scheduling.annotation.Scheduled
 import co.elastic.apm.api.ElasticApm
 import co.elastic.apm.api.Transaction
-import io.opentracing.Tracer
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 import jakarta.inject.Singleton
@@ -17,8 +16,7 @@ private val logger = KotlinLogging.logger {}
 @Singleton
 @Introspected
 open class ChangeEventCreateJob(
-    private val repo: ChangeEventRepository,
-    private val tracer: Tracer
+    private val repo: ChangeEventRepository
 ) {
 
     /**
