@@ -10,7 +10,7 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.allopen")
     id("groovy")
-    id("io.micronaut.application") version "3.3.1"
+    id("io.micronaut.application") version "3.6.2"
     id("jacoco")
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
@@ -38,7 +38,6 @@ repositories {
             password = getProperty("NEXUS_PASSWORD")
         }
     }
-    mavenCentral()
 }
 
 micronaut {
@@ -47,7 +46,7 @@ micronaut {
     testRuntime("spock")
     processing {
         incremental(true)
-        annotations("no.vy.trafficinfo.baseline.micronaut.*")
+        annotations("no.vy.trafficinfo.operatingtrainroute.*")
     }
 }
 
