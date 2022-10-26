@@ -25,10 +25,12 @@ if [ "$APM_ENABLED" == "1" ]; then
     -Delastic.apm.application_packages=no.vy.trafficinfo \
     -XX:MaxRAMPercentage=80 \
     -Dlogback.configurationFile=logback-cloud.xml \
+    -Djava.util.concurrent.ForkJoinPool.common.parallelism=4 \
     -jar "$APP_JAR"
 else
   exec su-exec "$USER:$GROUP" "$JAVA_HOME/bin/java" \
     -XX:MaxRAMPercentage=80 \
     -Dlogback.configurationFile=logback-cloud.xml \
+    -Djava.util.concurrent.ForkJoinPool.common.parallelism=4 \
     -jar "$APP_JAR"
 fi
