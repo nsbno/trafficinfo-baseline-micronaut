@@ -84,6 +84,7 @@ object Application {
         Micronaut.build()
             .packages("no.vy.trafficinfo.baseline.micronaut")
             .mainClass(Application.javaClass)
+            .eagerInitSingletons(true)
             .banner(false)
             .start()
     }

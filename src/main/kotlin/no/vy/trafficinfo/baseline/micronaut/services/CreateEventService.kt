@@ -24,9 +24,9 @@ class CreateEventServiceImpl(
 ) : CreateEventService {
 
     @Traced
-    override fun createEvent() = repo.create()
+    override suspend fun createEvent() = repo.create()
 }
 
 interface CreateEventService {
-    fun createEvent(): ChangeEvent
+    suspend fun createEvent(): ChangeEvent
 }

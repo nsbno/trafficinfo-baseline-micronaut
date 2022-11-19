@@ -25,6 +25,7 @@ import io.micronaut.http.annotation.Produces
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
@@ -139,11 +140,13 @@ open class ChangeController(private val repo: ChangeEventRepositoryImpl) : Chang
 
     /**
      * ## Create and return a single change event.
+     *
+     * TODO migrate Mono to Coroutine when done.
      */
     @Post("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    override fun changeEventCreate(): Mono<ChangeEvent> {
-        return Mono.just(repo.create())
+    override fun changeEventCreate() = runBlocking {
+        Mono.just(repo.create())
     }
 }

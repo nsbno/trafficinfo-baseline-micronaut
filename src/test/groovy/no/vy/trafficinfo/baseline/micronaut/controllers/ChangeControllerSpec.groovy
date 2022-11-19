@@ -16,21 +16,28 @@
 
 package no.vy.trafficinfo.baseline.micronaut.controllers
 
+
+import io.micronaut.context.event.ApplicationEventPublisher
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
+import no.vy.trafficinfo.baseline.micronaut.jobs.EventCreateJob
+import reactor.core.publisher.Flux
 import spock.lang.Specification
+import spock.lang.Subject
+
+import java.time.Duration
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.isA
 import static spock.util.matcher.HamcrestSupport.that
 
 /**
- * Unit test for TestController.
+ * Unit test for ChangeController.
  *
  * Uses the declarative annotated client to call
- * the Reactor enabled endpoints of TestController
+ * the Reactor enabled endpoints of ChangeController
  * to verify that both the streaming flux endpoint
  * and the mono returning just one item works as
  * expected.
@@ -41,12 +48,19 @@ class ChangeControllerSpec extends Specification {
     @Client("/")
     static interface ChangeClient extends ChangeApi {}
 
+    @Subject
     @Inject
-    ChangeClient testClient
+    ChangeClient changeClient
+
+    @Inject
+    EventCreateJob job
+
+    @Inject
+    ApplicationEventPublisher<ChangeEvent> eventPublisher
 
     def "should stream as many updates as requested"() {
         when:
-        def result = testClient
+        def result = changeClient
                 .changeEventUpdates()
                 .take(3)
                 .collectList()
@@ -58,7 +72,7 @@ class ChangeControllerSpec extends Specification {
 
     def "should stream as many records as requested"() {
         when:
-        def result = testClient
+        def result = changeClient
             .changeEventsAll()
             .take(3)
             .collectList()
@@ -70,9 +84,9 @@ class ChangeControllerSpec extends Specification {
 
     def "should create new change event"() {
         when:
-        def result = testClient
-                .changeEventCreate()
-                .block()
+        def result = changeClient
+            .changeEventCreate()
+            .block()
 
         then: "we should get a ChangeEvent"
         that(result, isA(ChangeEvent))

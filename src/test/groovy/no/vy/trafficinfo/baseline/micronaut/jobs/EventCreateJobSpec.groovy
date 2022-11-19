@@ -6,6 +6,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Named
 import no.vy.trafficinfo.baseline.micronaut.services.CreateEventService
 import no.vy.trafficinfo.baseline.micronaut.services.CreateEventServiceImpl
+import org.spockframework.mock.MockUtil
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -15,8 +16,10 @@ import spock.lang.Subject
  * Mock out the repository to check that the class calls
  * the repo create method to create new events.
  */
-@MicronautTest
-class ChangeEventCreateJobSpec extends Specification {
+@MicronautTest(startApplication = false)
+class EventCreateJobSpec extends Specification {
+
+    def mockUtil = new MockUtil()
 
     @MockBean(CreateEventServiceImpl)
     @Named("create_event")
@@ -29,7 +32,11 @@ class ChangeEventCreateJobSpec extends Specification {
 
     @Subject
     @Inject
-    ChangeEventCreateJob job
+    EventCreateJob job
+
+    def 'check should use mock of CreateEventService'() {
+        mockUtil.isMock(svc)
+    }
 
 
     /**
@@ -39,13 +46,13 @@ class ChangeEventCreateJobSpec extends Specification {
     def "should create event"() {
 
         @Subject
-        def job = new ChangeEventCreateJob(svc)
+        def job = new EventCreateJob(svc)
 
         when:
-        job.createEvent()
+        job.createEvent(_ as kotlin.coroutines.Continuation)
 
         then:
-        1 * svc.createEvent()
+        1 * svc.createEvent(_ as kotlin.coroutines.Continuation)
     }
 
 }

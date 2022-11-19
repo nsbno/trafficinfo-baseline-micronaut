@@ -2,9 +2,13 @@ package no.vy.trafficinfo.baseline.micronaut.domain
 
 import io.micronaut.context.event.ApplicationEventPublisher
 import co.elastic.apm.api.Traced
+import kotlinx.coroutines.suspendCancellableCoroutine
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringService
+import no.vy.trafficinfo.baseline.micronaut.services.RandomStringServiceException
 import reactor.core.publisher.Flux
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import jakarta.inject.Singleton
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicLong
@@ -21,7 +25,7 @@ interface ChangeEventRepository {
     /**
      * ## Create new ChangeEvent and broadcast create event.
      */
-    fun create(): ChangeEvent
+    suspend fun create(): ChangeEvent
 
     /**
      * ## Return all values stored in buffer.
@@ -45,10 +49,16 @@ open class ChangeEventRepositoryImpl(
     /* hold last 100 generated random string in memory */
     private val buffer = ArrayBlockingQueue<ChangeEvent>(MAX_SIZE)
 
+    /**
+     * Create new ChangeEvent.
+     * Will also broadcast the newly created event on Micronaut
+     * internal eventbus to notify observers.
+     */
     @Traced
-    override fun create(): ChangeEvent {
+    override suspend fun create(): ChangeEvent {
+        val randomString = requestRandomString()
         val changeEvent = ChangeEvent(
-            randomStringService.randomString(),
+            randomString,
             counter.incrementAndGet()
         )
 
@@ -60,7 +70,23 @@ open class ChangeEventRepositoryImpl(
         logger.info { "Create new ChangeEvent $changeEvent" }
         buffer.add(changeEvent)
         eventPublisher.publishEventAsync(changeEvent)
+
         return changeEvent
+    }
+
+    private suspend fun requestRandomString(): String {
+        val randomString = suspendCancellableCoroutine { cont ->
+            // simulate 250ms response time to create new random string,
+            // as if the change event was generated for example from
+            // and external system.
+            Thread.sleep(250)
+            if (true) {
+                cont.resume(randomStringService.randomString())
+            } else {
+                cont.resumeWithException(RandomStringServiceException())
+            }
+        }
+        return randomString
     }
 
     @Traced
