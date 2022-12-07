@@ -39,8 +39,8 @@ See official docs of breaking changes
 https://docs.micronaut.io/latest/guide/index.html#breaks
 
 ### Micronaut 1.3 to 2.0
-Quite a lot changes to dependencies and also possible code changes needed when upgrading.
-It ususally works without serious trouble if all dependenies has been updated to new groups.
+Quite a lot of changes to dependencies and also possible code changes needed when upgrading.
+It usually works without serious trouble if all dependencies has been updated to new groups.
 https://docs.micronaut.io/2.0.0/guide/index.html#upgrading
 
 ### Micronaut 2.0 to 2.1 
@@ -97,4 +97,3 @@ https://jico.nsb.no/confluence/display/TRAFFICINFO/Versioning+and+branching
 * [Micronaut](https://micronaut.io)
 * [JUnit](https://junit.org/junit5/)
 * [KotlinTest](https://github.com/kotlintest/kotlintest)
-

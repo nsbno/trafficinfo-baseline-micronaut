@@ -18,7 +18,7 @@ micronaut:
 
 # Check out the documentation about using System manager in micronaut
 # https://github.com/micronaut-projects/micronaut-core/blob/master/src/main/docs/guide/cloud/cloudConfiguration/distributedConfigurationAwsParameterStore.adoc
-# and more about the other posibilites in micrnaut and cloud  https://github.com/micronaut-projects/micronaut-core/tree/master/src/main/docs/guide/cloud
+# and more about the other possibilities in micronaut and cloud  https://github.com/micronaut-projects/micronaut-core/tree/master/src/main/docs/guide/cloud
 aws:
   client:
     system-manager:

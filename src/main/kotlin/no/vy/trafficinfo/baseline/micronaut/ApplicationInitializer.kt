@@ -16,7 +16,7 @@ private val logger = KotlinLogging.logger {}
  *
  * Can also be used to initialize the application with data
  * if you need to call out to external systems after the
- * application has started to pre-load cache or similary.
+ * application has started to pre-load cache or similarly.
  */
 @Singleton
 class ApplicationInitializer {

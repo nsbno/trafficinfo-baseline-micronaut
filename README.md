@@ -27,10 +27,10 @@ This project serves as a baseline when you wish to create a new microservice.
 - must be deployed using terraform code.
 
 ### MAY
-- may use access token scopes to authorize user for fine grained access control.
+- may use access token scopes to authorize user for fine-grained access control.
 
 ## Infrastructure checklist for new microservice
-### Create a new repository with "use this template" on Github.  
+### Create a new repository with "use this template" on GitHub.  
 Clone repository and update all references to micronaut baseline with new project name
    1. gradle config
    2. source code, packages, classes etc.

@@ -31,9 +31,9 @@ class WhoamiControllerSpec extends Specification {
     WhoamiApi testClient
 
     def "should be authorized to read-only endpoint if correct read-scope in token"() {
-        given: "shomething"
+        given: "something"
 
-        when: "calling whoamit"
+        when: "calling whoami"
         def result = testClient.get()
 
         then: "we should get successful http status in return"

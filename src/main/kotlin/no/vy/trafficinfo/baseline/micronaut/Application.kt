@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.servers.Server
     info = Info(
         title = "Micronaut Baseline",
         version = "1.0",
-        description = "Micronaut Baseline project used as tempalate for new microservices.",
+        description = "Micronaut Baseline project used as template for new microservices.",
         contact = Contact(url = "https://vy.no", name = "Daniel Engfeldt", email = "daniel.engfeldt@vy.no")
     ),
     servers = [
@@ -75,7 +75,7 @@ import io.swagger.v3.oas.annotations.servers.Server
  * access to the AWS account that you have logged into.
  * </p>
  *
- * @see https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html
+ * @see "https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html"
  */
 object Application {
 
