@@ -27,8 +27,6 @@ private val logger = KotlinLogging.logger {}
 @Context
 class ApplicationConfigLogger(private val environment: Environment) {
 
-    // mask sensitive information  that should not be printed to the logs.
-    private val PROPERTY_NAMES_TO_MASK = arrayOf("password", "credential", "certificate", "key", "secret", "token")
     private val maskPatterns: List<Pattern> = PROPERTY_NAMES_TO_MASK.map { s -> Pattern.compile(".*$s.*", Pattern.CASE_INSENSITIVE) }
 
     @EventListener
@@ -50,7 +48,7 @@ class ApplicationConfigLogger(private val environment: Environment) {
     // print the active micronaut version.
     private fun printMicronautVersion() = logger.info("Micronaut (v${MICRONAUT_VERSION ?: "???"})")
 
-    // print the active mironaut environments.
+    // print the active micronaut environments.
     private fun printEnvironments() = logger.info("Environments: ${environment.activeNames}")
 
     // print the print config properties from all property sources.
@@ -154,5 +152,10 @@ class ApplicationConfigLogger(private val environment: Environment) {
             }
         }
         return value
+    }
+
+    companion object {
+        // mask sensitive information  that should not be printed to the logs.
+        private val PROPERTY_NAMES_TO_MASK = arrayOf("password", "credential", "certificate", "key", "secret", "token")
     }
 }

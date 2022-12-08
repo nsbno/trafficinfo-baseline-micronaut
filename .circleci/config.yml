@@ -28,7 +28,7 @@ workflows:
             - trafficinfo
             - nexus
           jdk_version: "17"
-          # This steps is only temporarily used until
+          # This steps are only temporarily used until
           # a better way of installing Eclipse Temurin has been found.
           # Graalvm update to 22.0.0.2 postponed until micronaut-gradle-plugin 3.3.2 which updates dockerFileNative with the same version
           pre-steps:
