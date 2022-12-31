@@ -88,8 +88,8 @@ class ChangeController(
      * An [interceptor in Micronaut](https://github.com/micronaut-projects/micronaut-core/blob/4.0.x/aop/src/main/java/io/micronaut/aop/internal/intercepted/KotlinInterceptedMethodImpl.java)
      * is defined that checks if your controller method is marked with the suspend keyword.
      *
-     * Uses [coroutineScope](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope)
-     * for the endpoint.
+     * Should use [coroutineScope](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope)
+     * for the endpoint. But due to error uses runBlocking as a workaround until solution found.
      */
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON)
