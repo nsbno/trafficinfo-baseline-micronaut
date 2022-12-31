@@ -22,10 +22,10 @@ import io.micronaut.http.annotation.*
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.toCollection
@@ -33,8 +33,6 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
-import jakarta.inject.Named
-import java.util.concurrent.ExecutorService
 
 private val logger = KotlinLogging.logger {}
 
@@ -49,15 +47,7 @@ private val logger = KotlinLogging.logger {}
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
 class ChangeController(
-    private @Named("IO") val executor: ExecutorService,
     private val repo: ChangeEventRepositoryImpl) {
-
-
-    private val coroutineDispatcher: CoroutineDispatcher
-
-    init {
-        coroutineDispatcher = executor.asCoroutineDispatcher()
-    }
 
     private val events = MutableSharedFlow<ChangeEvent>(
         10,
@@ -107,9 +97,9 @@ class ChangeController(
     @Secured(SecurityRule.IS_ANONYMOUS)
     suspend fun changeEventsAll() = coroutineScope {
         logger.info { "All ChangeEvents." }
-//        async(coroutineDispatcher) {
-//                logger.info("123")
-//        }
+        async {
+            logger.info("123")
+        }
         repo.all().toCollection(mutableListOf())
     }
 
@@ -123,6 +113,7 @@ class ChangeController(
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Status(HttpStatus.ACCEPTED)
     suspend fun changeEventCreate() = coroutineScope {
+        delay(250)
         logger.info { "Create ChangeEvent." }
         repo.create()
     }
