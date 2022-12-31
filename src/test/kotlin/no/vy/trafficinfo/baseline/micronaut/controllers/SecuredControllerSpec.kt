@@ -16,7 +16,13 @@
 
 package no.vy.trafficinfo.baseline.micronaut.controllers
 
+import io.micronaut.http.HttpHeaders
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Consumes
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Header
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.security.token.jwt.generator.JwtTokenGenerator
@@ -27,6 +33,19 @@ import io.kotest.matchers.shouldBe
 import jakarta.inject.Inject
 
 /**
+ * # Interface for the controller endpoints.
+ *
+ * Used to generate client to communicate with the
+ * controller from the Unit Test.
+ */
+@Client("/")
+interface SecuredClient {
+    @Get(value = "/secured")
+    @Consumes(MediaType.APPLICATION_JSON)
+    fun get(@Header(HttpHeaders.AUTHORIZATION) authorization: String): HttpResponse<Void>
+}
+
+/**
  * ## Unit test for TestController.
  *
  * Uses the declarative annotated client to call the Reactor enabled
@@ -35,7 +54,7 @@ import jakarta.inject.Inject
  */
 @MicronautTest
 class SecuredControllerSpec(
-    @Client("baseline") val client: SecuredApi,
+    @Inject val client: SecuredClient,
     @Inject val tokenGenerator: JwtTokenGenerator) : BehaviorSpec({
 
     fun generateJwt(sub: String, aud: String, scopes: Array<String>): String {

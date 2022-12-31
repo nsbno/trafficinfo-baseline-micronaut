@@ -27,7 +27,7 @@ private val logger = KotlinLogging.logger {}
  * controller from the Unit Test.
  */
 @Client("/")
-interface ChangeApi {
+interface ChangeClient {
 
     @Get(value = "/changes")
     @Consumes(MediaType.APPLICATION_JSON_STREAM)
@@ -51,7 +51,7 @@ interface ChangeApi {
 @MicronautTest
 class ChangeControllerSpec(
     @Inject val createEventService: CreateEventService,
-    @Inject val client: ChangeApi,
+    @Inject val client: ChangeClient,
     @Inject val changeEventRepository: ChangeEventRepository) : BehaviorSpec({
 
     given("the 5 generated events") {

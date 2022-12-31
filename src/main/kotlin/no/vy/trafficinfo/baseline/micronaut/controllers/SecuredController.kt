@@ -32,19 +32,6 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 /**
- * # Interface for the controller endpoints.
- *
- * Used to generate client to communicate with the
- * controller from the Unit Test.
- */
-@Client("http://localhost:8080")
-interface SecuredApi {
-    @Get(value = "/secured")
-    @Consumes(MediaType.APPLICATION_JSON)
-    fun get(@Header(AUTHORIZATION) authorization: String): HttpResponse<Void>
-}
-
-/**
  * # Secured controller
  */
 @Controller

@@ -120,6 +120,7 @@ class ChangeController(
             repo.create()
         }
 
+        logger.info { "Start await." }
         a.await()
     }
 }
