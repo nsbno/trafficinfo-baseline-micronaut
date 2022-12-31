@@ -107,7 +107,8 @@ class ChangeController(
     /**
      * ## Create and return a single change event.
      *
-     * Uses the [IO Dispatcher to offload blocking IO tasks to a shared pool of threads.](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-i-o.html)
+     * Cant get coroutineScope to work with async.
+     * See issue https://github.com/micronaut-projects/micronaut-core/issues/8555
      */
     @Post("/changes")
     @Produces(MediaType.APPLICATION_JSON)
