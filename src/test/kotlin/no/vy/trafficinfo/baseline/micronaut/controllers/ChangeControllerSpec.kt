@@ -21,7 +21,7 @@ import jakarta.inject.Inject
 private val logger = KotlinLogging.logger {}
 
 /**
- * # Interface for the controller endpoints.
+ * # Declarative HTTP client for the ChangeController.
  *
  * Used to generate client to communicate with the
  * controller from the Unit Test.
@@ -45,6 +45,8 @@ interface ChangeApi {
 /**
  * https://codingwithmohit.com/micronaut/micronaut-with-kotlin-coroutines/
  * https://www.baeldung.com/kotlin/kotest
+ * https://docs.micronaut.io/latest/guide/#coroutines
+ * https://kotest.io/
  */
 @MicronautTest
 class ChangeControllerSpec(

@@ -26,13 +26,22 @@ import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import co.elastic.apm.api.ElasticApm
 import mu.KotlinLogging
-import no.vy.trafficinfo.baseline.micronaut.system.clients.WhoamiClient
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers
 
 private val logger = KotlinLogging.logger {}
+
+
+/**
+ * # Declarative Http Client for the Whoami Service.
+ */
+@Client("whoami")
+interface WhoamiClient {
+    @Get(value = "/")
+    fun get(): HttpResponse<String>
+}
 
 /**
  * # Secured controller
