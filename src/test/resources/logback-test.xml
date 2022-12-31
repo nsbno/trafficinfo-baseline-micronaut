@@ -7,9 +7,10 @@
     </appender>
 
     <logger name="no.vy" level="DEBUG" />
-    <logger name="io.micronaut.security" level="DEBUG" />
+    <logger name="io.micronaut" level="DEBUG" />
+    <logger name="io.micronaut.context" level="INFO" />
 
-    <root level="warn">
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

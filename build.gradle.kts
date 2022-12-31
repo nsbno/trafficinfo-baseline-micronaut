@@ -9,8 +9,7 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     kotlin("plugin.allopen")
-    id("groovy")
-    id("io.micronaut.application") version "3.6.2"
+    id("io.micronaut.application") version "3.6.7"
     id("jacoco")
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
@@ -43,17 +42,16 @@ repositories {
 micronaut {
     version(micronautVersion)
     runtime("netty")
-    testRuntime("spock")
+    testRuntime("kotest5")
     processing {
         incremental(true)
-        annotations("no.vy.trafficinfo.operatingtrainroute.*")
+        annotations("no.vy.trafficinfo.*")
     }
 }
 
 kotlin {
     jvmToolchain {
-        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
-        this.vendor.set(JvmVendorSpec.GRAAL_VM)
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -111,8 +109,21 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
+
+    /**
+     * kotlin coroutines
+     */
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
+    /**
+     * Micronaut supports context propagation from Reactor’s context to coroutine context.
+     * To enable this propagation you need to include following dependency
+     */
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
+
+    /**
+     * Tracing
+     */
     implementation("io.micronaut:micronaut-tracing")
     implementation("co.elastic.apm:apm-agent-api:1.33.0")
     implementation("co.elastic.apm:apm-opentracing:1.33.0")
@@ -120,16 +131,15 @@ dependencies {
     /**
      * Test dependency configurations.
      */
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
-    testImplementation("io.mockk:mockk:1.12.4")
-
     testCompileOnly(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    testImplementation("org.spockframework:spock-core") {
-        exclude("org.codehaus.groovy:groovy-all")
-    }
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
+    testImplementation("io.mockk:mockk")
     testImplementation("io.micronaut:micronaut-inject-java")
-    testImplementation("io.micronaut.test:micronaut-test-spock")
     testImplementation("org.assertj:assertj-core")
+    testImplementation("io.micronaut.test:micronaut-test-kotest5")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm")
 }
 
 application {
@@ -168,9 +178,9 @@ tasks {
     }
 
     test {
+        useJUnitPlatform()
         systemProperty("micronaut.environments", "test")
         systemProperty("micronaut.env.deduction", false)
-        dependsOn(ktlintCheck)
     }
 
     compileKotlin {

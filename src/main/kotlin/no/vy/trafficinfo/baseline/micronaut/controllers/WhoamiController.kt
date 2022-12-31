@@ -26,7 +26,7 @@ import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import co.elastic.apm.api.ElasticApm
 import mu.KotlinLogging
-import jakarta.inject.Inject
+import no.vy.trafficinfo.baseline.micronaut.system.clients.WhoamiClient
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -35,27 +35,12 @@ import java.net.http.HttpResponse.BodyHandlers
 private val logger = KotlinLogging.logger {}
 
 /**
- * # Interface for the controller endpoints.
- *
- * Used to generate client to communicate with the
- * controller from the Unit Test.
- */
-
-@Client("whoami")
-interface WhoamiApi {
-    @Get(value = "/")
-    fun get(): HttpResponse<String>
-}
-
-/**
- * Secured controller
+ * # Secured controller
  */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
-class WhoamiController {
-
-    @Inject
-    private lateinit var whoamiApi: WhoamiApi
+class WhoamiControlle(
+    @Client whoamiClient: WhoamiClient) {
 
     /**
      * ## Create and return a single change event.

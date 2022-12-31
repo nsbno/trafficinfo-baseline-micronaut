@@ -1,12 +1,13 @@
 package no.vy.trafficinfo.baseline.micronaut.domain
 
 import io.micronaut.context.event.ApplicationEventPublisher
-import co.elastic.apm.api.Traced
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.suspendCancellableCoroutine
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringService
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringServiceException
-import reactor.core.publisher.Flux
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import jakarta.inject.Singleton
@@ -30,7 +31,13 @@ interface ChangeEventRepository {
     /**
      * ## Return all values stored in buffer.
      */
-    fun all(): Flux<ChangeEvent>?
+    suspend fun all(): Flow<ChangeEvent>
+
+    /**
+     * ## Return number of events stored in buffer.
+     */
+    suspend fun count(): Int
+    suspend fun clear()
 }
 
 /**
@@ -49,12 +56,25 @@ open class ChangeEventRepositoryImpl(
     /* hold last 100 generated random string in memory */
     private val buffer = ArrayBlockingQueue<ChangeEvent>(MAX_SIZE)
 
+    override suspend fun all(): Flow<ChangeEvent> {
+        logger.info("Retrieve all events in buffer: ${buffer.size}")
+        return buffer.asFlow().take(10)
+
+    }
+
+    override suspend fun count(): Int {
+        return buffer.size
+    }
+
+    override suspend fun clear() {
+        buffer.clear()
+    }
+
     /**
-     * Create new ChangeEvent.
+     * ## Create new ChangeEvent.
      * Will also broadcast the newly created event on Micronaut
      * internal eventbus to notify observers.
      */
-    @Traced
     override suspend fun create(): ChangeEvent {
         val randomString = requestRandomString()
         val changeEvent = ChangeEvent(
@@ -74,6 +94,12 @@ open class ChangeEventRepositoryImpl(
         return changeEvent
     }
 
+    /**
+     * ## Request Random String.
+     *
+     * Named "Request" to fake the apperance of a
+     * remote system that generate the random string.
+     */
     private suspend fun requestRandomString(): String {
         val randomString = suspendCancellableCoroutine { cont ->
             // simulate 250ms response time to create new random string,
@@ -88,7 +114,4 @@ open class ChangeEventRepositoryImpl(
         }
         return randomString
     }
-
-    @Traced
-    override fun all() = Flux.fromIterable(buffer)
 }

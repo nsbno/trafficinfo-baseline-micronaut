@@ -24,6 +24,7 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Header
 import io.micronaut.http.annotation.Produces
+import io.micronaut.http.client.annotation.Client
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import mu.KotlinLogging
@@ -36,6 +37,7 @@ private val logger = KotlinLogging.logger {}
  * Used to generate client to communicate with the
  * controller from the Unit Test.
  */
+@Client("http://localhost:8080")
 interface SecuredApi {
     @Get(value = "/secured")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -43,7 +45,7 @@ interface SecuredApi {
 }
 
 /**
- * Secured controller
+ * # Secured controller
  */
 @Controller
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -55,7 +57,7 @@ class SecuredController {
     @Get("/secured")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured("https://services.trafficinfo.vydev.io/baseline/read")
-    fun get(): HttpResponse<Void> {
+    fun get(@Header(AUTHORIZATION) authorization: String): HttpResponse<Void> {
         logger.info { "User was authenticated and authorized successfully." }
         return HttpResponse.ok()
     }

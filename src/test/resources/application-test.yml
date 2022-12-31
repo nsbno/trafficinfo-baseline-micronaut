@@ -1,3 +1,11 @@
 # enable security for tests.
 micronaut.security.token.jwt.signatures.secret.generator.secret: pleaseChangeThisSecretForANewOne
 micronaut.security.token.jwt.claims-validators.audience: requiredAudience
+micronaut:
+  http:
+    services:
+      whoami:
+        url: https://services.dev.trafficinfo.vydev.io
+        path: /whoami
+      baseline:
+        url: http://localhost:8080
