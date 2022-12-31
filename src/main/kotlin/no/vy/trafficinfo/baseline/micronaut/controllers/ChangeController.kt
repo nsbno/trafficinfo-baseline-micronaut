@@ -25,7 +25,6 @@ import io.micronaut.security.rules.SecurityRule
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.toCollection
@@ -95,12 +94,14 @@ class ChangeController(
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    suspend fun changeEventsAll() = coroutineScope {
+    suspend fun changeEventsAll() = runBlocking {
         logger.info { "All ChangeEvents." }
-        async {
-            logger.info("123")
+        val a = async {
+            logger.info { "Async 1 ChangeEvents." }
+            repo.all().toCollection(mutableListOf())
         }
-        repo.all().toCollection(mutableListOf())
+
+        a.await()
     }
 
     /**
@@ -113,8 +114,12 @@ class ChangeController(
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Status(HttpStatus.ACCEPTED)
     suspend fun changeEventCreate() = coroutineScope {
-        delay(250)
         logger.info { "Create ChangeEvent." }
-        repo.create()
+        val a = async {
+            logger.info { "Async Create ChangeEvents." }
+            repo.create()
+        }
+
+        a.await()
     }
 }
