@@ -55,7 +55,8 @@ interface SecuredClient {
 @MicronautTest
 class SecuredControllerSpec(
     @Inject val client: SecuredClient,
-    @Inject val tokenGenerator: JwtTokenGenerator) : BehaviorSpec({
+    @Inject val tokenGenerator: JwtTokenGenerator
+) : BehaviorSpec({
 
     fun generateJwt(sub: String, aud: String, scopes: Array<String>): String {
         val claims = mapOf(

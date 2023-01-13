@@ -19,12 +19,10 @@ package no.vy.trafficinfo.baseline.micronaut.controllers
 import io.micronaut.http.HttpHeaders.AUTHORIZATION
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.Consumes
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Header
 import io.micronaut.http.annotation.Produces
-import io.micronaut.http.client.annotation.Client
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import mu.KotlinLogging

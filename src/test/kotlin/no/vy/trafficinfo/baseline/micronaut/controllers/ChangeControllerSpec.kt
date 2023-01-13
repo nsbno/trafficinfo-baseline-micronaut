@@ -52,7 +52,8 @@ interface ChangeClient {
 class ChangeControllerSpec(
     @Inject val createEventService: CreateEventService,
     @Inject val client: ChangeClient,
-    @Inject val changeEventRepository: ChangeEventRepository) : BehaviorSpec({
+    @Inject val changeEventRepository: ChangeEventRepository
+) : BehaviorSpec({
 
     given("the 5 generated events") {
         (1..5).forEach {

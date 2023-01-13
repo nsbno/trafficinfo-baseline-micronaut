@@ -23,7 +23,8 @@ interface HealthClient {
  */
 @MicronautTest
 class HealthControllerSpec(
-    @Inject val client: HealthClient) : BehaviorSpec({
+    @Inject val client: HealthClient
+) : BehaviorSpec({
 
     given("the health check endpoint") {
         `when`("calling the health check endpoint") {

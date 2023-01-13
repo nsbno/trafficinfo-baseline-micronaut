@@ -59,7 +59,6 @@ open class ChangeEventRepositoryImpl(
     override suspend fun all(): Flow<ChangeEvent> {
         logger.info("Retrieve all events in buffer: ${buffer.size}")
         return buffer.asFlow().take(10)
-
     }
 
     override suspend fun count(): Int {

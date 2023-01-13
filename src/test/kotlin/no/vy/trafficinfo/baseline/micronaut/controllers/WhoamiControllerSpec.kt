@@ -1,11 +1,11 @@
 package no.vy.trafficinfo.baseline.micronaut.controllers
 
-import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.shouldBe
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 
 /**
  * ## Tests for Health Checks controller.

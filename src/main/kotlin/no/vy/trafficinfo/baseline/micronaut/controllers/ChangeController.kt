@@ -18,7 +18,11 @@ package no.vy.trafficinfo.baseline.micronaut.controllers
 
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.*
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Produces
+import io.micronaut.http.annotation.Status
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
@@ -46,7 +50,8 @@ private val logger = KotlinLogging.logger {}
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
 class ChangeController(
-    private val repo: ChangeEventRepositoryImpl) {
+    private val repo: ChangeEventRepositoryImpl
+) {
 
     private val events = MutableSharedFlow<ChangeEvent>(
         10,

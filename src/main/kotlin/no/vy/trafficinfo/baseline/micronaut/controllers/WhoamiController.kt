@@ -33,7 +33,6 @@ import java.net.http.HttpResponse.BodyHandlers
 
 private val logger = KotlinLogging.logger {}
 
-
 /**
  * # Declarative Http Client for the Whoami Service.
  */
@@ -49,7 +48,8 @@ interface WhoamiClient {
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
 class WhoamiControlle(
-    @Client whoamiClient: WhoamiClient) {
+    @Client whoamiClient: WhoamiClient
+) {
 
     /**
      * ## Create and return a single change event.

@@ -5,5 +5,4 @@ import io.kotest.core.config.AbstractProjectConfig
 object ProjectConfig : AbstractProjectConfig() {
     override fun extensions() = listOf(MicronautKotest5Extension)
     override fun listeners() = listOf(MicronautKotest5Extension)
-
 }

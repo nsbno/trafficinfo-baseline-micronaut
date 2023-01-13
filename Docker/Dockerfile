@@ -1,8 +1,9 @@
-FROM eclipse-temurin:17.0.1_12-jre-alpine
+FROM eclipse-temurin:19.0.1_10-jdk-alpine
 ENV USER=appuser
 ENV GROUP=$USER \
     HOME=/home/$USER \
-    CONTEXT_PATH=/baseline-micronaut
+    CONTEXT_PATH=/baseline-micronaut \
+    AWS_REGION=eu-west-1
 
 # set timezone to Oslo, because otherwise it is set
 # to the location of the datacenter running fargate.
