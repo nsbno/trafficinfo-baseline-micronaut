@@ -1,4 +1,4 @@
-FROM eclipse-temurin:19.0.1_10-jdk-alpine
+FROM eclipse-temurin:19.0.1_10-jre-alpine
 ENV USER=appuser
 ENV GROUP=$USER \
     HOME=/home/$USER \
@@ -29,6 +29,6 @@ COPY --chown=$USER build/docker/main/layers/resources $HOME/application/resource
 COPY --chown=$USER build/docker/main/layers/application.jar $HOME/application/application.jar
 
 # Download elastic cloud apm agent
-RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.33.0/elastic-apm-agent-1.33.0.jar -O $HOME/elastic-apm-agent-1.33.0.jar
+RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.35.0/elastic-apm-agent-1.35.0.jar -O $HOME/elastic-apm-agent-1.35.0.jar
 
 CMD [ "./runapp.sh" ]

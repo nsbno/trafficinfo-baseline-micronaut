@@ -120,7 +120,6 @@ dependencies {
      * To enable this propagation you need to include following dependency
      */
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
-
     /**
      * Tracing
      */
@@ -147,7 +146,7 @@ application {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.8"
 }
 
 tasks {
