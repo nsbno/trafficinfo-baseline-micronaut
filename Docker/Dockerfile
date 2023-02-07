@@ -1,8 +1,9 @@
-FROM eclipse-temurin:17.0.1_12-jre-alpine
+FROM eclipse-temurin:19.0.1_10-jre-alpine
 ENV USER=appuser
 ENV GROUP=$USER \
     HOME=/home/$USER \
-    CONTEXT_PATH=/baseline-micronaut
+    CONTEXT_PATH=/baseline-micronaut \
+    ELASTIC_APM_AGENT_VERSION=1.36.0
 
 # set timezone to Oslo, because otherwise it is set
 # to the location of the datacenter running fargate.
@@ -28,6 +29,6 @@ COPY --chown=$USER build/docker/main/layers/resources $HOME/application/resource
 COPY --chown=$USER build/docker/main/layers/application.jar $HOME/application/application.jar
 
 # Download elastic cloud apm agent
-RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.33.0/elastic-apm-agent-1.33.0.jar -O $HOME/elastic-apm-agent-1.33.0.jar
+RUN wget https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/$ELASTIC_APM_AGENT_VERSION/elastic-apm-agent-$ELASTIC_APM_AGENT_VERSION.jar -O $HOME/elastic-apm-agent.jar
 
 CMD [ "./runapp.sh" ]
