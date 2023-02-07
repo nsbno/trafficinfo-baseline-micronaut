@@ -17,12 +17,13 @@ parameters:
 orbs:
   stepfunction-ci: vydev/ciorb@2.2.0
   trafficinfo: vydev/trafficinfo-orb@0.2.1
-
+  gradle: circleci/gradle@3.0.0
 
 workflows:
   version: 2
   build-and-deploy:
     jobs:
+      -
       - trafficinfo/build:
           context:
             - trafficinfo

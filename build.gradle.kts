@@ -10,7 +10,7 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.allopen")
     id("groovy")
-    id("io.micronaut.application") version "3.6.2"
+    id("io.micronaut.application") version "3.7.0"
     id("jacoco")
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
@@ -51,10 +51,7 @@ micronaut {
 }
 
 kotlin {
-    jvmToolchain {
-        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
-        this.vendor.set(JvmVendorSpec.GRAAL_VM)
-    }
+    jvmToolchain(19)
 }
 
 dependencies {
