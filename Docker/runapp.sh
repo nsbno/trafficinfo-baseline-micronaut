@@ -18,6 +18,7 @@ exec su-exec "$USER:$GROUP" "$JAVA_HOME/bin/java" \
 if [ "$APM_ENABLED" == "1" ]; then
   exec su-exec "$USER:$GROUP" "$JAVA_HOME/bin/java" \
     -javaagent:elastic-apm-agent.jar \
+    -Delastic.apm.log_sending=true \
     -Delastic.apm.service_name=$APM_SERVICE_NAME \
     -Delastic.apm.server_urls=$APM_SERVER_URL \
     -Delastic.apm.secret_token=$APM_SECRET_TOKEN \
