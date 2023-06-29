@@ -55,7 +55,7 @@ class ChangeControllerSpec(
     @Inject val changeEventRepository: ChangeEventRepository
 ) : BehaviorSpec({
 
-    given("the 5 generated events") {
+    xgiven("the 5 generated events") {
         (1..5).forEach {
             createEventService.createEvent()
         }

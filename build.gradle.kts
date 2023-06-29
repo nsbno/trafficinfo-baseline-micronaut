@@ -4,7 +4,6 @@
  *
  * @see <a href="https://kotlinlang.org/docs/reference/using-gradle.html">Using Gradle in Official Kotlin doc.</a
  */
-
 plugins {
     kotlin("jvm")
     kotlin("kapt")
@@ -43,7 +42,7 @@ repositories {
 micronaut {
     version(micronautVersion)
     runtime("netty")
-    testRuntime("kotest5")
+    testRuntime("kotest")
     processing {
         incremental(true)
         annotations("no.vy.trafficinfo.*")
