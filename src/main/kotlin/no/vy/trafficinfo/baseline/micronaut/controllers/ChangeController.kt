@@ -16,82 +16,48 @@
 
 package no.vy.trafficinfo.baseline.micronaut.controllers
 
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.Consumes
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.Produces
+import io.micronaut.http.annotation.Status
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.toCollection
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import reactor.core.publisher.Sinks
-import reactor.util.concurrent.Queues
 
 private val logger = KotlinLogging.logger {}
 
 /**
- * # Interface for the controller endpoints.
+ * # Controller that uses Flow the Coroutines integrations of Micronaut.
  *
- * Used to generate client to communicate with the
- * controller from the Unit Test.
- */
-interface ChangeApi {
-
-    /**
-     * ## Return a stream of events.
-     *
-     * The controller generates one event every second.
-     * The annotation @Consumes sets the accept-type
-     * on the request so that the client calls the
-     * correct endpoint.
-     */
-    @Get(value = "/changes")
-    @Consumes(MediaType.APPLICATION_JSON_STREAM)
-    fun changeEventUpdates(): Flux<ChangeEvent>
-
-    /**
-     * ## Return all records from repository.
-     */
-    @Get(value = "/changes")
-    @Consumes(MediaType.APPLICATION_JSON)
-    fun changeEventsAll(): Flux<ChangeEvent>
-
-    /**
-     * ## Create and return a single event.
-     */
-    @Post(value = "/changes")
-    @Consumes(MediaType.APPLICATION_JSON)
-    fun changeEventCreate(): Mono<ChangeEvent>
-}
-
-/**
- * # Controller that uses Flux and Mono to use Reactor features with Micronaut.
- * The controller expose three endpoints.
- * - ChangeEvent updates as a APPLICATION_JSON_STREAM
- * - all ChangeEvent from repo sa APPLICATION_JSON
- * - insert new ChangeEvent
+ * ## How do we use coroutines in Micronaut?
+ * Micronaut has support for suspending functions and flows. Micronaut is built using
+ * the Reactor framework. However, an integration layer sits on top to support coroutines.
  *
  */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
-open class ChangeController(private val repo: ChangeEventRepositoryImpl) : ChangeApi {
+class ChangeController(
+    private val repo: ChangeEventRepositoryImpl
+) {
 
-    /* The sink where new events are broadcast from.
-     * autoCancel is set to false so that the sink is
-     * not cancelled when subscriber disconnects.
-     * */
-    private var sink = Sinks
-        .many()
-        .multicast()
-        .onBackpressureBuffer<ChangeEvent>(
-            Queues.SMALL_BUFFER_SIZE, false
-        )
+    private val events = MutableSharedFlow<ChangeEvent>(
+        10,
+        extraBufferCapacity = 0,
+        onBufferOverflow = BufferOverflow.SUSPEND
+    )
 
     /**
      * Listen for ApplicationEvents where new
@@ -100,50 +66,67 @@ open class ChangeController(private val repo: ChangeEventRepositoryImpl) : Chang
     @EventListener
     fun onNewChangeEvent(event: ChangeEvent) {
         logger.info { "Received new ChangeEvent: $event" }
-        if (sink.currentSubscriberCount() > 0) {
-            logger.info { "Publish Event to ${sink.currentSubscriberCount()} subscribers: $event" }
-            sink.tryEmitNext(event)
-        } else
-            logger.info { "Don't publish and events, we dont have any subscribers at the moment." }
+        runBlocking {
+            logger.info { "Emit new ChangeEvent to SharedFlow" }
+            events.emit(event) // suspends until all subscribers receive it
+        }
     }
 
     /**
-     * ## Stream Change Events from sink.
+     * ## Streaming Change Events.
      *
-     * This endpoint will send one event every second as long
-     * as there are clients connected.
+     * This endpoint will publish all received ChangeEvents
+     * from the [events] shared flow.
      */
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON_STREAM)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    override fun changeEventUpdates(): Flux<ChangeEvent> {
-        return sink.asFlux()
+    fun changeEventUpdates(): Flow<ChangeEvent> {
+        logger.info { "Streaming ChangeEvents" }
+        return events
     }
 
     /**
-     * ## Create and return a single change event.
+     * ## Return all Change Events from repository.
+     *
+     * ### Suspending Method Support Under the Hood in Micronaut.
+     * An [interceptor in Micronaut](https://github.com/micronaut-projects/micronaut-core/blob/4.0.x/aop/src/main/java/io/micronaut/aop/internal/intercepted/KotlinInterceptedMethodImpl.java)
+     * is defined that checks if your controller method is marked with the suspend keyword.
+     *
+     * Should use [coroutineScope](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope)
+     * for the endpoint. But due to error uses runBlocking as a workaround until solution found.
      */
     @Get("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    override fun changeEventsAll(): Flux<ChangeEvent> {
-        return repo.all()
-    }
+    suspend fun changeEventsAll() = runBlocking {
+        logger.info { "All ChangeEvents." }
+        val a = async {
+            logger.info { "Async 1 ChangeEvents." }
+            repo.all().toCollection(mutableListOf())
+        }
 
-    @Get("/error")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    fun error(): Flux<ChangeEvent> {
-        throw RuntimeException("failed!!")
+        a.await()
     }
 
     /**
      * ## Create and return a single change event.
+     *
+     * Cant get coroutineScope to work with async.
+     * See issue https://github.com/micronaut-projects/micronaut-core/issues/8555
      */
     @Post("/changes")
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    override fun changeEventCreate(): Mono<ChangeEvent> {
-        return Mono.just(repo.create())
+    @Status(HttpStatus.ACCEPTED)
+    suspend fun changeEventCreate() = coroutineScope {
+        logger.info { "Create ChangeEvent." }
+        val a = async {
+            logger.info { "Async Create ChangeEvents." }
+            repo.create()
+        }
+
+        logger.info { "Start await." }
+        a.await()
     }
 }

@@ -24,8 +24,8 @@ import io.micronaut.http.annotation.Produces
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
+import co.elastic.apm.api.ElasticApm
 import mu.KotlinLogging
-import jakarta.inject.Inject
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -34,27 +34,22 @@ import java.net.http.HttpResponse.BodyHandlers
 private val logger = KotlinLogging.logger {}
 
 /**
- * # Interface for the controller endpoints.
- *
- * Used to generate client to communicate with the
- * controller from the Unit Test.
+ * # Declarative Http Client for the Whoami Service.
  */
-
 @Client("whoami")
-interface WhoamiApi {
+interface WhoamiClient {
     @Get(value = "/")
     fun get(): HttpResponse<String>
 }
 
 /**
- * Secured controller
+ * # Secured controller
  */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
-class WhoamiController {
-
-    @Inject
-    private lateinit var whoamiApi: WhoamiApi
+class WhoamiControlle(
+    @Client whoamiClient: WhoamiClient
+) {
 
     /**
      * ## Create and return a single change event.
@@ -63,6 +58,8 @@ class WhoamiController {
     @Produces(MediaType.APPLICATION_JSON)
     fun get(): HttpResponse<String> {
         logger.info { "Calling whoami debug service." }
+        ElasticApm.currentSpan().setDestinationService("whoami")
+
         val request = HttpRequest.newBuilder()
             .uri(URI("https://svclb.dev.trafficinfo.vydev.io/whoami/"))
             .GET()
