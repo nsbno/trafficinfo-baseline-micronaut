@@ -92,10 +92,11 @@ open class ChangeEventRepositoryImpl(
         logger.info { "Create new ChangeEvent $changeEvent" }
         buffer.add(changeEvent)
         dynamoDbClient.putItem {
-            it.tableName("change_event")
+            it.tableName("change-events")
             it.item(
                 mapOf(
-                    "id" to AttributeValue.builder().s(changeEvent.version.toString()).build()
+                    "version" to AttributeValue.builder().n(changeEvent.version.toString()).build(),
+                    "payload" to AttributeValue.builder().s(changeEvent.payload).build()
                 )
             )
         }
