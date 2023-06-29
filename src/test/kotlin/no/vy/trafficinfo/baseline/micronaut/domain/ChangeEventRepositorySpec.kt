@@ -42,10 +42,20 @@ class ChangeEventRepositorySpec(
                 it.readCapacityUnits(1)
                 it.writeCapacityUnits(1)
             }
+        }
 
-            dynamoDbClient.listTables().tableNames().forEach {
-                logger.debug { "Found table: $it" }
+        // set TTL on table
+        dynamoDbClient.updateTimeToLive{
+            it.tableName("change-events")
+            it.timeToLiveSpecification {
+                it.attributeName("ttl")
+                it.enabled(true)
             }
+        }
+
+        // list tables
+        dynamoDbClient.listTables().tableNames().forEach {
+            logger.debug { "Found table: $it" }
         }
     }
 

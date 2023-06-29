@@ -1,33 +1,35 @@
-package no.vy.trafficinfo.baseline.micronaut.system
+package no.vy.trafficinfo.tiosadapter.system.factories
 
 import io.micronaut.context.annotation.ConfigurationBuilder
 import io.micronaut.context.annotation.ConfigurationProperties
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Primary
 import software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import software.amazon.awssdk.services.sns.SnsClient
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.net.URI
 
 @Factory
-class DynamoDbClientFactory {
+class SnsClientFactory {
 
     @Inject
-    lateinit var dynamodbConfig: DynamoDbConfig
+    lateinit var snsConfig: SNSConfig
 
     /**
-     * Build dynamodb client for test.
+     * Build SNS client for test.
      * Using the localstack endpoint and credentials from the application.yml
      */
     @Singleton
     @Primary
-    fun buildDynamoDbClient(): DynamoDbClient {
-        return DynamoDbClient.builder()
-            .region(Region.of(dynamodbConfig.region))
+    fun buildSnsClient(): SnsClient {
+        return SnsClient.builder()
+            .region(Region.of(snsConfig.region))
             .credentialsProvider(AnonymousCredentialsProvider.create())
-            .endpointOverride(URI.create("http://${dynamodbConfig.dynamodb.endpointOverride}:${dynamodbConfig.dynamodb.portOverride}"))
+            .endpointOverride(URI.create("http://${snsConfig.sns.endpointOverride}:${snsConfig.sns.portOverride}"))
             .build()
     }
 
@@ -36,13 +38,13 @@ class DynamoDbClientFactory {
      * application.yml or the distributed configuration server.
      */
     @ConfigurationProperties("aws")
-    class DynamoDbConfig {
+    class SNSConfig {
         var region: String? = "us-east-1"
 
-        @ConfigurationBuilder(configurationPrefix = "services.dynamodb")
-        var dynamodb = DynamoDB()
+        @ConfigurationBuilder(configurationPrefix = "services.sns")
+        var sns: SNS = SNS()
 
-        class DynamoDB {
+        class SNS {
             var endpointOverride: String? = null
             var portOverride: String? = null
         }

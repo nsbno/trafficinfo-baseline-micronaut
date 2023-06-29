@@ -96,7 +96,8 @@ open class ChangeEventRepositoryImpl(
             it.item(
                 mapOf(
                     "version" to AttributeValue.builder().n(changeEvent.version.toString()).build(),
-                    "payload" to AttributeValue.builder().s(changeEvent.payload).build()
+                    "payload" to AttributeValue.builder().s(changeEvent.payload).build(),
+                    "ttl" to AttributeValue.builder().n("${System.currentTimeMillis()+10000}").build()
                 )
             )
         }

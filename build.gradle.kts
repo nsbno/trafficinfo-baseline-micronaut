@@ -92,6 +92,8 @@ dependencies {
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
     implementation("io.micronaut.aws:micronaut-aws-parameter-store")
     implementation("software.amazon.awssdk:dynamodb")
+    implementation("software.amazon.awssdk:sqs")
+    implementation("software.amazon.awssdk:sns")
 
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
     implementation("io.micronaut.problem:micronaut-problem-json")
