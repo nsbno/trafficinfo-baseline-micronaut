@@ -19,7 +19,7 @@ open class ChangeEventCreateJob(
     @Named("create_event")
     private val createEventService: CreateEventService
 ) : ChangeEventCreateJobInterface {
-    @Scheduled(fixedDelay = "10s")
+    @Scheduled(fixedDelay = "10s", initialDelay = "10s")
     @Traced
     override fun createEvent() {
         logger.info { "Scheduler triggered create new ChangeEvent." }
