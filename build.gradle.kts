@@ -13,6 +13,7 @@ plugins {
     id("jacoco")
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    id("io.micronaut.test-resources") version "3.7.8"
 }
 
 group = "no.vy.trafficinfo.baseline.micronaut"
@@ -88,8 +89,10 @@ dependencies {
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
 
+    // AWS service dependencies
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
     implementation("io.micronaut.aws:micronaut-aws-parameter-store")
+    implementation("software.amazon.awssdk:dynamodb")
 
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
     implementation("io.micronaut.problem:micronaut-problem-json")

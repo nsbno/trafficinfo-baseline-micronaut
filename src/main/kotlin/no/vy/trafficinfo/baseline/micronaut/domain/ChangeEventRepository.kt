@@ -10,6 +10,9 @@ import no.vy.trafficinfo.baseline.micronaut.services.RandomStringService
 import no.vy.trafficinfo.baseline.micronaut.services.RandomStringServiceException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import reactor.core.publisher.Flux
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import jakarta.inject.Singleton
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicLong
@@ -46,6 +49,7 @@ interface ChangeEventRepository {
  */
 @Singleton
 open class ChangeEventRepositoryImpl(
+    private val dynamoDbClient: DynamoDbClient,
     private val randomStringService: RandomStringService,
     private val eventPublisher: ApplicationEventPublisher<ChangeEvent>
 ) : ChangeEventRepository {
@@ -88,6 +92,14 @@ open class ChangeEventRepositoryImpl(
 
         logger.info { "Create new ChangeEvent $changeEvent" }
         buffer.add(changeEvent)
+        dynamoDbClient.putItem {
+            it.tableName("change_event")
+            it.item(
+                mapOf(
+                    "id" to AttributeValue.builder().s(changeEvent.version.toString()).build()
+                )
+            )
+        }
         eventPublisher.publishEventAsync(changeEvent)
 
         return changeEvent
