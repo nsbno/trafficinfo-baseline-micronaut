@@ -47,7 +47,7 @@ class ChangeEventDynamoDbRepositorySpec(
         }
 
         // set TTL on table
-        dynamoDbClient.updateTimeToLive{
+        dynamoDbClient.updateTimeToLive {
             it.tableName("change-events")
             it.timeToLiveSpecification {
                 it.attributeName("ttl")
