@@ -22,7 +22,7 @@ private const val MAX_SIZE = 10
 private val logger = KotlinLogging.logger {}
 
 /**
- * # DynamoDb backed in-memory repo.
+ * # DynamoDb backed repo.
  */
 @Singleton
 @Named("dynamodb")
