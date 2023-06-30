@@ -13,8 +13,8 @@ plugins {
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
     id("io.micronaut.test-resources") version "3.7.8"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
 }
-
 group = "no.vy.trafficinfo.baseline.micronaut"
 
 val version: String by project
