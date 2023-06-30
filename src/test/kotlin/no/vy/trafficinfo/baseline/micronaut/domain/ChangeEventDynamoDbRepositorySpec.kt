@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import jakarta.inject.Inject
+import jakarta.inject.Named
 
 private val logger = KotlinLogging.logger {}
 
@@ -15,9 +17,9 @@ private val logger = KotlinLogging.logger {}
  * ## Tests for ChangeEventRepository.
  */
 @MicronautTest(startApplication = false)
-class ChangeEventRepositorySpec(
-    val dynamoDbClient: DynamoDbClient,
-    val repository: ChangeEventRepository,
+class ChangeEventDynamoDbRepositorySpec(
+    @Inject val dynamoDbClient: DynamoDbClient,
+    @Inject @Named("dynamodb") val repository: ChangeEventRepository,
 ) : BehaviorSpec({
 
     /**

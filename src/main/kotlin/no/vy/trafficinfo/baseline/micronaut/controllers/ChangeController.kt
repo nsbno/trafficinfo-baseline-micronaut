@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEvent
-import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepositoryImpl
+import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 
 private val logger = KotlinLogging.logger {}
 
@@ -50,7 +50,7 @@ private val logger = KotlinLogging.logger {}
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
 class ChangeController(
-    private val repo: ChangeEventRepositoryImpl
+    private val repo: ChangeEventRepository
 ) {
 
     private val events = MutableSharedFlow<ChangeEvent>(
