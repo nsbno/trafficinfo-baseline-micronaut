@@ -42,7 +42,7 @@ repositories {
 micronaut {
     version(micronautVersion)
     runtime("netty")
-    testRuntime("kotest")
+    testRuntime("kotest5")
     processing {
         incremental(true)
         annotations("no.vy.trafficinfo.*")
