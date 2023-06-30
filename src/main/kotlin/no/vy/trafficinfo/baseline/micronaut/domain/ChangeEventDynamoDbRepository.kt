@@ -23,6 +23,7 @@ private val logger = KotlinLogging.logger {}
 
 /**
  * # DynamoDb backed repo.
+ * TODO remove all in-memory code and use DynamoDb instead.
  */
 @Singleton
 @Named("dynamodb")
