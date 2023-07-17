@@ -55,7 +55,7 @@ class ChangeControllerSpec(
     @Inject val changeEventRepository: ChangeEventRepository
 ) : BehaviorSpec({
 
-    xgiven("the 5 generated events") {
+    given("the 5 generated events") {
         (1..5).forEach {
             createEventService.createEvent()
         }
@@ -79,7 +79,7 @@ class ChangeControllerSpec(
         }
     }
 
-    xgiven("an empty repository") {
+    given("an empty repository") {
         changeEventRepository.clear()
 
         `when`("the create endpoint is called") {

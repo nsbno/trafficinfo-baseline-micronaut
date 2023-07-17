@@ -22,12 +22,10 @@ val version: String by project
 val micronautVersion: String by project
 val targetJvmVersion: String by project
 
-fun getProperty(name: String): String? {
-    return if (project.properties[name] != null)
+fun getProperty(name: String) = if (project.properties[name] != null)
         project.properties[name].toString()
     else
         System.getenv(name)
-}
 
 repositories {
     maven {
@@ -127,7 +125,6 @@ dependencies {
     /**
      * Tracing
      */
-    implementation("io.micronaut:micronaut-tracing")
     implementation("co.elastic.apm:apm-agent-api:1.33.0")
     implementation("co.elastic.apm:apm-opentracing:1.33.0")
 

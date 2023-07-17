@@ -88,7 +88,7 @@ open class ChangeEventDynamoDbRepository(
     /**
      * ## Request Random String.
      *
-     * Named "Request" to fake the apperance of a
+     * Named "Request" to fake the appearance of a
      * remote system that generate the random string.
      */
     private suspend fun requestRandomString(): String {
