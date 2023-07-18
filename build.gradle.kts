@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     kotlin("plugin.allopen")
+
     id("io.micronaut.application") version "4.0.1"
     id("io.micronaut.test-resources") version "4.0.1"
 
@@ -15,6 +16,14 @@ plugins {
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
 }
+
+/*
+buildscript {
+    dependencies {
+        classpath("org.gradle.toolchains:foojay-resolver:0.6.0")
+    }
+}
+*/
 
 group = "no.vy.trafficinfo.baseline.micronaut"
 

@@ -27,7 +27,7 @@ workflows:
           context:
             - trafficinfo
             - nexus
-          jdk_version: "19"
+          jdk_version: "17"
           post-steps:
             - trafficinfo/slack-failure
             - run: ./gradlew -q javaToolchains
