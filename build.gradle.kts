@@ -17,14 +17,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
 }
 
-/*
-buildscript {
-    dependencies {
-        classpath("org.gradle.toolchains:foojay-resolver:0.6.0")
-    }
-}
-*/
-
 group = "no.vy.trafficinfo.baseline.micronaut"
 
 val version: String by project
