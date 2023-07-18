@@ -18,6 +18,12 @@ micronaut:
     port: 8080
 
   security:
+    enabled: true
+    endpoints:
+      login:
+        enabled: false
+      oauth:
+        enabled: false
     token:
       roles-name: "scope"
       roles-separator: " " # Separator is space as scope is a space separated list

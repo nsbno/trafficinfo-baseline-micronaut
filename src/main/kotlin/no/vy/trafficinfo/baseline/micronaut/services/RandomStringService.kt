@@ -14,6 +14,11 @@ private const val STRING_LENGTH = 10
 private val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
 /**
+ * Service exception thrown when not able to generate a random string.
+ */
+class RandomStringServiceException : Throwable("Failed to generate random string.")
+
+/**
  * # Generate a random string.
  */
 @Singleton

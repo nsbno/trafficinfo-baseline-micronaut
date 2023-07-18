@@ -6,7 +6,6 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Filter
 import io.micronaut.http.filter.HttpServerFilter
 import io.micronaut.http.filter.ServerFilterChain
-import io.micronaut.security.utils.SecurityService
 import co.elastic.apm.api.ElasticApm
 import org.reactivestreams.Publisher
 import org.slf4j.MDC
@@ -17,7 +16,7 @@ import reactor.core.publisher.Flux
  * TODO move this to common-logging for reuse.
  */
 @Filter(Filter.MATCH_ALL_PATTERN)
-class UsernameLoggingFilter(private val securityService: SecurityService) : HttpServerFilter {
+class UsernameLoggingFilter : HttpServerFilter {
 
     // make sure the filter is executed last to contain the currently logged-in user.
     override fun getOrder(): Int = Ordered.LOWEST_PRECEDENCE

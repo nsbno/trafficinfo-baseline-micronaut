@@ -4,16 +4,15 @@
  *
  * @see <a href="https://kotlinlang.org/docs/reference/using-gradle.html">Using Gradle in Official Kotlin doc.</a
  */
-
 plugins {
     kotlin("jvm")
     kotlin("kapt")
     kotlin("plugin.allopen")
-    id("groovy")
     id("io.micronaut.application") version "3.7.0"
     id("jacoco")
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    id("io.micronaut.test-resources") version "3.7.8"
 }
 
 group = "no.vy.trafficinfo.baseline.micronaut"
@@ -23,12 +22,10 @@ val version: String by project
 val micronautVersion: String by project
 val targetJvmVersion: String by project
 
-fun getProperty(name: String): String? {
-    return if (project.properties[name] != null)
-        project.properties[name].toString()
-    else
-        System.getenv(name)
-}
+fun getProperty(name: String) = if (project.properties[name] != null)
+    project.properties[name].toString()
+else
+    System.getenv(name)
 
 repositories {
     maven {
@@ -43,15 +40,17 @@ repositories {
 micronaut {
     version(micronautVersion)
     runtime("netty")
-    testRuntime("spock")
+    testRuntime("kotest5")
     processing {
         incremental(true)
-        annotations("no.vy.trafficinfo.operatingtrainroute.*")
+        annotations("no.vy.trafficinfo.*")
     }
 }
 
 kotlin {
-    jvmToolchain(19)
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(19))
+    }
 }
 
 dependencies {
@@ -87,8 +86,12 @@ dependencies {
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
 
+    // AWS service dependencies
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
     implementation("io.micronaut.aws:micronaut-aws-parameter-store")
+    implementation("software.amazon.awssdk:dynamodb")
+    implementation("software.amazon.awssdk:sqs")
+    implementation("software.amazon.awssdk:sns")
 
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
     implementation("io.micronaut.problem:micronaut-problem-json")
@@ -109,23 +112,34 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
     implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
 
-    implementation("io.micronaut:micronaut-tracing")
+    /**
+     * kotlin coroutines
+     */
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+    /**
+     * Micronaut supports context propagation from Reactor’s context to coroutine context.
+     * To enable this propagation you need to include following dependency
+     */
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
+    /**
+     * Tracing
+     */
     implementation("co.elastic.apm:apm-agent-api:1.33.0")
     implementation("co.elastic.apm:apm-opentracing:1.33.0")
 
     /**
      * Test dependency configurations.
      */
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
-    testImplementation("io.mockk:mockk:1.12.4")
-
     testCompileOnly(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    testImplementation("org.spockframework:spock-core") {
-        exclude("org.codehaus.groovy:groovy-all")
-    }
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
+    testImplementation("io.mockk:mockk")
     testImplementation("io.micronaut:micronaut-inject-java")
-    testImplementation("io.micronaut.test:micronaut-test-spock")
     testImplementation("org.assertj:assertj-core")
+    testImplementation("io.micronaut.test:micronaut-test-kotest5")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm")
 }
 
 application {
@@ -164,9 +178,9 @@ tasks {
     }
 
     test {
+        useJUnitPlatform()
         systemProperty("micronaut.environments", "test")
         systemProperty("micronaut.env.deduction", false)
-        dependsOn(ktlintCheck)
     }
 
     compileKotlin {

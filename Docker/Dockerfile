@@ -3,7 +3,7 @@ ENV USER=appuser
 ENV GROUP=$USER \
     HOME=/home/$USER \
     CONTEXT_PATH=/baseline-micronaut \
-    ELASTIC_APM_AGENT_VERSION=1.36.0
+    ELASTIC_APM_AGENT_VERSION=1.38.0
 
 # set timezone to Oslo, because otherwise it is set
 # to the location of the datacenter running fargate.

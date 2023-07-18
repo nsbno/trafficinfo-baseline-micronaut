@@ -5,10 +5,7 @@ micronaut:
     name: baseline-micronaut
 
   metrics:
-    enabled: true
-    export:
-      cloudwatch:
-        enabled: false
+    enabled: false
 
   # distributed config only enabled in cloud environment
   config-client:
