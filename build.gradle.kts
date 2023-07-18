@@ -9,11 +9,11 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.allopen")
     id("io.micronaut.application") version "4.0.1"
+    id("io.micronaut.test-resources") version "4.0.1"
+
     id("jacoco")
     id("org.sonarqube") version "3.3"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
-    id("io.micronaut.test-resources") version "3.7.8"
-    id("org.openrewrite.rewrite") version("latest.release")
 }
 
 group = "no.vy.trafficinfo.baseline.micronaut"
@@ -53,12 +53,8 @@ kotlin {
         languageVersion.set(JavaLanguageVersion.of(19))
     }
 }
-rewrite {
-    activeRecipe("org.openrewrite.java.micronaut.Micronaut3to4Migration")
-}
-dependencies {
-    rewrite("org.openrewrite.recipe:rewrite-micronaut:2.1.0")
 
+dependencies {
     /**
      * Kotlin dependencies.
      */
