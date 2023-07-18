@@ -8,11 +8,13 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     kotlin("plugin.allopen")
-    id("io.micronaut.application") version "3.7.0"
+
+    id("io.micronaut.application") version "4.0.1"
+    id("io.micronaut.test-resources") version "4.0.1"
+
     id("jacoco")
-    id("org.sonarqube") version "3.3"
+    id("org.sonarqube") version "4.3.0.3225"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
-    id("io.micronaut.test-resources") version "3.7.8"
 }
 
 group = "no.vy.trafficinfo.baseline.micronaut"
@@ -51,6 +53,13 @@ kotlin {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(19))
     }
+    sourceSets.all {
+        // disable e2 compiler
+        // https://youtrack.jetbrains.com/issue/KT-60181/K2-NotImplementedError-An-operation-is-not-implemented-with-Spring
+/*        languageSettings {
+            languageVersion = "2.0"
+        }*/
+    }
 }
 
 dependencies {
@@ -65,6 +74,7 @@ dependencies {
      * micronaut-inject-java and micronaut-validation are omitted
      * due to the micronaut application plugin adding them by default.
      */
+    annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.openapi:micronaut-openapi")
     kapt("io.micronaut.security:micronaut-security")
@@ -74,7 +84,7 @@ dependencies {
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
 
     implementation("io.micronaut:micronaut-inject")
-    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut.validation:micronaut-validation")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.discovery:micronaut-discovery-client")
@@ -106,16 +116,15 @@ dependencies {
      */
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
-    implementation("com.fasterxml.jackson.module:jackson-module-blackbird")
 
     /**
      * kotlin coroutines
      */
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+
+    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
+    implementation("org.yaml:snakeyaml:2.0")
 
     /**
      * Micronaut supports context propagation from Reactor’s context to coroutine context.
@@ -131,8 +140,6 @@ dependencies {
     /**
      * Test dependency configurations.
      */
-    testCompileOnly(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
     testImplementation("io.mockk:mockk")

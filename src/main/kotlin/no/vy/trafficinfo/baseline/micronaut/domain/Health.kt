@@ -1,7 +1,9 @@
 package no.vy.trafficinfo.baseline.micronaut.domain
 
+import io.micronaut.serde.annotation.Serdeable
 import java.time.ZonedDateTime
 
+@Serdeable
 class Health {
     companion object InitHealth {
         val startupTime: ZonedDateTime = ZonedDateTime.now()
