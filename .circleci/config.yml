@@ -1,76 +1,68 @@
 version: 2.1
-# Local parameters can be used to avoid repetitive values (referenced as `<< pipeline.parameters.parameter-name >>`)
 parameters:
-  s3_bucket_name:
-    type: string
-    default: "929368261477-pipeline-artifact"
-  pipeline_name:
-    type: string
-    default: "trafficinfo-baseline-micronaut-state-machine"
   ecr_repo_name:
     type: string
     default: "trafficinfo-baseline-micronaut"
-  deployment_repo:
+
+  application_name:
     type: string
-    default: "trafficinfo-baseline-terraform"
+    default: "trafficinfo-baseline-micronaut"
 
 orbs:
-  stepfunction-ci: vydev/ciorb@2.2.0
-  trafficinfo: vydev/trafficinfo-orb@0.2.1
+  aws-ecr: circleci/aws-ecr@8.2.1
+  deployment: vydev/deployment@0.3.7
   gradle: circleci/gradle@3.0.0
+  terraform: circleci/terraform@3.2.1
+
+jobs:
+  build-and-upload-service:
+    executor: aws-ecr/default
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          attach-workspace: true
+          repo: << pipeline.parameters.ecr_repo_name >>
+          dockerfile: "Docker/Dockerfile"
+          tag: "latest,${CIRCLE_BRANCH}-branch,${CIRCLE_SHA1:0:7}-SHA1"
+
+executors:
+  ubuntu:
+    working_directory: ~/tmp_checkout
+    machine:
+      image: ubuntu-2204:2023.04.2
 
 workflows:
-  version: 2
-  build-and-deploy:
+  do:
     jobs:
-      - trafficinfo/build:
+      - gradle/test:
+          name: "Build and test"
+          executor: ubuntu
           context:
-            - trafficinfo
+            - ruteplan
             - nexus
-          jdk_version: "17"
+          deps_checksum_file: build.gradle.kts
+          test_command: "clean test build --no-daemon"
           post-steps:
-            - trafficinfo/slack-failure
-            - run: ./gradlew -q javaToolchains
+            - run:
+                command: ./gradlew -q javaToolchains
+                when: on_fail
+            - run: ls -laR build/docker
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - "build/*"
 
-      - stepfunction-ci/build-docker:
-          context: trafficinfo
-          enable_buildkit: true
-          ecr_repo_name: << pipeline.parameters.ecr_repo_name >>
+      - build-and-upload-service:
+          context: ruteplan
           requires:
-            - trafficinfo/build
-          post-steps:
-            - trafficinfo/slack-failure
+            - "Build and test"
 
-      - stepfunction-ci/build-repo-zip:
-          context: trafficinfo
-          s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
+      - deployment/trigger-deployment:
+          context:
+            - ruteplan
           requires:
-            - trafficinfo/build
-
-          post-steps:
-            - trafficinfo/slack-failure
-
-      - stepfunction-ci/upload-artifacts:
-          context: trafficinfo
-          s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
-          requires:
-            - stepfunction-ci/build-repo-zip
-          post-steps:
-            - trafficinfo/slack-failure
-
-      - stepfunction-ci/upload-trigger-event:
-          context: trafficinfo
-          s3_bucket_name: << pipeline.parameters.s3_bucket_name >>
-          pipeline_name: << pipeline.parameters.pipeline_name >>
-          deployment_repo: << pipeline.parameters.deployment_repo >>
-          requires:
-            - stepfunction-ci/build-docker
-            - stepfunction-ci/upload-artifacts
-          post-steps:
-            - trafficinfo/slack-failure
-
-      - trafficinfo/slack-notify-success:
-          context: trafficinfo
-          message: ":sunglasses: :thumbsup: Uploaded pipeline trigger event for $CIRCLE_PROJECT_REPONAME version $CIRCLE_SHA1."
-          requires:
-            - stepfunction-ci/upload-trigger-event
+            - build-and-upload-service
+# STOPSHIP set branch filter to master before merge
+#          filters:
+#            branches:
+#              only: [ master ]
