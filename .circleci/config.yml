@@ -15,7 +15,7 @@ orbs:
   terraform: circleci/terraform@3.2.1
 
 jobs:
-  build-and-upload-service:
+  build-and-push-image:
     executor: aws-ecr/default
     steps:
       - checkout
@@ -52,7 +52,7 @@ workflows:
                 paths:
                   - "build/*"
 
-      - build-and-upload-service:
+      - build-and-push-image:
           context: ruteplan
           requires:
             - "Build and test"
@@ -62,7 +62,7 @@ workflows:
 #          context:
 #            - ruteplan
 #          requires:
-#            - build-and-upload-service
+#            - build-and-push-image
 # STOPSHIP set branch filter to master before merge
 #          filters:
 #            branches:
