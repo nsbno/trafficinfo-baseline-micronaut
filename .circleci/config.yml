@@ -57,11 +57,12 @@ workflows:
           requires:
             - "Build and test"
 
-      - deployment/trigger-deployment:
-          context:
-            - ruteplan
-          requires:
-            - build-and-upload-service
+# TODO waiting for infrastructure team to implement repo override for trigger-deployment in orb.
+#      - deployment/trigger-deployment:
+#          context:
+#            - ruteplan
+#          requires:
+#            - build-and-upload-service
 # STOPSHIP set branch filter to master before merge
 #          filters:
 #            branches:

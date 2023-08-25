@@ -1,6 +1,0 @@
-# STOPSHIP set branch to master before merge
-artifacts:
-  - name: trafficinfo-baseline-micronaut
-    branch: new-pipeline
-    location: ecr
-
