@@ -5,7 +5,6 @@ import io.kotest.assertions.until.fixed
 import io.kotest.assertions.until.until
 import io.kotest.core.spec.style.BehaviorSpec
 import mu.KotlinLogging
-import no.vy.trafficinfo.baseline.micronaut.ObjectMother
 import no.vy.trafficinfo.baseline.micronaut.ObjectMother.Companion.TEST_TOPIC_ARN
 import software.amazon.awssdk.services.sns.SnsClient
 import kotlin.time.Duration.Companion.milliseconds
@@ -54,15 +53,15 @@ class SnsClientSpec(
 
         `when`("calling something") {
             snsClient.publish {
-                with(it){
+                with(it) {
                     topicArn(TEST_TOPIC_ARN)
                     message(testMessage)
                 }
             }
 
             then("we should get a result") {
-                until(5.seconds, 250.milliseconds.fixed()){
-                    messageConsumer.processed.size==1
+                until(5.seconds, 250.milliseconds.fixed()) {
+                    messageConsumer.processed.size == 1
                 }
             }
         }

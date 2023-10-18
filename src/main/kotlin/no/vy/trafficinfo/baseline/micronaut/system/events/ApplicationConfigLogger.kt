@@ -6,9 +6,9 @@ import io.micronaut.context.env.PropertySource
 import io.micronaut.core.version.VersionUtils
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent
 import io.micronaut.runtime.event.annotation.EventListener
+import mu.KotlinLogging
 import jakarta.annotation.PostConstruct
 import java.util.regex.Pattern
-import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 

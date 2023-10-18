@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.domain.ChangeEventRepository
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
-import software.amazon.awssdk.services.dynamodb.model.TimeToLiveSpecification
 import jakarta.inject.Inject
 import jakarta.inject.Named
 
