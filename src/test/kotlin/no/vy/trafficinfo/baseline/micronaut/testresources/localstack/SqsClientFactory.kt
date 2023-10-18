@@ -18,7 +18,7 @@ class SqsClientFactory {
     lateinit var sqsConfig: SQSConfig
 
     /**
-     * Build SNS client for test.
+     * Build an SNS client for test.
      * Using the localstack endpoint and credentials from the application.yml
      */
     @Singleton
@@ -27,7 +27,7 @@ class SqsClientFactory {
         return SqsClient.builder()
             .region(Region.of(sqsConfig.region))
             .credentialsProvider(AnonymousCredentialsProvider.create())
-            .endpointOverride(URI.create("http://${sqsConfig.sqs.endpointOverride}:${sqsConfig.sqs.portOverride}"))
+            .endpointOverride(URI.create("${sqsConfig.sqs.endpointOverride}:${sqsConfig.sqs.portOverride}"))
             .build()
     }
 

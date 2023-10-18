@@ -96,6 +96,8 @@ dependencies {
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
 
+    implementation("io.micronaut.jms:micronaut-jms-sqs")
+
     // AWS service dependencies
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
     implementation("io.micronaut.aws:micronaut-aws-parameter-store")

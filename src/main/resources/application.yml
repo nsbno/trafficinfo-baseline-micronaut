@@ -62,8 +62,12 @@ jwksUrl: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_Z53b9AbeT/.well-
 trafficinfoJwksUrl: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_batNx5RPC/.well-known/jwks.json"
 
 baseUrl: http://localhost:8080
-rollinstockServicesBaseUrl: "n/a"
-trainCompositonBaseUrl: "n/a"
+
+aws:
+  sns:
+    topicArn: "arn:aws:sns:eu-west-1:000000000000:test-topic.fifo"
+    enabled: true
+    batchSize: 1 # number of messages to send in one batch to SNS. 1 is default, 10 is max
 
 endpoints:
   health:

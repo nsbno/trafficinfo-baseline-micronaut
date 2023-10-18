@@ -7,8 +7,13 @@
     </appender>
 
     <logger name="no.vy" level="DEBUG" />
-    <logger name="io.micronaut" level="DEBUG" />
+    <logger name="io.micronaut" level="INFO" />
     <logger name="io.micronaut.context" level="INFO" />
+    <logger name="org.testcontainers" level="INFO" />
+    <logger name="io.netty" level="INFO" />
+    <logger name="software.amazon.awssdk" level="INFO" />
+    <logger name="org.apache.http" level="INFO" />
+    <logger name="io.micronaut.jms" level="DEBUG" />
 
     <root level="WARN">
         <appender-ref ref="STDOUT" />

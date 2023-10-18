@@ -2,31 +2,6 @@
 micronaut.security.token.jwt.signatures.secret.generator.secret: pleaseChangeThisSecretForANewOne
 micronaut.security.token.jwt.claims-validators.audience: requiredAudience
 
-# Test-Resources is a Micronaut feature that allows you to start
-# containers for testing. The containers are started before the
-# tests are run, and stopped after the tests are finished.
-# The containers are started on-demand depending on the injected
-# properties. In this case, the containers are started if the
-# property "ibmmq.host" is injected.
-test-resources:
-  containers:
-    localstack:
-      image-name: localstack/localstack:0.12.2
-      wait-strategy:
-        log:
-          regex: ".*Ready.*"
-      exposed-ports:
-        - aws.services.sns.port-override: 4566
-        - aws.services.sqs.port-override: 4566
-        - aws.services.dynamodb.port-override: 4566
-      hostnames:
-        - aws.services.sns.endpoint-override
-        - aws.services.sns.endpoint-override
-        - aws.services.dynamodb.endpoint-override
-      env:
-        - SERVICES=sns,sqs,dynamodb
-        - DEFAULT_REGION=eu-central-1
-
 micronaut:
   http:
     services:
@@ -35,3 +10,46 @@ micronaut:
         path: /whoami
       baseline:
         url: http://localhost:8080
+
+  jms:
+    sqs:
+      enabled: true
+
+# used by SNS and SQS integration test.
+aws:
+  region: us-east-1
+  sns:
+    enabled: true
+    batchSize: 1
+
+  services:
+    dynamodb:
+      endpoint-override: http://localhost
+    sns:
+      endpoint-override: http://localhost
+    sqs:
+      endpoint-override: http://localhost
+
+# Test-Resources is a Micronaut feature that allows you to start
+# containers for testing.
+# The containers are started before the
+# tests are run, and stopped after the tests are finished.
+# The containers are started on-demand depending on the injected
+# properties.
+# In this case, the containers are started if micronaut
+# injects the properties under hostnames anywhere in the application.
+test-resources:
+  containers:
+    localstack:
+      image-name: localstack/localstack:2.3
+      wait-strategy:
+        log:
+          regex: ".*Ready.*"
+      exposed-ports:
+        - aws.services.sns.port-override: 4566
+        - aws.services.sqs.port-override: 4566
+        - aws.services.dynamodb.port-override: 4566
+      env:
+        - SERVICES: sns,sqs,dynamodb
+        - DEBUG: 1
+        - LS_LOG: info

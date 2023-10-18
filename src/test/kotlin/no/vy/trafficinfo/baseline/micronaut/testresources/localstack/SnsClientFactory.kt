@@ -18,7 +18,7 @@ class SnsClientFactory {
     lateinit var snsConfig: SNSConfig
 
     /**
-     * Build SNS client for test.
+     * Build an SNS client for test.
      * Using the localstack endpoint and credentials from the application.yml
      */
     @Singleton
@@ -27,7 +27,7 @@ class SnsClientFactory {
         return SnsClient.builder()
             .region(Region.of(snsConfig.region))
             .credentialsProvider(AnonymousCredentialsProvider.create())
-            .endpointOverride(URI.create("http://${snsConfig.sns.endpointOverride}:${snsConfig.sns.portOverride}"))
+            .endpointOverride(URI.create("${snsConfig.sns.endpointOverride}:${snsConfig.sns.portOverride}"))
             .build()
     }
 
