@@ -63,12 +63,6 @@ trafficinfoJwksUrl: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_batNx
 
 baseUrl: http://localhost:8080
 
-aws:
-  sns:
-    topicArn: "arn:aws:sns:eu-west-1:000000000000:test-topic.fifo"
-    enabled: true
-    batchSize: 1 # number of messages to send in one batch to SNS. 1 is default, 10 is max
-
 endpoints:
   health:
     enabled: true

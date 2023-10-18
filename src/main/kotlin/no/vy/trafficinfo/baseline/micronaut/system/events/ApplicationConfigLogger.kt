@@ -1,14 +1,14 @@
-package no.vy.trafficinfo.baseline.micronaut
+package no.vy.trafficinfo.baseline.micronaut.system.events
 
 import io.micronaut.context.annotation.Context
 import io.micronaut.context.env.Environment
 import io.micronaut.context.env.PropertySource
-import io.micronaut.core.version.VersionUtils.MICRONAUT_VERSION
+import io.micronaut.core.version.VersionUtils
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent
 import io.micronaut.runtime.event.annotation.EventListener
-import mu.KotlinLogging
 import jakarta.annotation.PostConstruct
 import java.util.regex.Pattern
+import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
@@ -27,7 +27,12 @@ private val logger = KotlinLogging.logger {}
 @Context
 class ApplicationConfigLogger(private val environment: Environment) {
 
-    private val maskPatterns: List<Pattern> = PROPERTY_NAMES_TO_MASK.map { s -> Pattern.compile(".*$s.*", Pattern.CASE_INSENSITIVE) }
+    private val maskPatterns: List<Pattern> = PROPERTY_NAMES_TO_MASK.map { s ->
+        Pattern.compile(
+            ".*$s.*",
+            Pattern.CASE_INSENSITIVE
+        )
+    }
 
     @EventListener
     fun onRefreshEvent(event: RefreshEvent?) {
@@ -46,7 +51,7 @@ class ApplicationConfigLogger(private val environment: Environment) {
     }
 
     // print the active micronaut version.
-    private fun printMicronautVersion() = logger.info("Micronaut (v${MICRONAUT_VERSION ?: "???"})")
+    private fun printMicronautVersion() = logger.info("Micronaut (v${VersionUtils.MICRONAUT_VERSION ?: "???"})")
 
     // print the active micronaut environments.
     private fun printEnvironments() = logger.info("Environments: ${environment.activeNames}")

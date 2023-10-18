@@ -5,9 +5,9 @@ import io.kotest.assertions.until.fixed
 import io.kotest.assertions.until.until
 import io.kotest.core.spec.style.BehaviorSpec
 import mu.KotlinLogging
+import no.vy.trafficinfo.baseline.micronaut.ObjectMother
+import no.vy.trafficinfo.baseline.micronaut.ObjectMother.Companion.TEST_TOPIC_ARN
 import software.amazon.awssdk.services.sns.SnsClient
-import software.amazon.awssdk.services.sqs.SqsClient
-import software.amazon.awssdk.services.sqs.model.QueueAttributeName
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import jakarta.inject.Inject
@@ -29,7 +29,6 @@ private val logger = KotlinLogging.logger {}
 @MicronautTest(startApplication = false)
 class SnsClientSpec(
     @Inject var snsClient: SnsClient,
-    @Inject var sqsClient: SqsClient,
     @Inject var messageConsumer: TextMessageConsumer
 ) : BehaviorSpec({
 
@@ -37,23 +36,14 @@ class SnsClientSpec(
      * Create queue and topic before running tests.
      */
     beforeSpec {
-        val queueUrl = sqsClient.getQueueUrl {
-            it.queueName("test-queue")
-        }.queueUrl()
-
-        val subResp = snsClient.subscribe {
-            it.topicArn("arn:aws:sns:us-east-1:000000000000:test-topic")
-            it.protocol("sqs")
-            it.endpoint("arn:aws:sqs:us-east-1:000000000000:test-queue")
-        }
-        logger.info("Created subscription: $subResp")
+        logger.info("Before spec.")
     }
 
     /**
      *
      */
     afterSpec {
-
+        logger.info("After spec.")
     }
 
     /**
@@ -65,7 +55,7 @@ class SnsClientSpec(
         `when`("calling something") {
             snsClient.publish {
                 with(it){
-                    topicArn("arn:aws:sns:us-east-1:000000000000:test-topic")
+                    topicArn(TEST_TOPIC_ARN)
                     message(testMessage)
                 }
             }

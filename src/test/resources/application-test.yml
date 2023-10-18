@@ -25,9 +25,9 @@ aws:
   services:
     dynamodb:
       endpoint-override: http://localhost
-    sns:
-      endpoint-override: http://localhost
     sqs:
+      endpoint-override: http://localhost
+    sns:
       endpoint-override: http://localhost
 
 # Test-Resources is a Micronaut feature that allows you to start

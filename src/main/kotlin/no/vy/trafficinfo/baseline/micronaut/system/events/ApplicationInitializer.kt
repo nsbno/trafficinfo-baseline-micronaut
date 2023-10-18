@@ -1,4 +1,4 @@
-package no.vy.trafficinfo.baseline.micronaut
+package no.vy.trafficinfo.baseline.micronaut.system.events
 
 import io.micronaut.discovery.event.ServiceReadyEvent
 import io.micronaut.runtime.event.annotation.EventListener
