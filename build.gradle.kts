@@ -51,7 +51,7 @@ micronaut {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(19))
+        languageVersion.set(JavaLanguageVersion.of(20))
     }
     sourceSets.all {
         languageSettings {
@@ -154,7 +154,7 @@ application {
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.11"
 }
 
 tasks {
@@ -190,20 +190,6 @@ tasks {
         systemProperty("micronaut.env.deduction", false)
     }
 
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = targetJvmVersion
-            javaParameters = true
-        }
-    }
-
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = targetJvmVersion
-            javaParameters = true
-        }
-    }
-
     runnerJar {
         manifest {
             attributes(
@@ -215,9 +201,9 @@ tasks {
         }
     }
 
-    (run) {
-        doFirst {
-            jvmArgs = listOf("-XX:TieredStopAtLevel=1", "-Dcom.sun.management.jmxremote")
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_20)
         }
     }
 }
