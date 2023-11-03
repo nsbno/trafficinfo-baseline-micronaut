@@ -23,7 +23,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * # Declarative HTTP client for the ChangeController.
  *
- * Used to generate client to communicate with the
+ * Used to generate a client to communicate with the
  * controller from the Unit Test.
  */
 @Client("/")

@@ -50,15 +50,15 @@ micronaut {
 }
 
 kotlin {
+    // Build with Java 20 to avoid this issue:
+    // https://youtrack.jetbrains.com/issue/KT-60507/Kapt-IllegalAccessError-superclass-access-check-failed-using-java-21-toolchain
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(19))
+        languageVersion.set(JavaLanguageVersion.of(20))
     }
     sourceSets.all {
-        // disable e2 compiler
-        // https://youtrack.jetbrains.com/issue/KT-60181/K2-NotImplementedError-An-operation-is-not-implemented-with-Spring
-/*        languageSettings {
+        languageSettings {
             languageVersion = "2.0"
-        }*/
+        }
     }
 }
 
@@ -95,6 +95,8 @@ dependencies {
 
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
+
+    implementation("io.micronaut.jms:micronaut-jms-sqs")
 
     // AWS service dependencies
     implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
@@ -154,7 +156,7 @@ application {
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.11"
 }
 
 tasks {
@@ -190,20 +192,6 @@ tasks {
         systemProperty("micronaut.env.deduction", false)
     }
 
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = targetJvmVersion
-            javaParameters = true
-        }
-    }
-
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = targetJvmVersion
-            javaParameters = true
-        }
-    }
-
     runnerJar {
         manifest {
             attributes(
@@ -215,9 +203,9 @@ tasks {
         }
     }
 
-    (run) {
-        doFirst {
-            jvmArgs = listOf("-XX:TieredStopAtLevel=1", "-Dcom.sun.management.jmxremote")
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_20)
         }
     }
 }

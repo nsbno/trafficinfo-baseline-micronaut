@@ -27,7 +27,7 @@ class DynamoDbClientFactory {
         return DynamoDbClient.builder()
             .region(Region.of(dynamodbConfig.region))
             .credentialsProvider(AnonymousCredentialsProvider.create())
-            .endpointOverride(URI.create("http://${dynamodbConfig.dynamodb.endpointOverride}:${dynamodbConfig.dynamodb.portOverride}"))
+            .endpointOverride(URI.create("${dynamodbConfig.dynamodb.endpointOverride}:${dynamodbConfig.dynamodb.portOverride}"))
             .build()
     }
 

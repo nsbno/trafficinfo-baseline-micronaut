@@ -62,8 +62,6 @@ jwksUrl: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_Z53b9AbeT/.well-
 trafficinfoJwksUrl: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_batNx5RPC/.well-known/jwks.json"
 
 baseUrl: http://localhost:8080
-rollinstockServicesBaseUrl: "n/a"
-trainCompositonBaseUrl: "n/a"
 
 endpoints:
   health:
