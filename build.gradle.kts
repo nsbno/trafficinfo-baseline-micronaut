@@ -49,7 +49,10 @@ micronaut {
     }
 }
 
+
 kotlin {
+    // Build with Java 20 to avoid this issue:
+    // https://youtrack.jetbrains.com/issue/KT-60507/Kapt-IllegalAccessError-superclass-access-check-failed-using-java-21-toolchain
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(20))
     }
