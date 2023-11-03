@@ -54,11 +54,9 @@ kotlin {
         languageVersion.set(JavaLanguageVersion.of(19))
     }
     sourceSets.all {
-        // disable e2 compiler
-        // https://youtrack.jetbrains.com/issue/KT-60181/K2-NotImplementedError-An-operation-is-not-implemented-with-Spring
-/*        languageSettings {
+        languageSettings {
             languageVersion = "2.0"
-        }*/
+        }
     }
 }
 

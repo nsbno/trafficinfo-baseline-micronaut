@@ -1,4 +1,4 @@
-FROM eclipse-temurin:19.0.1_10-jre-alpine
+FROM eclipse-temurin:21.0.1_12-jre-alpine
 ENV USER=appuser
 ENV GROUP=$USER \
     HOME=/home/$USER \
