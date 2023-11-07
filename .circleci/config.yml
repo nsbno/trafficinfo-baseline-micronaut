@@ -10,7 +10,7 @@ parameters:
 
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
-  deployment: vydev/deployment@0.3.7
+  deployment: vydev/deployment@0.4.0
   gradle: circleci/gradle@3.0.0
   terraform: circleci/terraform@3.2.1
 
@@ -57,13 +57,12 @@ workflows:
           requires:
             - "Build and test"
 
-# TODO waiting for infrastructure team to implement repo override for trigger-deployment in orb.
-#      - deployment/trigger-deployment:
-#          context:
-#            - ruteplan
-#          requires:
-#            - build-and-push-image
-# STOPSHIP set branch filter to master before merge
+      - deployment/trigger-deployment:
+          context:
+            - ruteplan
+          repository: trafficinfo-baseline-terraform
+          requires:
+            - build-and-push-image
 #          filters:
 #            branches:
 #              only: [ master ]
