@@ -30,6 +30,7 @@ else
     System.getenv(name)
 
 repositories {
+    mavenCentral() // Enable if you do not want to use Vy nexus for dependencies, e.g. if you are an external contributor
     maven {
         url = uri("https://nexus.common-services.vydev.io/repository/maven-public")
         credentials {
