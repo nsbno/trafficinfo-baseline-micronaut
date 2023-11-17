@@ -3,6 +3,20 @@ name: build-and-deploy
 on: push
 
 jobs:
+#  validate-terraform:
+#    name: Validate terraform
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: terraform-multi-validate
+#        uses: nsbno/terraform-multi-validate@1.4.6
+#        with:
+#          path:
+#            "./terraform"
+#          directories: "prod, stage, template, test"
+
   gradle:
     runs-on: ubuntu-latest
     steps:
