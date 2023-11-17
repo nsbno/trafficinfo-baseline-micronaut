@@ -109,11 +109,6 @@ dependencies {
     implementation("io.micronaut.problem:micronaut-problem-json")
 
     /**
-     * Trafficinfo Common Dependencies.
-     */
-    implementation("no.vy.trafficinfo.common:logging:0.0.3")
-
-    /**
      * Third-party dependencies.
      */
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
