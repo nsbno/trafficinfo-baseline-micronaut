@@ -11,7 +11,7 @@ micronaut:
       enabled: false
   openapi:
     target:
-      file: "terraform/static/openapi/baseline.yml"
+      file: ".deployment/openapi/baseline.yml"
 
   server:
     # let system environment variable override context-path if available
