@@ -63,10 +63,10 @@ workflows:
           context:
             - ruteplan
           service-name: baseline-micronaut
-          openapi-path: .deployment/openapi/baseline.yml
-          filters:
-            branches:
-              only: master
+          openapi-path: terraform/openapi/baseline.yml
+#          filters:
+#            branches:
+#              only: master
 
 # TODO waiting for infrastructure team to implement repo override for trigger-deployment in orb.
 #      - deployment/trigger-deployment:

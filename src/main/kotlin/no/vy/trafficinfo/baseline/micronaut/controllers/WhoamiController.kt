@@ -25,6 +25,11 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import co.elastic.apm.api.ElasticApm
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.extensions.Extension
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
+import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.tags.Tags
 import mu.KotlinLogging
 import java.net.URI
 import java.net.http.HttpClient
@@ -42,18 +47,41 @@ interface WhoamiClient {
     fun get(): HttpResponse<String>
 }
 
-/**
- * # Secured controller
- */
 @Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
+@Tags(Tag(name = "Whoami"))
 class WhoamiControlle(
-    @Client whoamiClient: WhoamiClient
+    @Client whoamiClient: WhoamiClient,
 ) {
 
-    /**
-     * ## Create and return a single change event.
-     */
+    @Operation(
+        summary = "Whoami request",
+        description = "Whoami request",
+        extensions = arrayOf(
+            Extension(
+                name = "x-amazon-apigateway-integration",
+                properties = [
+                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                    ExtensionProperty(
+                        name = "uri",
+                        value = "https://slb.\${hosted_zone_name}/\${base_path}/whoami",
+                    ),
+                    ExtensionProperty(name = "httpMethod", value = "GET"),
+                    ExtensionProperty(name = "type", value = "http_proxy"),
+                ],
+            ),
+            Extension(
+                name = "x-amazon-apigateway-request-validator",
+
+                properties = [
+                    ExtensionProperty(
+                        name = "x-amazon-apigateway-request-validator",
+                        value = "Validate body, query string parameters, and headers",
+                    ),
+                ],
+            ),
+        ),
+    )
     @Get("/whoami")
     @Produces(MediaType.APPLICATION_JSON)
     fun get(): HttpResponse<String> {

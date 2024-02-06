@@ -1,0 +1,151 @@
+openapi: 3.0.1
+info:
+  title: Micronaut Baseline
+  description: Micronaut Baseline project used as template for new microservices.
+  contact:
+    name: Team Ruteplan
+    url: https://vy.no
+    email: team-ruteplan@vy.no
+  version: "1.0"
+externalDocs:
+  description: Internal Application Documentation
+  url: https://vygruppen.atlassian.net/wiki/spaces/TRAFFICINFO/pages/3793586330/Developer
+servers:
+- url: https://services.trafficinfo.vydev.io/baseline-micronaut
+  description: Production
+- url: https://services.stage.trafficinfo.vydev.io/baseline-micronaut
+  description: Stage
+- url: https://services.test.trafficinfo.vydev.io/baseline-micronaut
+  description: Test
+- url: https://services.dev.trafficinfo.vydev.io/baseline-micronaut
+  description: Dev
+paths:
+  /changes:
+    get:
+      tags:
+      - Changes
+      summary: Return all change events
+      description: Return all change events
+      operationId: changeEventsAll
+      responses:
+        "200":
+          description: changeEventsAll 200 response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChangeEvent'
+            application/x-json-stream:
+              schema:
+                $ref: '#/components/schemas/ChangeEvent'
+              example: null
+      x-amazon-apigateway-request-validator:
+        x-amazon-apigateway-request-validator: "Validate body, query string parameters,\
+          \ and headers"
+      x-amazon-apigateway-integration:
+        passthroughBehavior: when_no_match
+        uri: "https://slb.${hosted_zone_name}/${base_path}/changes"
+        httpMethod: GET
+        type: http_proxy
+    post:
+      tags:
+      - Changes
+      summary: Create and return a single change event
+      description: Create and return a single change event
+      operationId: changeEventCreate
+      responses:
+        "202":
+          description: changeEventCreate 202 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeEvent'
+      x-amazon-apigateway-request-validator:
+        x-amazon-apigateway-request-validator: "Validate body, query string parameters,\
+          \ and headers"
+      x-amazon-apigateway-integration:
+        passthroughBehavior: when_no_match
+        uri: "https://slb.${hosted_zone_name}/${base_path}/changes"
+        httpMethod: POST
+        type: http_proxy
+  /secured:
+    get:
+      tags:
+      - Secured
+      summary: Send authorized request
+      description: Send authorized request
+      operationId: get
+      responses:
+        "200":
+          description: get 200 response
+      security:
+      - security_auth:
+        - https://services.trafficinfo.vydev.io/baseline/read
+      x-amazon-apigateway-request-validator:
+        x-amazon-apigateway-request-validator: "Validate body, query string parameters,\
+          \ and headers"
+      x-amazon-apigateway-integration:
+        passthroughBehavior: when_no_match
+        uri: "https://slb.${hosted_zone_name}/${base_path}/secured"
+        httpMethod: GET
+        type: http_proxy
+  /whoami:
+    get:
+      tags:
+      - Whoami
+      summary: Whoami request
+      description: Whoami request
+      operationId: get_1
+      responses:
+        "200":
+          description: get_1 200 response
+          content:
+            application/json:
+              schema:
+                type: string
+      x-amazon-apigateway-request-validator:
+        x-amazon-apigateway-request-validator: "Validate body, query string parameters,\
+          \ and headers"
+      x-amazon-apigateway-integration:
+        passthroughBehavior: when_no_match
+        uri: "https://slb.${hosted_zone_name}/${base_path}/whoami"
+        httpMethod: GET
+        type: http_proxy
+components:
+  schemas:
+    ChangeEvent:
+      required:
+      - payload
+      - version
+      type: object
+      properties:
+        payload:
+          type: string
+        version:
+          type: integer
+          format: int64
+      description: Is a data class that just contains a random string. Used by ChangeController
+        as a simple return type.
+  securitySchemes:
+    cognito_auth:
+      type: apiKey
+      description: Use Central Cognito to Authorize requests to microservice.
+      name: Authorization
+      in: header
+      x-amazon-apigateway-authtype: cognito_user_pools
+      x-amazon-apigateway-authorizer:
+        providerARNs:
+        - "${provider_arn}"
+        type: cognito_user_pools
+    security_auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: |-
+            https://auth.cognito.vydev.io/oauth2/token
+            https://auth.stage.cognito.vydev.io/oauth2/token
+            https://auth.test.cognito.vydev.io/oauth2/token
+            https://auth.dev.cognito.vydev.io/oauth2/token
+          scopes:
+            https://services.trafficinfo.vydev.io/baseline/read: read scope

@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.extensions.Extension
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
 import io.swagger.v3.oas.annotations.info.Contact
 import io.swagger.v3.oas.annotations.info.Info
+import io.swagger.v3.oas.annotations.security.OAuthFlow
+import io.swagger.v3.oas.annotations.security.OAuthFlows
+import io.swagger.v3.oas.annotations.security.OAuthScope
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import io.swagger.v3.oas.annotations.servers.Server
 
@@ -16,47 +19,6 @@ import io.swagger.v3.oas.annotations.servers.Server
  * Main application object
  * Started by Docker container.
  */
-@OpenAPIDefinition(
-    info = Info(
-        title = "Micronaut Baseline",
-        version = "1.0",
-        description = "Micronaut Baseline project used as template for new microservices.",
-        contact = Contact(url = "https://vy.no", name = "Daniel Engfeldt", email = "daniel.engfeldt@vy.no")
-    ),
-    servers = [
-        Server(url = "https://services.trafficinfo.vydev.io/micronaut-baseline", description = "production"),
-        Server(url = "https://services.stage.trafficinfo.vydev.io/micronaut-baseline", description = "stage"),
-        Server(url = "https://services.test.trafficinfo.vydev.io/micronaut-baseline", description = "test"),
-        Server(url = "https://services.dev.trafficinfo.vydev.io/micronaut-baseline", description = "dev")
-    ],
-    externalDocs = ExternalDocumentation(
-        description = "Internal Application Documentation",
-        url = "https://vygruppen.atlassian.net/wiki/spaces/TRAFFICINFO/pages/3793586330/Developer"
-    )
-)
-@SecurityScheme(
-    paramName = "Authorization",
-    description = "Use Central Cognito to Authorize requests to microservice.",
-    name = "cognito_auth",
-    type = SecuritySchemeType.APIKEY,
-    scheme = "bearer",
-    `in` = SecuritySchemeIn.HEADER,
-    extensions = [
-        Extension(
-            name = "",
-            properties = [
-                ExtensionProperty(name = "x-amazon-apigateway-authtype", value = "cognito_user_pools")
-            ]
-        ),
-        Extension(
-            name = "x-amazon-apigateway-authorizer",
-            properties = [
-                ExtensionProperty(name = "providerARNs", value = "[\"\${provider_arn}\"]", parseValue = true),
-                ExtensionProperty(name = "type", value = "cognito_user_pools")
-            ]
-        )
-    ]
-)
 /**
  * ## Application
  * <p>
@@ -77,6 +39,64 @@ import io.swagger.v3.oas.annotations.servers.Server
  *
  * @see "https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html"
  */
+@OpenAPIDefinition(
+    info = Info(
+        title = "Micronaut Baseline",
+        version = "1.0",
+        description = "Micronaut Baseline project used as template for new microservices.",
+        contact = Contact(url = "https://vy.no", name = "Team Ruteplan", email = "team-ruteplan@vy.no"),
+    ),
+    servers = [
+        Server(url = "https://services.trafficinfo.vydev.io/baseline-micronaut", description = "Production"),
+        Server(url = "https://services.stage.trafficinfo.vydev.io/baseline-micronaut", description = "Stage"),
+        Server(url = "https://services.test.trafficinfo.vydev.io/baseline-micronaut", description = "Test"),
+        Server(url = "https://services.dev.trafficinfo.vydev.io/baseline-micronaut", description = "Dev"),
+    ],
+    externalDocs = ExternalDocumentation(
+        description = "Internal Application Documentation",
+        url = "https://vygruppen.atlassian.net/wiki/spaces/TRAFFICINFO/pages/3793586330/Developer",
+    ),
+)
+@SecurityScheme(
+    paramName = "Authorization",
+    description = "Use Central Cognito to Authorize requests to microservice.",
+    name = "cognito_auth",
+    type = SecuritySchemeType.APIKEY,
+    scheme = "bearer",
+    `in` = SecuritySchemeIn.HEADER,
+    extensions = [
+        Extension(
+            name = "",
+            properties = [
+                ExtensionProperty(name = "x-amazon-apigateway-authtype", value = "cognito_user_pools"),
+            ],
+        ),
+        Extension(
+            name = "x-amazon-apigateway-authorizer",
+            properties = [
+                ExtensionProperty(name = "providerARNs", value = "[\"\${provider_arn}\"]", parseValue = true),
+                ExtensionProperty(name = "type", value = "cognito_user_pools"),
+            ],
+        ),
+    ],
+)
+// Scheme for documentation
+@SecurityScheme(
+    name = "security_auth",
+    type = SecuritySchemeType.OAUTH2,
+    flows = OAuthFlows(
+        clientCredentials = OAuthFlow(
+            tokenUrl =
+            "https://auth.cognito.vydev.io/oauth2/token" +
+                "\nhttps://auth.stage.cognito.vydev.io/oauth2/token" +
+                "\nhttps://auth.test.cognito.vydev.io/oauth2/token" +
+                "\nhttps://auth.dev.cognito.vydev.io/oauth2/token",
+            scopes = [
+                OAuthScope(name = "https://services.trafficinfo.vydev.io/baseline/read", description = "read scope"),
+            ],
+        ),
+    ),
+)
 object Application {
 
     @JvmStatic

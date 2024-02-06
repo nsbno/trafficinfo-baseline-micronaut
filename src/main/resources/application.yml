@@ -11,7 +11,7 @@ micronaut:
       enabled: false
   openapi:
     target:
-      file: ".deployment/openapi/baseline.yml"
+      file: "terraform/openapi/baseline.yml"
 
   server:
     # let system environment variable override context-path if available
@@ -19,6 +19,12 @@ micronaut:
     # what the ECS Fargate task is routed as from the load balancer.
     context-path: ${CONTEXT_PATH:/}
     port: 8080
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowed-origins:
+            - https://stasjon.vydev.io
 
   security:
     enabled: true
