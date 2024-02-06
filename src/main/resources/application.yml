@@ -9,6 +9,9 @@ micronaut:
   caches:
     discovery-client:
       enabled: false
+  openapi:
+    target:
+      file: "terraform/static/openapi/baseline.yml"
 
   server:
     # let system environment variable override context-path if available
