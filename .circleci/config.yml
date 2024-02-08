@@ -39,6 +39,14 @@ executors:
     working_directory: ~/tmp_checkout
     machine:
       image: ubuntu-2204:2023.04.2
+  aws-cli:
+    description: AWS CLI and some other tools
+    docker:
+      - image: vydev/awscli
+    parameters:
+      tag:
+        default: latest
+        type: string
 
 workflows:
   do:
