@@ -29,8 +29,6 @@ jobs:
     executor: aws-cli
     resource_class: small
     steps:
-      - checkout
-      - deployment/upload-deployment-config
       - deployment/trigger-deployment:
           repository: trafficinfo-baseline-terraform
 
