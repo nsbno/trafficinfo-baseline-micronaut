@@ -10,7 +10,7 @@ parameters:
 
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
-  deployment: vydev/deployment@0.3.7
+  deployment: vydev/deployment@0.7.0
   gradle: circleci/gradle@3.0.0
   terraform: circleci/terraform@3.2.1
 
@@ -25,11 +25,26 @@ jobs:
           dockerfile: "Docker/Dockerfile"
           tag: "latest,${CIRCLE_BRANCH}-branch,${CIRCLE_SHA1:0:7}-SHA1"
 
+  trigger-deployment:
+    executor: aws-cli
+    resource_class: small
+    steps:
+      - deployment/trigger-deployment:
+          repository: trafficinfo-baseline-terraform
+
 executors:
   ubuntu:
     working_directory: ~/tmp_checkout
     machine:
       image: ubuntu-2204:2023.04.2
+  aws-cli:
+    description: AWS CLI and some other tools
+    docker:
+      - image: vydev/awscli
+    parameters:
+      tag:
+        default: latest
+        type: string
 
 workflows:
   do:
@@ -57,13 +72,11 @@ workflows:
           requires:
             - "Build and test"
 
-# TODO waiting for infrastructure team to implement repo override for trigger-deployment in orb.
-#      - deployment/trigger-deployment:
-#          context:
-#            - ruteplan
-#          requires:
-#            - build-and-push-image
-# STOPSHIP set branch filter to master before merge
-#          filters:
-#            branches:
-#              only: [ master ]
+      - trigger-deployment:
+          context:
+            - ruteplan
+          requires:
+            - build-and-push-image
+          filters:
+            branches:
+              only: [ master ]
