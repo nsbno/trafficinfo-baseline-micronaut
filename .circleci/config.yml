@@ -25,6 +25,15 @@ jobs:
           dockerfile: "Docker/Dockerfile"
           tag: "latest,${CIRCLE_BRANCH}-branch,${CIRCLE_SHA1:0:7}-SHA1"
 
+  trigger-deployment:
+    executor: aws-cli
+    resource_class: small
+    steps:
+      - checkout
+      - upload-deployment-config
+      - trigger-deployment:
+          repository: trafficinfo-baseline-terraform
+
 executors:
   ubuntu:
     working_directory: ~/tmp_checkout
@@ -57,12 +66,11 @@ workflows:
           requires:
             - "Build and test"
 
-      - deployment/trigger-deployment:
+      - trigger-deployment:
           context:
             - ruteplan
           requires:
             - build-and-push-image
-          repository: trafficinfo-baseline-terraform
 
 #          filters:
 #            branches:
