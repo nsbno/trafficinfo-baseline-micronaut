@@ -77,7 +77,6 @@ workflows:
             - ruteplan
           requires:
             - build-and-push-image
-
-#          filters:
-#            branches:
-#              only: [ master ]
+          filters:
+            branches:
+              only: [ master ]
