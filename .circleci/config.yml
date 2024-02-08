@@ -30,8 +30,8 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - upload-deployment-config
-      - trigger-deployment:
+      - deployment/upload-deployment-config
+      - deployment/trigger-deployment:
           repository: trafficinfo-baseline-terraform
 
 executors:
