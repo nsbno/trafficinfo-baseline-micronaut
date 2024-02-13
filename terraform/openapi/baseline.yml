@@ -81,7 +81,7 @@ paths:
           description: get 200 response
       security:
       - security_auth:
-        - https://services.trafficinfo.vydev.io/baseline/read
+        - https://services.trafficinfo.vydev.io/baseline-micronaut/read
       x-amazon-apigateway-request-validator:
         x-amazon-apigateway-request-validator: "Validate body, query string parameters,\
           \ and headers"
@@ -112,6 +112,30 @@ paths:
         uri: "https://slb.${hosted_zone_name}/${base_path}/whoami"
         httpMethod: GET
         type: http_proxy
+  /{proxy+}:
+    options:
+      tags:
+      - CORS
+      summary: CORS
+      description: Enables CORS for all endpoints
+      operationId: handleOptions
+      responses:
+        "200":
+          description: handleOptions 200 response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+      x-amazon-apigateway-integration:
+        requestTemplates:
+          application/json: "{ \"statusCode\": 200 }"
+        uri: "https://slb.${hosted_zone_name}/${base_path}/{proxy}"
+        httpMethod: OPTIONS
+        type: http_proxy
+        requestParameters:
+          integration.request.path.proxy: method.request.path.proxy
 components:
   schemas:
     ChangeEvent:
