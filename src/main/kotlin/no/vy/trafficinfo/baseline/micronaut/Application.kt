@@ -61,7 +61,22 @@ import io.swagger.v3.oas.annotations.servers.Server
     paramName = "Authorization",
     description = "Use Central Cognito to Authorize requests to microservice.",
     name = "cognito_auth",
-    type = SecuritySchemeType.APIKEY,
+    type = SecuritySchemeType.OAUTH2,
+    flows = OAuthFlows(
+        clientCredentials = OAuthFlow(
+            tokenUrl =
+            "https://auth.cognito.vydev.io/oauth2/token" +
+                "\nhttps://auth.stage.cognito.vydev.io/oauth2/token" +
+                "\nhttps://auth.test.cognito.vydev.io/oauth2/token" +
+                "\nhttps://auth.dev.cognito.vydev.io/oauth2/token",
+            scopes = [
+                OAuthScope(
+                    name = "https://services.trafficinfo.vydev.io/baseline-micronaut/read",
+                    description = "read scope",
+                ),
+            ],
+        ),
+    ),
     scheme = "bearer",
     `in` = SecuritySchemeIn.HEADER,
     extensions = [
@@ -79,23 +94,6 @@ import io.swagger.v3.oas.annotations.servers.Server
             ],
         ),
     ],
-)
-// Scheme for documentation
-@SecurityScheme(
-    name = "security_auth",
-    type = SecuritySchemeType.OAUTH2,
-    flows = OAuthFlows(
-        clientCredentials = OAuthFlow(
-            tokenUrl =
-            "https://auth.cognito.vydev.io/oauth2/token" +
-                "\nhttps://auth.stage.cognito.vydev.io/oauth2/token" +
-                "\nhttps://auth.test.cognito.vydev.io/oauth2/token" +
-                "\nhttps://auth.dev.cognito.vydev.io/oauth2/token",
-            scopes = [
-                OAuthScope(name = "https://services.trafficinfo.vydev.io/baseline/read", description = "read scope"),
-            ],
-        ),
-    ),
 )
 object Application {
 

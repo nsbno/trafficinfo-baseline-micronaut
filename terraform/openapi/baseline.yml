@@ -80,7 +80,7 @@ paths:
         "200":
           description: get 200 response
       security:
-      - security_auth:
+      - cognito_auth:
         - https://services.trafficinfo.vydev.io/baseline-micronaut/read
       x-amazon-apigateway-request-validator:
         x-amazon-apigateway-request-validator: "Validate body, query string parameters,\
@@ -118,10 +118,10 @@ paths:
       - CORS
       summary: CORS
       description: Enables CORS for all endpoints
-      operationId: handleOptions
+      operationId: options
       responses:
         "200":
-          description: handleOptions 200 response
+          description: options 200 response
           content:
             application/json:
               schema:
@@ -153,16 +153,23 @@ components:
         as a simple return type.
   securitySchemes:
     cognito_auth:
-      type: apiKey
+      type: oauth2
       description: Use Central Cognito to Authorize requests to microservice.
-      name: Authorization
-      in: header
+      flows:
+        clientCredentials:
+          tokenUrl: |-
+            https://auth.cognito.vydev.io/oauth2/token
+            https://auth.stage.cognito.vydev.io/oauth2/token
+            https://auth.test.cognito.vydev.io/oauth2/token
+            https://auth.dev.cognito.vydev.io/oauth2/token
+          scopes:
+            https://services.trafficinfo.vydev.io/baseline-micronaut/read: read scope
       x-amazon-apigateway-authtype: cognito_user_pools
       x-amazon-apigateway-authorizer:
         providerARNs:
         - "${provider_arn}"
         type: cognito_user_pools
-    security_auth:
+    documentation_auth:
       type: oauth2
       flows:
         clientCredentials:
@@ -172,4 +179,4 @@ components:
             https://auth.test.cognito.vydev.io/oauth2/token
             https://auth.dev.cognito.vydev.io/oauth2/token
           scopes:
-            https://services.trafficinfo.vydev.io/baseline/read: read scope
+            https://services.trafficinfo.vydev.io/baseline-micronaut/read: read scope

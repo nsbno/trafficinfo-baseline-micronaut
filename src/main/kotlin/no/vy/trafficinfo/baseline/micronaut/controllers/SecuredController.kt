@@ -75,8 +75,7 @@ class SecuredController {
     @Produces(MediaType.APPLICATION_JSON)
     @Secured("https://services.trafficinfo.vydev.io/baseline-micronaut/read")
     @SecurityRequirement(
-        // For documentation
-        name = "security_auth",
+        name = "cognito_auth",
         scopes = ["https://services.trafficinfo.vydev.io/baseline-micronaut/read"],
     )
     fun get(): HttpResponse<Void> {

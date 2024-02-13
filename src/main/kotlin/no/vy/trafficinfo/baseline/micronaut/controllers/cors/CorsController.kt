@@ -28,34 +28,6 @@ class CorsController {
         summary = "CORS",
         description = "Enables CORS for all endpoints",
         tags = ["CORS"],
-//        responses = [
-//            ApiResponse(
-//                responseCode = "200",
-//                description = "Default response for CORS method",
-//                headers = [
-//                    Header(
-//                        name = "Access-Control-Allow-Headers",
-//                        description = "Allow headers",
-//                        schema = Schema(type = "string"),
-//                    ),
-//                    Header(
-//                        name = "Access-Control-Allow-Methods",
-//                        description = "Allow methods",
-//                        schema = Schema(type = "string"),
-//                    ),
-//                    Header(
-//                        name = "Access-Control-Allow-Origin",
-//                        description = "Allow origins",
-//                        schema = Schema(type = "string"),
-//                    ),
-//                    Header(
-//                        name = "Access-Control-Allow-Credentials",
-//                        description = "Allow credentials",
-//                        schema = Schema(type = "string"),
-//                    ),
-//                ],
-//            ),
-//        ],
         extensions = [
             Extension(
                 name = "x-amazon-apigateway-integration",
@@ -82,7 +54,7 @@ class CorsController {
         ],
     )
     @Options
-    fun handleOptions(): HttpResponse<Map<String, String>> {
+    fun options(): HttpResponse<Map<String, String>> {
         return HttpResponse.ok(emptyMap())
     }
 }
