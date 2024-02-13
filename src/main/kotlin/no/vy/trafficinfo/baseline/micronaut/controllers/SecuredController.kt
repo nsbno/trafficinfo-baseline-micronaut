@@ -62,7 +62,6 @@ class SecuredController {
             ),
             Extension(
                 name = "x-amazon-apigateway-request-validator",
-
                 properties = [
                     ExtensionProperty(
                         name = "x-amazon-apigateway-request-validator",
@@ -74,11 +73,11 @@ class SecuredController {
     )
     @Get
     @Produces(MediaType.APPLICATION_JSON)
-    @Secured("https://services.trafficinfo.vydev.io/baseline/read")
+    @Secured("https://services.trafficinfo.vydev.io/baseline-micronaut/read")
     @SecurityRequirement(
         // For documentation
         name = "security_auth",
-        scopes = ["https://services.trafficinfo.vydev.io/baseline/read"],
+        scopes = ["https://services.trafficinfo.vydev.io/baseline-micronaut/read"],
     )
     fun get(): HttpResponse<Void> {
         logger.info { "User was authenticated and authorized successfully." }

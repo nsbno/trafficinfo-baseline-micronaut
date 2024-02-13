@@ -55,14 +55,14 @@ interface SecuredClient {
 @MicronautTest
 class SecuredControllerSpec(
     @Inject val client: SecuredClient,
-    @Inject val tokenGenerator: JwtTokenGenerator
+    @Inject val tokenGenerator: JwtTokenGenerator,
 ) : BehaviorSpec({
 
     fun generateJwt(sub: String, aud: String, scopes: Array<String>): String {
         val claims = mapOf(
             "sub" to sub,
             "aud" to aud,
-            "scope" to scopes.joinToString(" ")
+            "scope" to scopes.joinToString(" "),
         )
         return tokenGenerator.generateToken(claims).get()
     }
@@ -71,7 +71,7 @@ class SecuredControllerSpec(
         val jwt = generateJwt(
             "username",
             "requiredAudience",
-            arrayOf("https://services.trafficinfo.vydev.io/baseline/read")
+            arrayOf("https://services.trafficinfo.vydev.io/baseline-micronaut/read"),
         )
 
         `when`("should be authorized to read-only endpoint if correct read-scope in token") {
@@ -95,7 +95,7 @@ class SecuredControllerSpec(
         val jwt = generateJwt(
             "username",
             "requiredAudience",
-            arrayOf("https://services.somethingelse.vydev.io/not/correct")
+            arrayOf("https://services.somethingelse.vydev.io/not/correct"),
         )
 
         `when`("calling a secured endpoint") {
