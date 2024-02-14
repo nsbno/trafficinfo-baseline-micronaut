@@ -28,6 +28,9 @@ import co.elastic.apm.api.ElasticApm
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.extensions.Extension
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import mu.KotlinLogging
@@ -57,6 +60,33 @@ class WhoamiControlle(
     @Operation(
         summary = "Whoami request",
         description = "Whoami request",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [
+                    Content(
+                        examples = [
+                            ExampleObject(
+                                name = "Return value",
+                                value = "Hostname: ip-10-100-68-26.eu-west-1.compute.internal\n" +
+                                    "IP: 127.0.0.1\n" +
+                                    "IP: 169.254.172.42\n" +
+                                    "IP: 10.100.68.26\n" +
+                                    "RemoteAddr: 10.100.35.87:22454\n" +
+                                    "GET /whoami/ HTTP/1.1\n" +
+                                    "Host: svclb.dev.trafficinfo.vydev.io\n" +
+                                    "User-Agent: Java-http-client/21.0.1\n" +
+                                    "X-Amzn-Trace-Id: Root=1-65cc7144-18916edc6beeac7941b66faa\n" +
+                                    "X-Forwarded-For: 54.73.204.67\n" +
+                                    "X-Forwarded-Port: 443\n" +
+                                    "X-Forwarded-Proto: https",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
         extensions = arrayOf(
             Extension(
                 name = "x-amazon-apigateway-integration",

@@ -26,6 +26,7 @@ import io.micronaut.security.rules.SecurityRule
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.extensions.Extension
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
@@ -47,6 +48,16 @@ class SecuredController {
     @Operation(
         summary = "Send authorized request",
         description = "Send authorized request",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized",
+            ),
+        ],
         extensions = arrayOf(
             Extension(
                 name = "x-amazon-apigateway-integration",

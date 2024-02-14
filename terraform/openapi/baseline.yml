@@ -78,7 +78,9 @@ paths:
       operationId: get
       responses:
         "200":
-          description: get 200 response
+          description: Success
+        "401":
+          description: Unauthorized
       security:
       - cognito_auth:
         - https://services.trafficinfo.vydev.io/baseline-micronaut/read
@@ -99,11 +101,24 @@ paths:
       operationId: get_1
       responses:
         "200":
-          description: get_1 200 response
+          description: Success
           content:
             application/json:
-              schema:
-                type: string
+              examples:
+                Return value:
+                  value: |-
+                    Hostname: ip-10-100-68-26.eu-west-1.compute.internal
+                    IP: 127.0.0.1
+                    IP: 169.254.172.42
+                    IP: 10.100.68.26
+                    RemoteAddr: 10.100.35.87:22454
+                    GET /whoami/ HTTP/1.1
+                    Host: svclb.dev.trafficinfo.vydev.io
+                    User-Agent: Java-http-client/21.0.1
+                    X-Amzn-Trace-Id: Root=1-65cc7144-18916edc6beeac7941b66faa
+                    X-Forwarded-For: 54.73.204.67
+                    X-Forwarded-Port: 443
+                    X-Forwarded-Proto: https
       x-amazon-apigateway-request-validator:
         x-amazon-apigateway-request-validator: "Validate body, query string parameters,\
           \ and headers"
@@ -141,14 +156,17 @@ components:
     ChangeEvent:
       required:
       - payload
-      - version
       type: object
       properties:
         payload:
           type: string
+          description: The payload
+          example: V0HK5GgigW
         version:
           type: integer
+          description: The version number
           format: int64
+          example: 12932
       description: Is a data class that just contains a random string. Used by ChangeController
         as a simple return type.
   securitySchemes:
@@ -169,14 +187,3 @@ components:
         providerARNs:
         - "${provider_arn}"
         type: cognito_user_pools
-    documentation_auth:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: |-
-            https://auth.cognito.vydev.io/oauth2/token
-            https://auth.stage.cognito.vydev.io/oauth2/token
-            https://auth.test.cognito.vydev.io/oauth2/token
-            https://auth.dev.cognito.vydev.io/oauth2/token
-          scopes:
-            https://services.trafficinfo.vydev.io/baseline-micronaut/read: read scope
