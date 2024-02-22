@@ -64,6 +64,8 @@ workflows:
             - ruteplan
           service-name: baseline-micronaut
           openapi-path: terraform/openapi/baseline.yml
+          requires:
+            - build-and-push-image
           filters:
             branches:
               only: master

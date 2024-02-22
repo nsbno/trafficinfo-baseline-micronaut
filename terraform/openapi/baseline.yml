@@ -143,6 +143,7 @@ paths:
                 type: object
                 additionalProperties:
                   type: string
+      x-internal: true
       x-amazon-apigateway-integration:
         requestTemplates:
           application/json: "{ \"statusCode\": 200 }"

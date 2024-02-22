@@ -30,6 +30,16 @@ class CorsController {
         tags = ["CORS"],
         extensions = [
             Extension(
+                properties = [
+                    // Hide this endpoint from the ui.
+                    ExtensionProperty(
+                        name = "x-internal",
+                        value = true.toString(),
+                        parseValue = true,
+                    ),
+                ],
+            ),
+            Extension(
                 name = "x-amazon-apigateway-integration",
                 properties = [
                     ExtensionProperty(
