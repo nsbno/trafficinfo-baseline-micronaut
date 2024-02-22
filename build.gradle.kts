@@ -24,10 +24,11 @@ val version: String by project
 val micronautVersion: String by project
 val targetJvmVersion: String by project
 
-fun getProperty(name: String) = if (project.properties[name] != null)
+fun getProperty(name: String) = if (project.properties[name] != null) {
     project.properties[name].toString()
-else
+} else {
     System.getenv(name)
+}
 
 repositories {
     maven {
@@ -37,6 +38,7 @@ repositories {
             password = getProperty("NEXUS_PASSWORD")
         }
     }
+    mavenCentral()
 }
 
 micronaut {
@@ -116,13 +118,13 @@ dependencies {
     /**
      * Third-party dependencies.
      */
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("io.swagger.core.v3:swagger-annotations")
 
     /**
      * kotlin coroutines
      */
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
 
     // https://mvnrepository.com/artifact/org.yaml/snakeyaml
@@ -132,18 +134,18 @@ dependencies {
      * Micronaut supports context propagation from Reactor’s context to coroutine context.
      * To enable this propagation you need to include following dependency
      */
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.1")
     /**
      * Tracing
      */
-    implementation("co.elastic.apm:apm-agent-api:1.33.0")
-    implementation("co.elastic.apm:apm-opentracing:1.33.0")
+    implementation("co.elastic.apm:apm-agent-api:1.38.0")
+    implementation("co.elastic.apm:apm-opentracing:1.38.0")
 
     /**
      * Test dependency configurations.
      */
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.1")
     testImplementation("io.mockk:mockk")
     testImplementation("io.micronaut:micronaut-inject-java")
     testImplementation("org.assertj:assertj-core")
@@ -197,8 +199,8 @@ tasks {
             attributes(
                 mapOf(
                     "Implementation-Title" to rootProject.name,
-                    "Implementation-Version" to project.version
-                )
+                    "Implementation-Version" to project.version,
+                ),
             )
         }
     }

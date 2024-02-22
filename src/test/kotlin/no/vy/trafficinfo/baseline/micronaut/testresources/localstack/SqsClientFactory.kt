@@ -1,4 +1,4 @@
-package no.vy.trafficinfo.tiosadapter.system.factories
+package no.vy.trafficinfo.baseline.micronaut.testresources.localstack
 
 import io.micronaut.context.annotation.ConfigurationBuilder
 import io.micronaut.context.annotation.ConfigurationProperties

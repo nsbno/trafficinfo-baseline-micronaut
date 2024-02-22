@@ -13,7 +13,7 @@ orbs:
   deployment: vydev/deployment@0.3.7
   gradle: circleci/gradle@3.0.0
   terraform: circleci/terraform@3.2.1
-  documentation: vydev/service-documentation@0.4.0
+  documentation: vydev/service-documentation@0.4.2
 
 jobs:
   build-and-push-image:
