@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="no/vy/trafficinfo/common/logging/base.xml"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <stackTrace>exception</stackTrace>
+                <levelValue>[ignore]</levelValue>
+                <version>[ignore]</version>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <!-- our own no.vy packages should by default log at INFO level -->
+    <logger name="no.vy" level="INFO" />
+
+    <!-- all other should be limited to WARN level -->
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </root>
 </configuration>

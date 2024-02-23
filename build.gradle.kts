@@ -31,6 +31,7 @@ fun getProperty(name: String) = if (project.properties[name] != null) {
 }
 
 repositories {
+    mavenCentral() // Enable if you do not want to use Vy nexus for dependencies, e.g. if you are an external contributor
     maven {
         url = uri("https://nexus.common-services.vydev.io/repository/maven-public")
         credentials {
@@ -109,11 +110,6 @@ dependencies {
 
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
     implementation("io.micronaut.problem:micronaut-problem-json")
-
-    /**
-     * Trafficinfo Common Dependencies.
-     */
-    implementation("no.vy.trafficinfo.common:logging:0.0.3")
 
     /**
      * Third-party dependencies.

@@ -2,6 +2,7 @@
 set -e
 
 # The module to start.
+# <placeholder> Replace jar-file name with name of jar file from Gradle job building a jar
 APP_JAR="application/application.jar"
 
 echo " --- RUNNING $(basename "$0") $(date -u "+%Y-%m-%d %H:%M:%S Z") --- "
@@ -27,11 +28,13 @@ if [ "$APM_ENABLED" == "1" ]; then
     -XX:MaxRAMPercentage=80 \
     -Dlogback.configurationFile=logback-cloud.xml \
     -Djava.util.concurrent.ForkJoinPool.common.parallelism=4 \
+    -Dmicronaut.environments=ec2,cloud
     -jar "$APP_JAR"
 else
   exec su-exec "$USER:$GROUP" "$JAVA_HOME/bin/java" \
     -XX:MaxRAMPercentage=80 \
     -Dlogback.configurationFile=logback-cloud.xml \
     -Djava.util.concurrent.ForkJoinPool.common.parallelism=4 \
+    -Dmicronaut.environments=ec2,cloud
     -jar "$APP_JAR"
 fi
