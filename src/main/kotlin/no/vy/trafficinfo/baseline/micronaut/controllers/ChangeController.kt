@@ -26,6 +26,11 @@ import io.micronaut.http.annotation.Status
 import io.micronaut.runtime.event.annotation.EventListener
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.extensions.Extension
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
+import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.tags.Tags
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.coroutineScope
@@ -47,16 +52,17 @@ private val logger = KotlinLogging.logger {}
  * the Reactor framework. However, an integration layer sits on top to support coroutines.
  *
  */
-@Controller
+@Controller("/changes")
 @Secured(SecurityRule.IS_ANONYMOUS)
+@Tags(Tag(name = "Changes"))
 class ChangeController(
-    private val repo: ChangeEventRepository
+    private val repo: ChangeEventRepository,
 ) {
 
     private val events = MutableSharedFlow<ChangeEvent>(
         10,
         extraBufferCapacity = 0,
-        onBufferOverflow = BufferOverflow.SUSPEND
+        onBufferOverflow = BufferOverflow.SUSPEND,
     )
 
     /**
@@ -78,7 +84,35 @@ class ChangeController(
      * This endpoint will publish all received ChangeEvents
      * from the [events] shared flow.
      */
-    @Get("/changes")
+    @Operation(
+        summary = "Stream change events",
+        description = "This endpoint will publish all received ChangeEvents from the events shared flow",
+        extensions = arrayOf(
+            Extension(
+                name = "x-amazon-apigateway-integration",
+                properties = [
+                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                    ExtensionProperty(
+                        name = "uri",
+                        value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
+                    ),
+                    ExtensionProperty(name = "httpMethod", value = "GET"),
+                    ExtensionProperty(name = "type", value = "http_proxy"),
+                ],
+            ),
+            Extension(
+                name = "x-amazon-apigateway-request-validator",
+
+                properties = [
+                    ExtensionProperty(
+                        name = "x-amazon-apigateway-request-validator",
+                        value = "Validate body, query string parameters, and headers",
+                    ),
+                ],
+            ),
+        ),
+    )
+    @Get
     @Produces(MediaType.APPLICATION_JSON_STREAM)
     @Secured(SecurityRule.IS_ANONYMOUS)
     fun changeEventUpdates(): Flow<ChangeEvent> {
@@ -96,7 +130,35 @@ class ChangeController(
      * Should use [coroutineScope](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope)
      * for the endpoint. But due to error uses runBlocking as a workaround until solution found.
      */
-    @Get("/changes")
+    @Operation(
+        summary = "Return all change events",
+        description = "Return all change events",
+        extensions = arrayOf(
+            Extension(
+                name = "x-amazon-apigateway-integration",
+                properties = [
+                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                    ExtensionProperty(
+                        name = "uri",
+                        value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
+                    ),
+                    ExtensionProperty(name = "httpMethod", value = "GET"),
+                    ExtensionProperty(name = "type", value = "http_proxy"),
+                ],
+            ),
+            Extension(
+                name = "x-amazon-apigateway-request-validator",
+
+                properties = [
+                    ExtensionProperty(
+                        name = "x-amazon-apigateway-request-validator",
+                        value = "Validate body, query string parameters, and headers",
+                    ),
+                ],
+            ),
+        ),
+    )
+    @Get
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
     suspend fun changeEventsAll() = runBlocking {
@@ -115,7 +177,35 @@ class ChangeController(
      * Cant get coroutineScope to work with async.
      * See issue https://github.com/micronaut-projects/micronaut-core/issues/8555
      */
-    @Post("/changes")
+    @Operation(
+        summary = "Create and return a single change event",
+        description = "Create and return a single change event",
+        extensions = arrayOf(
+            Extension(
+                name = "x-amazon-apigateway-integration",
+                properties = [
+                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                    ExtensionProperty(
+                        name = "uri",
+                        value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
+                    ),
+                    ExtensionProperty(name = "httpMethod", value = "POST"),
+                    ExtensionProperty(name = "type", value = "http_proxy"),
+                ],
+            ),
+            Extension(
+                name = "x-amazon-apigateway-request-validator",
+
+                properties = [
+                    ExtensionProperty(
+                        name = "x-amazon-apigateway-request-validator",
+                        value = "Validate body, query string parameters, and headers",
+                    ),
+                ],
+            ),
+        ),
+    )
+    @Post
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Status(HttpStatus.ACCEPTED)

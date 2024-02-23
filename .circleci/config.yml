@@ -13,6 +13,7 @@ orbs:
   deployment: vydev/deployment@0.3.7
   gradle: circleci/gradle@3.0.0
   terraform: circleci/terraform@3.2.1
+  documentation: vydev/service-documentation@0.4.2
 
 jobs:
   build-and-push-image:
@@ -56,6 +57,18 @@ workflows:
           context: ruteplan
           requires:
             - "Build and test"
+
+      - documentation/push-api-config-and-spec:
+          name: "Publish openapi spec"
+          context:
+            - ruteplan
+          service-name: baseline-micronaut
+          openapi-path: terraform/openapi/baseline.yml
+          requires:
+            - build-and-push-image
+          filters:
+            branches:
+              only: master
 
 # TODO waiting for infrastructure team to implement repo override for trigger-deployment in orb.
 #      - deployment/trigger-deployment:

@@ -28,7 +28,7 @@ private val logger = KotlinLogging.logger {}
 @MicronautTest(startApplication = false)
 class SnsClientSpec(
     @Inject var snsClient: SnsClient,
-    @Inject var messageConsumer: TextMessageConsumer
+    @Inject var messageConsumer: TextMessageConsumer,
 ) : BehaviorSpec({
 
     /**
