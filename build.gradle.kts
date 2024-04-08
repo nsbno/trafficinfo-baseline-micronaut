@@ -145,7 +145,7 @@ dependencies {
      * Test dependency configurations.
      */
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.1")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.2")
     testImplementation("io.mockk:mockk")
     testImplementation("io.micronaut:micronaut-inject-java")
     testImplementation("org.assertj:assertj-core")
