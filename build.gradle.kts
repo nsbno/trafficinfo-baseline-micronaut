@@ -124,7 +124,7 @@ dependencies {
     /**
      * kotlin coroutines
      */
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
 
     // https://mvnrepository.com/artifact/org.yaml/snakeyaml
@@ -134,7 +134,7 @@ dependencies {
      * Micronaut supports context propagation from Reactor’s context to coroutine context.
      * To enable this propagation you need to include following dependency
      */
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
     /**
      * Tracing
      */
