@@ -128,7 +128,7 @@ dependencies {
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
 
     // https://mvnrepository.com/artifact/org.yaml/snakeyaml
-    implementation("org.yaml:snakeyaml:2.0")
+    implementation("org.yaml:snakeyaml:2.7")
 
     /**
      * Micronaut supports context propagation from Reactor’s context to coroutine context.
