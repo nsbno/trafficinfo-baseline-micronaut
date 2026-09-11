@@ -139,7 +139,7 @@ dependencies {
      * Tracing
      */
     implementation("co.elastic.apm:apm-agent-api:1.38.0")
-    implementation("co.elastic.apm:apm-opentracing:1.38.0")
+    implementation("co.elastic.apm:apm-opentracing:1.57.0")
 
     /**
      * Test dependency configurations.
