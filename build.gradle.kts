@@ -1,4 +1,4 @@
-/**
+/*
  * Gradle build file.
  * Building the microservice with the Kotlin plugin for gradle.
  *
@@ -6,29 +6,22 @@
  */
 plugins {
     kotlin("jvm")
-    kotlin("kapt")
     kotlin("plugin.allopen")
+    id("com.google.devtools.ksp")
 
-    id("io.micronaut.application") version "4.0.1"
-    id("io.micronaut.test-resources") version "4.0.1"
+    id("io.micronaut.application") version "5.0.2"
+    id("io.micronaut.test-resources") version "5.0.2"
 
     id("jacoco")
-    id("org.sonarqube") version "4.3.0.3225"
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    id("org.sonarqube") version "7.6.0.18749"
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
 group = "no.vy.trafficinfo.baseline.micronaut"
 
-val version: String by project
+val micronautVersion = project.property("micronautVersion").toString()
 
-val micronautVersion: String by project
-val targetJvmVersion: String by project
-
-fun getProperty(name: String) = if (project.properties[name] != null) {
-    project.properties[name].toString()
-} else {
-    System.getenv(name)
-}
+fun getProperty(name: String): String? = project.findProperty(name)?.toString() ?: System.getenv(name)
 
 repositories {
     maven {
@@ -51,41 +44,39 @@ micronaut {
     }
 }
 
+ktlint {
+    // the plugin default bundles an old Kotlin compiler
+    version.set("1.8.0")
+}
+
 kotlin {
-    // Build with Java 20 to avoid this issue:
-    // https://youtrack.jetbrains.com/issue/KT-60507/Kapt-IllegalAccessError-superclass-access-check-failed-using-java-21-toolchain
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(20))
-    }
-    sourceSets.all {
-        languageSettings {
-            languageVersion = "2.0"
-        }
-    }
+    jvmToolchain(25)
 }
 
 dependencies {
-    /**
+    /*
      * Kotlin dependencies.
      */
     implementation(kotlin("reflect"))
 
-    /**
+    /*
      * Micronaut framework dependencies.
      *
-     * micronaut-inject-java and micronaut-validation are omitted
-     * due to the micronaut application plugin adding them by default.
+     * micronaut-inject-kotlin is omitted
+     * due to the micronaut application plugin adding it by default.
      */
-    annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
-    kapt("io.micronaut:micronaut-http-validation")
-    kapt("io.micronaut.openapi:micronaut-openapi")
-    kapt("io.micronaut.security:micronaut-security")
-    kapt("io.micronaut.micrometer:micronaut-micrometer-annotation")
+    ksp("io.micronaut:micronaut-http-validation")
+    ksp("io.micronaut.openapi:micronaut-openapi")
+    ksp("io.micronaut.security:micronaut-security-processor")
+    ksp("io.micronaut.micrometer:micronaut-micrometer-annotation")
+    ksp("io.micronaut.validation:micronaut-validation-processor")
 
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
 
     implementation("io.micronaut:micronaut-inject")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("io.micronaut.validation:micronaut-validation")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-management")
@@ -110,44 +101,41 @@ dependencies {
     implementation("io.micronaut.cache:micronaut-cache-caffeine")
     implementation("io.micronaut.problem:micronaut-problem-json")
 
-    /**
+    /*
      * Trafficinfo Common Dependencies.
      */
-    implementation("no.vy.trafficinfo.common:logging:0.0.3")
+    implementation("no.vy.trafficinfo.common:logging:0.0.6")
 
-    /**
+    /*
      * Third-party dependencies.
      */
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("io.swagger.core.v3:swagger-annotations")
 
-    /**
+    /*
      * kotlin coroutines
      */
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 
-    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
-    implementation("org.yaml:snakeyaml:2.0")
+    implementation("org.yaml:snakeyaml")
 
-    /**
+    /*
      * Micronaut supports context propagation from Reactor’s context to coroutine context.
      * To enable this propagation you need to include following dependency
      */
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.1")
-    /**
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
+    /*
      * Tracing
      */
-    implementation("co.elastic.apm:apm-agent-api:1.38.0")
-    implementation("co.elastic.apm:apm-opentracing:1.38.0")
+    implementation("co.elastic.apm:apm-agent-api:1.57.1")
+    implementation("co.elastic.apm:apm-opentracing:1.57.1")
 
-    /**
+    /*
      * Test dependency configurations.
      */
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.1")
     testImplementation("io.mockk:mockk")
-    testImplementation("io.micronaut:micronaut-inject-java")
     testImplementation("org.assertj:assertj-core")
     testImplementation("io.micronaut.test:micronaut-test-kotest5")
     testImplementation("io.kotest:kotest-runner-junit5-jvm")
@@ -158,7 +146,7 @@ application {
 }
 
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = "0.8.16"
 }
 
 tasks {
@@ -177,7 +165,7 @@ tasks {
 
     // use Google Distroless mostly-static image when generating the native-image build Dockerfile.
     dockerfileNative {
-        baseImage("gcr.io/distroless/cc-debian11")
+        baseImage("gcr.io/distroless/cc-debian12")
     }
 
     jacocoTestReport {
@@ -202,12 +190,6 @@ tasks {
                     "Implementation-Version" to project.version,
                 ),
             )
-        }
-    }
-
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_20)
         }
     }
 }

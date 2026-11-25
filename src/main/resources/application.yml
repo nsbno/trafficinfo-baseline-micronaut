@@ -1,6 +1,10 @@
 micronaut:
   application:
     name: baseline-micronaut
+
+  # metrics are disabled unless enabled from AWS Parameter Store (previously set in bootstrap.yml)
+  metrics:
+    enabled: false
   router:
     static-resources:
       swagger:
@@ -40,10 +44,10 @@ micronaut:
         # JWT validation, parses incoming Bearer token and validates
         # signatures and attributes against jwks.json.
         #
-        # The jwksUrl and centralJwksUrl properties below is stored in cloud SSM as a common parameter
-        # under /trafficinfo/config/application for all applications to use
-        # and contain the url to the public endpoint where public keys are published
-        # to verify signatures in JWT token.
+        # The ${...} placeholders below may be overridden from AWS Parameter Store in the cloud
+        # environment. All Parameter Store imports have the same priority, so a key that exists
+        # in more than one imported path takes its value from the path imported LAST
+        # (see micronaut.config.import in application-cloud.yml and docs/configuration.md).
         signatures:
           jwks:
             awscognito:
@@ -81,12 +85,13 @@ endpoints:
       enabled: false
 
 jackson:
-  serialization:
+  serialization-features:
     indentOutput: true
-    writeDatesAsTimestamps: false
-  deserialization:
+  deserialization-features:
     useBigIntegerForInts: true
     failOnUnknownProperties: false
+  date-time-features:
+    writeDatesAsTimestamps: false
     adjustDatesToContextTimeZone: false
   json-view:
     enabled: true

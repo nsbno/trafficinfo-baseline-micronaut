@@ -20,9 +20,8 @@ private val logger = KotlinLogging.logger {}
 @Singleton
 @Named("create_event")
 class CreateEventServiceImpl(
-    private val repo: ChangeEventRepository
+    private val repo: ChangeEventRepository,
 ) : CreateEventService {
-
     @Traced
     override suspend fun createEvent() = repo.create()
 }

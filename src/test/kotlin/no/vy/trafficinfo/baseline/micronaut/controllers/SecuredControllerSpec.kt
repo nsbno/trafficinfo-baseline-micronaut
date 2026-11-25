@@ -42,7 +42,9 @@ import jakarta.inject.Inject
 interface SecuredClient {
     @Get(value = "/secured")
     @Consumes(MediaType.APPLICATION_JSON)
-    fun get(@Header(HttpHeaders.AUTHORIZATION) authorization: String): HttpResponse<Void>
+    fun get(
+        @Header(HttpHeaders.AUTHORIZATION) authorization: String,
+    ): HttpResponse<Void>
 }
 
 /**
@@ -58,54 +60,62 @@ class SecuredControllerSpec(
     @Inject val tokenGenerator: JwtTokenGenerator,
 ) : BehaviorSpec({
 
-    fun generateJwt(sub: String, aud: String, scopes: Array<String>): String {
-        val claims = mapOf(
-            "sub" to sub,
-            "aud" to aud,
-            "scope" to scopes.joinToString(" "),
-        )
-        return tokenGenerator.generateToken(claims).get()
-    }
+        fun generateJwt(
+            sub: String,
+            aud: String,
+            scopes: Array<String>,
+        ): String {
+            val claims =
+                mapOf(
+                    "sub" to sub,
+                    "aud" to aud,
+                    "scope" to scopes.joinToString(" "),
+                )
+            return tokenGenerator.generateToken(claims).get()
+        }
 
-    given("given a JwtToken with correct scopes") {
-        val jwt = generateJwt(
-            "username",
-            "requiredAudience",
-            arrayOf("https://services.trafficinfo.vydev.io/baseline-micronaut/read"),
-        )
+        given("given a JwtToken with correct scopes") {
+            val jwt =
+                generateJwt(
+                    "username",
+                    "requiredAudience",
+                    arrayOf("https://services.trafficinfo.vydev.io/baseline-micronaut/read"),
+                )
 
-        `when`("should be authorized to read-only endpoint if correct read-scope in token") {
-            val result = client.get("Bearer $jwt")
+            `when`("should be authorized to read-only endpoint if correct read-scope in token") {
+                val result = client.get("Bearer $jwt")
 
-            `then`("we should get successful http status in return") {
-                result.status.shouldBe(HttpStatus.OK)
+                `then`("we should get successful http status in return") {
+                    result.status.shouldBe(HttpStatus.OK)
+                }
+            }
+
+            `when`("calling a secured endpoint") {
+                val result = client.get("Bearer $jwt")
+
+                `then`("we should get successful http status in return") {
+                    result.status.shouldBe(HttpStatus.OK)
+                }
             }
         }
 
-        `when`("calling a secured endpoint") {
-            val result = client.get("Bearer $jwt")
+        given("given a JwtToken with wrong scopes") {
+            val jwt =
+                generateJwt(
+                    "username",
+                    "requiredAudience",
+                    arrayOf("https://services.somethingelse.vydev.io/not/correct"),
+                )
 
-            `then`("we should get successful http status in return") {
-                result.status.shouldBe(HttpStatus.OK)
+            `when`("calling a secured endpoint") {
+                val exception =
+                    shouldThrow<HttpClientResponseException> {
+                        client.get("Bearer $jwt")
+                    }
+
+                `then`("we should get FORBIDDEN http status in return") {
+                    exception.status shouldBe HttpStatus.FORBIDDEN
+                }
             }
         }
-    }
-
-    given("given a JwtToken with wrong scopes") {
-        val jwt = generateJwt(
-            "username",
-            "requiredAudience",
-            arrayOf("https://services.somethingelse.vydev.io/not/correct"),
-        )
-
-        `when`("calling a secured endpoint") {
-            val exception = shouldThrow<HttpClientResponseException> {
-                client.get("Bearer $jwt")
-            }
-
-            `then`("we should get FORBIDDEN http status in return") {
-                exception.status shouldBe HttpStatus.FORBIDDEN
-            }
-        }
-    }
-})
+    })

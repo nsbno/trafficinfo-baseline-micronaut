@@ -64,7 +64,5 @@ class CorsController {
         ],
     )
     @Options
-    fun options(): HttpResponse<Map<String, String>> {
-        return HttpResponse.ok(emptyMap())
-    }
+    fun options(): HttpResponse<Map<String, String>> = HttpResponse.ok(emptyMap())
 }

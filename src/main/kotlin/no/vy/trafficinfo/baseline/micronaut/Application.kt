@@ -3,7 +3,6 @@ package no.vy.trafficinfo.baseline.micronaut
 import io.micronaut.runtime.Micronaut
 import io.swagger.v3.oas.annotations.ExternalDocumentation
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.extensions.Extension
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
@@ -16,11 +15,8 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme
 import io.swagger.v3.oas.annotations.servers.Server
 
 /**
- * Main application object
- * Started by Docker container.
- */
-/**
  * ## Application
+ * Main application object, started by Docker container.
  * <p>
  * This microservice runs in Amazon ECS Fargate in the cloud.
  * </p>
@@ -40,45 +36,47 @@ import io.swagger.v3.oas.annotations.servers.Server
  * @see "https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html"
  */
 @OpenAPIDefinition(
-    info = Info(
-        title = "Micronaut Baseline",
-        version = "1.0",
-        description = "Micronaut Baseline project used as template for new microservices.",
-        contact = Contact(url = "https://vy.no", name = "Team Ruteplan", email = "team-ruteplan@vy.no"),
-    ),
+    info =
+        Info(
+            title = "Micronaut Baseline",
+            version = "1.0",
+            description = "Micronaut Baseline project used as template for new microservices.",
+            contact = Contact(url = "https://vy.no", name = "Team Ruteplan", email = "team-ruteplan@vy.no"),
+        ),
     servers = [
         Server(url = "https://services.trafficinfo.vydev.io/baseline-micronaut", description = "Production"),
         Server(url = "https://services.stage.trafficinfo.vydev.io/baseline-micronaut", description = "Stage"),
         Server(url = "https://services.test.trafficinfo.vydev.io/baseline-micronaut", description = "Test"),
         Server(url = "https://services.dev.trafficinfo.vydev.io/baseline-micronaut", description = "Dev"),
     ],
-    externalDocs = ExternalDocumentation(
-        description = "Internal Application Documentation",
-        url = "https://vygruppen.atlassian.net/wiki/spaces/TRAFFICINFO/pages/3793586330/Developer",
-    ),
+    externalDocs =
+        ExternalDocumentation(
+            description = "Internal Application Documentation",
+            url = "https://vygruppen.atlassian.net/wiki/spaces/TRAFFICINFO/pages/3793586330/Developer",
+        ),
 )
 @SecurityScheme(
     paramName = "Authorization",
     description = "Use Central Cognito to Authorize requests to microservice.",
     name = "cognito_auth",
     type = SecuritySchemeType.OAUTH2,
-    flows = OAuthFlows(
-        clientCredentials = OAuthFlow(
-            tokenUrl =
-            "https://auth.cognito.vydev.io/oauth2/token" +
-                "\nhttps://auth.stage.cognito.vydev.io/oauth2/token" +
-                "\nhttps://auth.test.cognito.vydev.io/oauth2/token" +
-                "\nhttps://auth.dev.cognito.vydev.io/oauth2/token",
-            scopes = [
-                OAuthScope(
-                    name = "https://services.trafficinfo.vydev.io/baseline-micronaut/read",
-                    description = "read scope",
+    flows =
+        OAuthFlows(
+            clientCredentials =
+                OAuthFlow(
+                    tokenUrl =
+                        "https://auth.cognito.vydev.io/oauth2/token" +
+                            "\nhttps://auth.stage.cognito.vydev.io/oauth2/token" +
+                            "\nhttps://auth.test.cognito.vydev.io/oauth2/token" +
+                            "\nhttps://auth.dev.cognito.vydev.io/oauth2/token",
+                    scopes = [
+                        OAuthScope(
+                            name = "https://services.trafficinfo.vydev.io/baseline-micronaut/read",
+                            description = "read scope",
+                        ),
+                    ],
                 ),
-            ],
         ),
-    ),
-    scheme = "bearer",
-    `in` = SecuritySchemeIn.HEADER,
     extensions = [
         Extension(
             name = "",
@@ -96,10 +94,10 @@ import io.swagger.v3.oas.annotations.servers.Server
     ],
 )
 object Application {
-
     @JvmStatic
     fun main(args: Array<String>) {
-        Micronaut.build()
+        Micronaut
+            .build()
             .packages("no.vy.trafficinfo.baseline.micronaut")
             .mainClass(Application.javaClass)
             .eagerInitSingletons(true)

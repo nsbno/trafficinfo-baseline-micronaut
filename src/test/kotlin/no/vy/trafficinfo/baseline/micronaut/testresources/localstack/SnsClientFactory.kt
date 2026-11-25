@@ -13,7 +13,6 @@ import java.net.URI
 
 @Factory
 class SnsClientFactory {
-
     @Inject
     lateinit var snsConfig: SNSConfig
 
@@ -23,13 +22,13 @@ class SnsClientFactory {
      */
     @Singleton
     @Primary
-    fun buildSnsClient(): SnsClient {
-        return SnsClient.builder()
+    fun buildSnsClient(): SnsClient =
+        SnsClient
+            .builder()
             .region(Region.of(snsConfig.region))
             .credentialsProvider(AnonymousCredentialsProvider.create())
             .endpointOverride(URI.create("${snsConfig.sns.endpointOverride}:${snsConfig.sns.portOverride}"))
             .build()
-    }
 
     /**
      * Config holder for the AWS configuration from

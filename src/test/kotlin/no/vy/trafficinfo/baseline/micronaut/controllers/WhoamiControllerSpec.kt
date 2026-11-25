@@ -12,16 +12,16 @@ import io.kotest.matchers.shouldBe
  */
 @MicronautTest
 class WhoamiControllerSpec(
-    @Client("whoami") val client: HttpClient
+    @Client("whoami") val client: HttpClient,
 ) : BehaviorSpec({
 
-    xgiven("the health check endpoint") {
-        `when`("calling the health check endpoint") {
-            val result = client.toBlocking().exchange<String>("/health")
+        xgiven("the health check endpoint") {
+            `when`("calling the health check endpoint") {
+                val result = client.toBlocking().exchange<String>("/health")
 
-            `then`("we should get successful http status in return") {
-                result.status.shouldBe(HttpStatus.OK)
+                `then`("we should get successful http status in return") {
+                    result.status.shouldBe(HttpStatus.OK)
+                }
             }
         }
-    }
-})
+    })

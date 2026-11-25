@@ -1,9 +1,10 @@
 package no.vy.trafficinfo.baseline.micronaut.system
 
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
-import io.kotest.assertions.until.fixed
-import io.kotest.assertions.until.until
+import io.kotest.assertions.nondeterministic.eventually
+import io.kotest.assertions.nondeterministic.eventuallyConfig
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.ObjectMother.Companion.TEST_TOPIC_ARN
 import software.amazon.awssdk.services.sns.SnsClient
@@ -25,45 +26,50 @@ private val logger = KotlinLogging.logger {}
  * the Micronaut JMS Messaging library that supports SQS as well as JMS.
  *
  */
-@MicronautTest(startApplication = false)
+@MicronautTest(startApplication = false, environments = [TextMessageConsumer.ENVIRONMENT])
 class SnsClientSpec(
     @Inject var snsClient: SnsClient,
     @Inject var messageConsumer: TextMessageConsumer,
 ) : BehaviorSpec({
 
-    /**
-     * Create queue and topic before running tests.
-     */
-    beforeSpec {
-        logger.info("Before spec.")
-    }
+        /*
+         * Create queue and topic before running tests.
+         */
+        beforeSpec {
+            logger.info("Before spec.")
+        }
 
-    /**
-     *
-     */
-    afterSpec {
-        logger.info("After spec.")
-    }
+        /*
+         *
+         */
+        afterSpec {
+            logger.info("After spec.")
+        }
 
-    /**
-     * Perform some testing here.
-     */
-    given("some test data") {
-        val testMessage = "a test message with text"
+        /*
+         * Perform some testing here.
+         */
+        given("some test data") {
+            val testMessage = "a test message with text"
 
-        `when`("calling something") {
-            snsClient.publish {
-                with(it) {
-                    topicArn(TEST_TOPIC_ARN)
-                    message(testMessage)
+            `when`("calling something") {
+                snsClient.publish {
+                    with(it) {
+                        topicArn(TEST_TOPIC_ARN)
+                        message(testMessage)
+                    }
                 }
-            }
 
-            then("we should get a result") {
-                until(5.seconds, 250.milliseconds.fixed()) {
-                    messageConsumer.processed.size == 1
+                then("we should get a result") {
+                    eventually(
+                        eventuallyConfig {
+                            duration = 5.seconds
+                            interval = 250.milliseconds
+                        },
+                    ) {
+                        messageConsumer.processed.size shouldBe 1
+                    }
                 }
             }
         }
-    }
-})
+    })

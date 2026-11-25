@@ -20,7 +20,6 @@ private val logger = KotlinLogging.logger {}
  */
 @Singleton
 class ApplicationInitializer {
-
     /**
      * Listen for the application has started even.
      */

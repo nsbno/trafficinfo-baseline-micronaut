@@ -56,7 +56,6 @@ interface WhoamiClient {
 class WhoamiControlle(
     @Client whoamiClient: WhoamiClient,
 ) {
-
     @Operation(
         summary = "Whoami request",
         description = "Whoami request",
@@ -69,59 +68,62 @@ class WhoamiControlle(
                         examples = [
                             ExampleObject(
                                 name = "Return value",
-                                value = "Hostname: ip-10-100-68-26.eu-west-1.compute.internal\n" +
-                                    "IP: 127.0.0.1\n" +
-                                    "IP: 169.254.172.42\n" +
-                                    "IP: 10.100.68.26\n" +
-                                    "RemoteAddr: 10.100.35.87:22454\n" +
-                                    "GET /whoami/ HTTP/1.1\n" +
-                                    "Host: svclb.dev.trafficinfo.vydev.io\n" +
-                                    "User-Agent: Java-http-client/21.0.1\n" +
-                                    "X-Amzn-Trace-Id: Root=1-65cc7144-18916edc6beeac7941b66faa\n" +
-                                    "X-Forwarded-For: 54.73.204.67\n" +
-                                    "X-Forwarded-Port: 443\n" +
-                                    "X-Forwarded-Proto: https",
+                                value =
+                                    "Hostname: ip-10-100-68-26.eu-west-1.compute.internal\n" +
+                                        "IP: 127.0.0.1\n" +
+                                        "IP: 169.254.172.42\n" +
+                                        "IP: 10.100.68.26\n" +
+                                        "RemoteAddr: 10.100.35.87:22454\n" +
+                                        "GET /whoami/ HTTP/1.1\n" +
+                                        "Host: svclb.dev.trafficinfo.vydev.io\n" +
+                                        "User-Agent: Java-http-client/21.0.1\n" +
+                                        "X-Amzn-Trace-Id: Root=1-65cc7144-18916edc6beeac7941b66faa\n" +
+                                        "X-Forwarded-For: 54.73.204.67\n" +
+                                        "X-Forwarded-Port: 443\n" +
+                                        "X-Forwarded-Proto: https",
                             ),
                         ],
                     ),
                 ],
             ),
         ],
-        extensions = arrayOf(
-            Extension(
-                name = "x-amazon-apigateway-integration",
-                properties = [
-                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
-                    ExtensionProperty(
-                        name = "uri",
-                        value = "https://slb.\${hosted_zone_name}/\${base_path}/whoami",
-                    ),
-                    ExtensionProperty(name = "httpMethod", value = "GET"),
-                    ExtensionProperty(name = "type", value = "http_proxy"),
-                ],
+        extensions =
+            arrayOf(
+                Extension(
+                    name = "x-amazon-apigateway-integration",
+                    properties = [
+                        ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                        ExtensionProperty(
+                            name = "uri",
+                            value = "https://slb.\${hosted_zone_name}/\${base_path}/whoami",
+                        ),
+                        ExtensionProperty(name = "httpMethod", value = "GET"),
+                        ExtensionProperty(name = "type", value = "http_proxy"),
+                    ],
+                ),
+                Extension(
+                    name = "x-amazon-apigateway-request-validator",
+                    properties = [
+                        ExtensionProperty(
+                            name = "x-amazon-apigateway-request-validator",
+                            value = "Validate body, query string parameters, and headers",
+                        ),
+                    ],
+                ),
             ),
-            Extension(
-                name = "x-amazon-apigateway-request-validator",
-
-                properties = [
-                    ExtensionProperty(
-                        name = "x-amazon-apigateway-request-validator",
-                        value = "Validate body, query string parameters, and headers",
-                    ),
-                ],
-            ),
-        ),
     )
     @Get("/whoami")
     @Produces(MediaType.APPLICATION_JSON)
     fun get(): HttpResponse<String> {
         logger.info { "Calling whoami debug service." }
-        ElasticApm.currentSpan().setDestinationService("whoami")
+        ElasticApm.currentSpan().setServiceTarget("http", "whoami")
 
-        val request = HttpRequest.newBuilder()
-            .uri(URI("https://svclb.dev.trafficinfo.vydev.io/whoami/"))
-            .GET()
-            .build()
+        val request =
+            HttpRequest
+                .newBuilder()
+                .uri(URI("https://svclb.dev.trafficinfo.vydev.io/whoami/"))
+                .GET()
+                .build()
 
         val client = HttpClient.newHttpClient()
         val response = client.send(request, BodyHandlers.ofString())

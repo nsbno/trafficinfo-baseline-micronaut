@@ -18,9 +18,11 @@ class ElasticApmTracerFactory {
                 val spanBuilder: Tracer.SpanBuilder = super.buildSpan(operationName)
                 // Elastic APM requires that the `http.url` tag is present on spans (otherwise it will reject the
                 // transactions), so we ensure here to either set it to the current request's URI or to a default value.
-                val httpUrl = ServerRequestContext.currentRequest<Any?>()
-                    .map { request: HttpRequest<Any?> -> request.uri.toString() }
-                    .orElse("http://unknown.host/couldNotFindRequestContext")
+                val httpUrl =
+                    ServerRequestContext
+                        .currentRequest<Any>()
+                        .map { request: HttpRequest<Any> -> request.uri.toString() }
+                        .orElse("http://unknown.host/couldNotFindRequestContext")
                 return spanBuilder
                     .withTag("http.url", httpUrl)
             }

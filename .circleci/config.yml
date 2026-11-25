@@ -17,7 +17,10 @@ orbs:
 
 jobs:
   build-and-push-image:
-    executor: aws-ecr/default
+    executor:
+      name: aws-ecr/default
+      # the orb's default image (ubuntu-2004:202107-02) has been removed by CircleCI
+      image: ubuntu-2404:current
     steps:
       - checkout
       - aws-ecr/build-and-push-image:
@@ -30,7 +33,8 @@ executors:
   ubuntu:
     working_directory: ~/tmp_checkout
     machine:
-      image: ubuntu-2204:2023.04.2
+      # "current" avoids failing pipelines when CircleCI removes dated image tags
+      image: ubuntu-2404:current
 
 workflows:
   do:
@@ -43,6 +47,16 @@ workflows:
             - nexus
           deps_checksum_file: build.gradle.kts
           test_command: "clean test build --no-daemon"
+          pre-steps:
+            - run:
+                name: Install JDK 25
+                command: |
+                  mkdir -p ~/jdk25
+                  curl -sSL "https://api.adoptium.net/v3/binary/latest/25/ga/linux/x64/jdk/hotspot/normal/eclipse" \
+                    | tar xz -C ~/jdk25 --strip-components=1
+                  echo 'export JAVA_HOME=$HOME/jdk25' >> "$BASH_ENV"
+                  echo 'export PATH=$JAVA_HOME/bin:$PATH' >> "$BASH_ENV"
+            - run: java -version
           post-steps:
             - run:
                 command: ./gradlew -q javaToolchains

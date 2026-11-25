@@ -13,3 +13,28 @@ micronaut:
       baseline-micronaut:
         url: ${baseUrl}
         path: /baseline-micronaut
+
+  # Distributed configuration from AWS Parameter Store (replaces bootstrap-cloud.yml / config-client).
+  # Read once at startup; there is no refresh.
+  # All imports share the same priority; on duplicate keys the LAST entry wins.
+  # Keep the app-specific path last so it overrides the common one (e.g. jwksUrl is set in both).
+  config:
+    import:
+      - provider: parameterstore
+        path: /trafficinfo/config/application
+        # to use secure parameters, make sure the service has access to the key used to encrypt it
+        use-secure-parameters: true
+      - provider: parameterstore
+        path: /trafficinfo/config/baseline-micronaut
+        use-secure-parameters: true
+
+  metrics:
+    http:
+      # "Disables" client metrics by setting path to an unused path
+      client:
+        path: /do-not-log-client-requests
+
+    export:
+      cloudwatch:
+        namespace: trafficinfo-baseline-micronaut
+        batchSize: 10

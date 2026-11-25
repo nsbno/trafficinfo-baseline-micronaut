@@ -41,7 +41,6 @@ private val logger = KotlinLogging.logger {}
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Tags(Tag(name = "Secured"))
 class SecuredController {
-
     /**
      * ## Create and return a single change event.
      */
@@ -58,29 +57,30 @@ class SecuredController {
                 description = "Unauthorized",
             ),
         ],
-        extensions = arrayOf(
-            Extension(
-                name = "x-amazon-apigateway-integration",
-                properties = [
-                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
-                    ExtensionProperty(
-                        name = "uri",
-                        value = "https://slb.\${hosted_zone_name}/\${base_path}/secured",
-                    ),
-                    ExtensionProperty(name = "httpMethod", value = "GET"),
-                    ExtensionProperty(name = "type", value = "http_proxy"),
-                ],
+        extensions =
+            arrayOf(
+                Extension(
+                    name = "x-amazon-apigateway-integration",
+                    properties = [
+                        ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                        ExtensionProperty(
+                            name = "uri",
+                            value = "https://slb.\${hosted_zone_name}/\${base_path}/secured",
+                        ),
+                        ExtensionProperty(name = "httpMethod", value = "GET"),
+                        ExtensionProperty(name = "type", value = "http_proxy"),
+                    ],
+                ),
+                Extension(
+                    name = "x-amazon-apigateway-request-validator",
+                    properties = [
+                        ExtensionProperty(
+                            name = "x-amazon-apigateway-request-validator",
+                            value = "Validate body, query string parameters, and headers",
+                        ),
+                    ],
+                ),
             ),
-            Extension(
-                name = "x-amazon-apigateway-request-validator",
-                properties = [
-                    ExtensionProperty(
-                        name = "x-amazon-apigateway-request-validator",
-                        value = "Validate body, query string parameters, and headers",
-                    ),
-                ],
-            ),
-        ),
     )
     @Get
     @Produces(MediaType.APPLICATION_JSON)

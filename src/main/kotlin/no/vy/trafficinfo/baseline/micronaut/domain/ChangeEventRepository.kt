@@ -21,5 +21,6 @@ interface ChangeEventRepository {
      * ## Return number of events stored in buffer.
      */
     suspend fun count(): Int
+
     suspend fun clear()
 }
