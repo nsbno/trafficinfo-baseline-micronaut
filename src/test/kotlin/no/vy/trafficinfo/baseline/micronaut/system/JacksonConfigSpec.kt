@@ -50,7 +50,13 @@ class JacksonConfigSpec(
                 }
 
                 then("the output is indented (indentOutput: true)") {
-                    json shouldContain "\n"
+                    json shouldBe
+                        """
+                        {
+                          "name" : "a",
+                          "time" : "2026-01-01T12:00:00+01:00"
+                        }
+                        """.trimIndent()
                 }
             }
         }
