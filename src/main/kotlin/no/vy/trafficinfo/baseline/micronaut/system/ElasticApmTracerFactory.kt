@@ -20,8 +20,8 @@ class ElasticApmTracerFactory {
                 // transactions), so we ensure here to either set it to the current request's URI or to a default value.
                 val httpUrl =
                     ServerRequestContext
-                        .currentRequest<Any?>()
-                        .map { request: HttpRequest<Any?> -> request.uri.toString() }
+                        .currentRequest<Any>()
+                        .map { request: HttpRequest<Any> -> request.uri.toString() }
                         .orElse("http://unknown.host/couldNotFindRequestContext")
                 return spanBuilder
                     .withTag("http.url", httpUrl)

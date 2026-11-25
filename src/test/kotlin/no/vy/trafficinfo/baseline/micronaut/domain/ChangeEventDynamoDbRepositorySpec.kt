@@ -22,7 +22,7 @@ class ChangeEventDynamoDbRepositorySpec(
     @Inject @Named("dynamodb") val repository: ChangeEventRepository,
 ) : BehaviorSpec({
 
-        /**
+        /*
          * Create database table before running tests.
          */
         beforeSpec {
@@ -61,7 +61,7 @@ class ChangeEventDynamoDbRepositorySpec(
             }
         }
 
-        /**
+        /*
          * Cleanup database table after running tests.
          */
         afterSpec {

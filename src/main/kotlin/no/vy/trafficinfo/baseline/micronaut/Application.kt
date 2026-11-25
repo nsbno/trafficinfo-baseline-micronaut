@@ -3,7 +3,6 @@ package no.vy.trafficinfo.baseline.micronaut
 import io.micronaut.runtime.Micronaut
 import io.swagger.v3.oas.annotations.ExternalDocumentation
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.extensions.Extension
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
@@ -16,12 +15,8 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme
 import io.swagger.v3.oas.annotations.servers.Server
 
 /**
- * Main application object
- * Started by Docker container.
- */
-
-/**
  * ## Application
+ * Main application object, started by Docker container.
  * <p>
  * This microservice runs in Amazon ECS Fargate in the cloud.
  * </p>
@@ -82,8 +77,6 @@ import io.swagger.v3.oas.annotations.servers.Server
                     ],
                 ),
         ),
-    scheme = "bearer",
-    `in` = SecuritySchemeIn.HEADER,
     extensions = [
         Extension(
             name = "",

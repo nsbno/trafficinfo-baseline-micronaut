@@ -3,9 +3,8 @@ package no.vy.trafficinfo.baseline.micronaut.system.events
 import io.micronaut.context.annotation.Context
 import io.micronaut.context.env.Environment
 import io.micronaut.context.env.PropertySource
+import io.micronaut.context.exceptions.ConfigurationException
 import io.micronaut.core.version.VersionUtils
-import io.micronaut.runtime.context.scope.refresh.RefreshEvent
-import io.micronaut.runtime.event.annotation.EventListener
 import mu.KotlinLogging
 import jakarta.annotation.PostConstruct
 import java.util.regex.Pattern
@@ -36,12 +35,6 @@ class ApplicationConfigLogger(
             )
         }
 
-    @EventListener
-    fun onRefreshEvent(event: RefreshEvent?) {
-        // Listen to the refresh event and print the updated configuration.
-        logConfig()
-    }
-
     @PostConstruct
     fun logConfig() {
         logger.info("Application Configuration - BOF")
@@ -49,6 +42,7 @@ class ApplicationConfigLogger(
         printEnvironments()
         printConfigSources()
         printConfigProperties()
+        printEffectiveProperties()
         logger.info("Application Configuration - EOF")
     }
 
@@ -73,6 +67,30 @@ class ApplicationConfigLogger(
             .forEach { ps ->
                 logger.info("${ps.order} ${ps.name}")
             }
+
+    /**
+     * Print the effective (resolved) value of every configured key,
+     * so that placeholders like ${jwksUrl} can be verified after startup.
+     * The OS environment and system properties are not dumped.
+     */
+    private fun printEffectiveProperties() {
+        val keys =
+            environment.propertySources
+                .filter { ps -> ps.name !in setOf("env", "system") }
+                .flatMap { ps -> ps.toList() }
+                .toSortedSet()
+        val effective =
+            keys.joinToString("\n") { key ->
+                val value =
+                    try {
+                        environment.getProperty(key, Any::class.java).map { maskProperty(key, it) }.orElse("<unset>")
+                    } catch (e: ConfigurationException) {
+                        "<unresolvable: ${e.message}>"
+                    }
+                "  $key = $value"
+            }
+        logger.info("Effective configuration\n$effective")
+    }
 
     /**
      * Convert map to String recursively on all values.
@@ -155,7 +173,7 @@ class ApplicationConfigLogger(
      */
     private fun getMaskedProperties(propertySource: PropertySource): Map<String, Any> {
         val properties = LinkedHashMap<String, Any>()
-        propertySource.forEach { k -> properties[k] = maskProperty(k, propertySource.get(k)) }
+        propertySource.forEach { k -> propertySource.get(k)?.let { properties[k] = maskProperty(k, it) } }
         return properties
     }
 

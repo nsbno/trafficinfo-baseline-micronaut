@@ -37,6 +37,9 @@ Clone repository and update all references to micronaut baseline with new projec
    3. terraform code
    4. circleci config
    5. readme.md
+   6. Parameter Store import path in `application-cloud.yml` (`/trafficinfo/config/<service>`).
+      Read the caveats in [Configuration](/docs/configuration.md#aws-parameter-store), especially
+      for keys that also exist in `/trafficinfo/config/application`.
  
 ### Add deployment pipeline 
    1. add statemachine for deployment pipeline.

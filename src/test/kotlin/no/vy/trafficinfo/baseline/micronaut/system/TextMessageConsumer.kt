@@ -1,11 +1,13 @@
 package no.vy.trafficinfo.baseline.micronaut.system
 
+import io.micronaut.context.annotation.Requires
 import io.micronaut.jms.annotations.JMSListener
 import io.micronaut.jms.annotations.Queue
 import io.micronaut.jms.sqs.configuration.SqsConfiguration.CONNECTION_FACTORY_BEAN_NAME
 import io.micronaut.messaging.annotation.MessageBody
 import mu.KotlinLogging
 import no.vy.trafficinfo.baseline.micronaut.ObjectMother.Companion.TEST_QUEUE_NAME
+import jakarta.inject.Singleton
 
 private val logger = KotlinLogging.logger {}
 
@@ -18,7 +20,12 @@ private val logger = KotlinLogging.logger {}
  * a message listener for the queue.
  *
  * @link https://micronaut-projects.github.io/micronaut-jms/latest/guide
+ *
+ * Only active in the [ENVIRONMENT] environment: every test context listens on the same
+ * LocalStack queue, so a consumer in another spec's context could otherwise take the message.
  */
+@Singleton
+@Requires(env = [TextMessageConsumer.ENVIRONMENT])
 @JMSListener(CONNECTION_FACTORY_BEAN_NAME)
 class TextMessageConsumer {
     // This list is used in tests to verify that messages are sent to the queue.
@@ -36,5 +43,9 @@ class TextMessageConsumer {
     ) {
         logger.info("TextMessageConsumer received: $body")
         processed.add(body)
+    }
+
+    companion object {
+        const val ENVIRONMENT = "sns-consumer"
     }
 }

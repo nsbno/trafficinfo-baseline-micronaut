@@ -3,6 +3,9 @@ micronaut.security.token.jwt.signatures.secret.generator.secret: pleaseChangeThi
 micronaut.security.token.jwt.claims-validators.audience: requiredAudience
 
 micronaut:
+  metrics:
+    enabled: false
+
   http:
     services:
       whoami:
@@ -41,7 +44,7 @@ aws:
 test-resources:
   containers:
     localstack:
-      image-name: localstack/localstack:2.3
+      image-name: localstack/localstack:community-archive
       wait-strategy:
         log:
           regex: ".*Ready.*"

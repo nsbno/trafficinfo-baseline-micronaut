@@ -7,3 +7,6 @@ target/
 config_override/
 
 **/*/.terraform/
+
+# Micronaut test-resources state
+.micronaut/

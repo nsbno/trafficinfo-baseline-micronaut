@@ -116,7 +116,7 @@ class WhoamiControlle(
     @Produces(MediaType.APPLICATION_JSON)
     fun get(): HttpResponse<String> {
         logger.info { "Calling whoami debug service." }
-        ElasticApm.currentSpan().setDestinationService("whoami")
+        ElasticApm.currentSpan().setServiceTarget("http", "whoami")
 
         val request =
             HttpRequest
