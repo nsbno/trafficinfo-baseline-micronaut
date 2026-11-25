@@ -31,39 +31,39 @@ class SnsClientSpec(
     @Inject var messageConsumer: TextMessageConsumer,
 ) : BehaviorSpec({
 
-    /**
-     * Create queue and topic before running tests.
-     */
-    beforeSpec {
-        logger.info("Before spec.")
-    }
+        /**
+         * Create queue and topic before running tests.
+         */
+        beforeSpec {
+            logger.info("Before spec.")
+        }
 
-    /**
-     *
-     */
-    afterSpec {
-        logger.info("After spec.")
-    }
+        /**
+         *
+         */
+        afterSpec {
+            logger.info("After spec.")
+        }
 
-    /**
-     * Perform some testing here.
-     */
-    given("some test data") {
-        val testMessage = "a test message with text"
+        /**
+         * Perform some testing here.
+         */
+        given("some test data") {
+            val testMessage = "a test message with text"
 
-        `when`("calling something") {
-            snsClient.publish {
-                with(it) {
-                    topicArn(TEST_TOPIC_ARN)
-                    message(testMessage)
+            `when`("calling something") {
+                snsClient.publish {
+                    with(it) {
+                        topicArn(TEST_TOPIC_ARN)
+                        message(testMessage)
+                    }
                 }
-            }
 
-            then("we should get a result") {
-                until(5.seconds, 250.milliseconds.fixed()) {
-                    messageConsumer.processed.size == 1
+                then("we should get a result") {
+                    until(5.seconds, 250.milliseconds.fixed()) {
+                        messageConsumer.processed.size == 1
+                    }
                 }
             }
         }
-    }
-})
+    })

@@ -25,14 +25,16 @@ private val logger = KotlinLogging.logger {}
  */
 @Suppress("Unused")
 @Context
-class ApplicationConfigLogger(private val environment: Environment) {
-
-    private val maskPatterns: List<Pattern> = PROPERTY_NAMES_TO_MASK.map { s ->
-        Pattern.compile(
-            ".*$s.*",
-            Pattern.CASE_INSENSITIVE
-        )
-    }
+class ApplicationConfigLogger(
+    private val environment: Environment,
+) {
+    private val maskPatterns: List<Pattern> =
+        PROPERTY_NAMES_TO_MASK.map { s ->
+            Pattern.compile(
+                ".*$s.*",
+                Pattern.CASE_INSENSITIVE,
+            )
+        }
 
     @EventListener
     fun onRefreshEvent(event: RefreshEvent?) {
@@ -57,18 +59,20 @@ class ApplicationConfigLogger(private val environment: Environment) {
     private fun printEnvironments() = logger.info("Environments: ${environment.activeNames}")
 
     // print the print config properties from all property sources.
-    private fun printConfigProperties() = environment.propertySources
-        .sortedBy { ps -> ps.order }
-        .forEach { ps ->
-            logger.info("Property Source '${ps.name}'\n${prettyPrintMap(getMaskedProperties(ps), 0)}")
-        }
+    private fun printConfigProperties() =
+        environment.propertySources
+            .sortedBy { ps -> ps.order }
+            .forEach { ps ->
+                logger.info("Property Source '${ps.name}'\n${prettyPrintMap(getMaskedProperties(ps), 0)}")
+            }
 
     // print all config sources.
-    private fun printConfigSources() = environment.propertySources
-        .sortedBy { ps -> ps.order }
-        .forEach { ps ->
-            logger.info("${ps.order} ${ps.name}")
-        }
+    private fun printConfigSources() =
+        environment.propertySources
+            .sortedBy { ps -> ps.order }
+            .forEach { ps ->
+                logger.info("${ps.order} ${ps.name}")
+            }
 
     /**
      * Convert map to String recursively on all values.
@@ -81,21 +85,25 @@ class ApplicationConfigLogger(private val environment: Environment) {
      * @param level is how deep it has recursively traversed.
      * @return a String generated from the input Map.
      */
-    private fun prettyPrintMap(input: Map<*, *>, level: Int): String = input.entries.joinToString("\n") {
-        when (val value = it.value) {
-            is List<*> -> {
-                indent("${it.key} = \n" + prettyPrintList(value, level + 1), level)
-            }
+    private fun prettyPrintMap(
+        input: Map<*, *>,
+        level: Int,
+    ): String =
+        input.entries.joinToString("\n") {
+            when (val value = it.value) {
+                is List<*> -> {
+                    indent("${it.key} = \n" + prettyPrintList(value, level + 1), level)
+                }
 
-            is Map<*, *> -> {
-                prettyPrintMap(value, level + 1)
-            }
+                is Map<*, *> -> {
+                    prettyPrintMap(value, level + 1)
+                }
 
-            else -> {
-                indent("${it.key} = ${it.value}", level)
+                else -> {
+                    indent("${it.key} = ${it.value}", level)
+                }
             }
         }
-    }
 
     /**
      * Convert list to String recursively on all values.
@@ -108,21 +116,25 @@ class ApplicationConfigLogger(private val environment: Environment) {
      * @param level is how deep it has recursively traversed.
      * @return a String generated from the input Map.
      */
-    private fun prettyPrintList(input: List<*>, level: Int): String = input.joinToString("\n") {
-        when (it) {
-            is List<*> -> {
-                prettyPrintList(it, level + 1)
-            }
+    private fun prettyPrintList(
+        input: List<*>,
+        level: Int,
+    ): String =
+        input.joinToString("\n") {
+            when (it) {
+                is List<*> -> {
+                    prettyPrintList(it, level + 1)
+                }
 
-            is Map<*, *> -> {
-                prettyPrintMap(it, level + 1)
-            }
+                is Map<*, *> -> {
+                    prettyPrintMap(it, level + 1)
+                }
 
-            else -> {
-                indent("- $it", level)
+                else -> {
+                    indent("- $it", level)
+                }
             }
         }
-    }
 
     /**
      * Ident the input with a given number of spaces.
@@ -131,9 +143,10 @@ class ApplicationConfigLogger(private val environment: Environment) {
      * @param input is the string to prepend with indent.
      * @return the resulting indented string based on input.
      */
-    private fun indent(input: String, indent: Int): String {
-        return input.prependIndent("  ".repeat(indent + 1))
-    }
+    private fun indent(
+        input: String,
+        indent: Int,
+    ): String = input.prependIndent("  ".repeat(indent + 1))
 
     /**
      * Get all properties from property source and mask all sensitive fields.
@@ -149,7 +162,10 @@ class ApplicationConfigLogger(private val environment: Environment) {
     /**
      * Match for sensitive property keys and mask values.
      */
-    private fun maskProperty(key: String, value: Any): Any {
+    private fun maskProperty(
+        key: String,
+        value: Any,
+    ): Any {
         for (pattern in this.maskPatterns) {
             if (pattern.matcher(key).matches()) {
                 val valueString = value.toString()

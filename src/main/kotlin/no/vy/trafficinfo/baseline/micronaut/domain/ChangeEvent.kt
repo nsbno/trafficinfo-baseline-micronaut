@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class ChangeEvent(
     @field:Schema(description = "The payload", example = "V0HK5GgigW")
     val payload: String,
-
     @field:Schema(description = "The version number", example = "12932")
     val version: Long,
 )

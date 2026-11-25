@@ -23,9 +23,8 @@ private val logger = KotlinLogging.logger {}
 @Introspected
 open class EventCreateJob(
     @Named("create_event")
-    private val createEventService: CreateEventService
+    private val createEventService: CreateEventService,
 ) : EventCreateJobInterface {
-
     /**
      * Start main loop.
      */

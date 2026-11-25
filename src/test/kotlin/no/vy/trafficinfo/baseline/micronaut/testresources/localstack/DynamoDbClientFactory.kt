@@ -13,7 +13,6 @@ import java.net.URI
 
 @Factory
 class DynamoDbClientFactory {
-
     @Inject
     lateinit var dynamodbConfig: DynamoDbConfig
 
@@ -23,13 +22,13 @@ class DynamoDbClientFactory {
      */
     @Singleton
     @Primary
-    fun buildDynamoDbClient(): DynamoDbClient {
-        return DynamoDbClient.builder()
+    fun buildDynamoDbClient(): DynamoDbClient =
+        DynamoDbClient
+            .builder()
             .region(Region.of(dynamodbConfig.region))
             .credentialsProvider(AnonymousCredentialsProvider.create())
             .endpointOverride(URI.create("${dynamodbConfig.dynamodb.endpointOverride}:${dynamodbConfig.dynamodb.portOverride}"))
             .build()
-    }
 
     /**
      * Config holder for the AWS configuration from

@@ -13,7 +13,6 @@ import java.net.URI
 
 @Factory
 class SqsClientFactory {
-
     @Inject
     lateinit var sqsConfig: SQSConfig
 
@@ -23,13 +22,13 @@ class SqsClientFactory {
      */
     @Singleton
     @Primary
-    fun buildSqsClient(): SqsClient {
-        return SqsClient.builder()
+    fun buildSqsClient(): SqsClient =
+        SqsClient
+            .builder()
             .region(Region.of(sqsConfig.region))
             .credentialsProvider(AnonymousCredentialsProvider.create())
             .endpointOverride(URI.create("${sqsConfig.sqs.endpointOverride}:${sqsConfig.sqs.portOverride}"))
             .build()
-    }
 
     /**
      * Config holder for the AWS configuration from

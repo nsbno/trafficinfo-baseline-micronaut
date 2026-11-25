@@ -21,7 +21,6 @@ private val logger = KotlinLogging.logger {}
  */
 @JMSListener(CONNECTION_FACTORY_BEAN_NAME)
 class TextMessageConsumer {
-
     // This list is used in tests to verify that messages are sent to the queue.
     val processed: MutableList<String> = mutableListOf()
 
@@ -32,7 +31,9 @@ class TextMessageConsumer {
      * @link https://micronaut-projects.github.io/micronaut-jms/latest/guide/#jmsListener
      */
     @Queue(value = TEST_QUEUE_NAME)
-    fun receive(@MessageBody body: String) {
+    fun receive(
+        @MessageBody body: String,
+    ) {
         logger.info("TextMessageConsumer received: $body")
         processed.add(body)
     }

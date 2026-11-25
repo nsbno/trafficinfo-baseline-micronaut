@@ -28,13 +28,12 @@ private val logger = KotlinLogging.logger {}
 @Primary
 open class ChangeEventInMemoryRepository(
     private val randomStringService: RandomStringService,
-    private val eventPublisher: ApplicationEventPublisher<ChangeEvent>
+    private val eventPublisher: ApplicationEventPublisher<ChangeEvent>,
 ) : ChangeEventRepository {
-
-    /* Used as a version count to number the generated updates */
+    // Used as a version count to number the generated updates
     private val counter = AtomicLong()
 
-    /* hold last 100 generated random string in memory */
+    // hold last 100 generated random string in memory
     private val buffer = ArrayBlockingQueue<ChangeEvent>(MAX_SIZE)
 
     override suspend fun all(): Flow<ChangeEvent> {
@@ -42,9 +41,7 @@ open class ChangeEventInMemoryRepository(
         return buffer.asFlow().take(10)
     }
 
-    override suspend fun count(): Int {
-        return buffer.size
-    }
+    override suspend fun count(): Int = buffer.size
 
     override suspend fun clear() {
         buffer.clear()
@@ -57,10 +54,11 @@ open class ChangeEventInMemoryRepository(
      */
     override suspend fun create(): ChangeEvent {
         val randomString = requestRandomString()
-        val changeEvent = ChangeEvent(
-            randomString,
-            counter.incrementAndGet()
-        )
+        val changeEvent =
+            ChangeEvent(
+                randomString,
+                counter.incrementAndGet(),
+            )
 
         if (buffer.size == MAX_SIZE) {
             logger.info { "Remove old ChangeEvent from repo before adding new." }
@@ -80,17 +78,18 @@ open class ChangeEventInMemoryRepository(
      * remote system that generate the random string.
      */
     private suspend fun requestRandomString(): String {
-        val randomString = suspendCancellableCoroutine { cont ->
-            // simulate 250ms response time to create new random string,
-            // as if the change event was generated for example from
-            // and external system.
-            Thread.sleep(250)
-            if (true) {
-                cont.resume(randomStringService.randomString())
-            } else {
-                cont.resumeWithException(RandomStringServiceException())
+        val randomString =
+            suspendCancellableCoroutine { cont ->
+                // simulate 250ms response time to create new random string,
+                // as if the change event was generated for example from
+                // and external system.
+                Thread.sleep(250)
+                if (true) {
+                    cont.resume(randomStringService.randomString())
+                } else {
+                    cont.resumeWithException(RandomStringServiceException())
+                }
             }
-        }
         return randomString
     }
 }

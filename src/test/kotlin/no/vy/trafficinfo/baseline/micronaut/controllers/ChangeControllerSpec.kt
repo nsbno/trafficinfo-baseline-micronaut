@@ -28,7 +28,6 @@ private val logger = KotlinLogging.logger {}
  */
 @Client("/")
 interface ChangeClient {
-
     @Get(value = "/changes")
     @Consumes(MediaType.APPLICATION_JSON_STREAM)
     fun changeEventUpdates(): Flow<ChangeEvent>
@@ -52,42 +51,44 @@ interface ChangeClient {
 class ChangeControllerSpec(
     @Inject val createEventService: CreateEventService,
     @Inject val client: ChangeClient,
-    @Inject val changeEventRepository: ChangeEventRepository
+    @Inject val changeEventRepository: ChangeEventRepository,
 ) : BehaviorSpec({
 
-    given("the 5 generated events") {
-        (1..5).forEach {
-            createEventService.createEvent()
-        }
+        given("the 5 generated events") {
+            (1..5).forEach {
+                createEventService.createEvent()
+            }
 
-        `when`("the streaming changes endpoint is called") {
-            val list = client.changeEventUpdates()
-                .take(3)
-                .toCollection(mutableListOf())
+            `when`("the streaming changes endpoint is called") {
+                val list =
+                    client
+                        .changeEventUpdates()
+                        .take(3)
+                        .toCollection(mutableListOf())
 
-            then("the result should be three items") {
-                list.shouldHaveSize(3)
+                then("the result should be three items") {
+                    list.shouldHaveSize(3)
+                }
+            }
+
+            `when`("the blocking changes endpoint is called") {
+                val list = client.changeEventsAll()
+
+                then("the result should be all items") {
+                    list.shouldHaveSize(5)
+                }
             }
         }
 
-        `when`("the blocking changes endpoint is called") {
-            val list = client.changeEventsAll()
+        given("an empty repository") {
+            changeEventRepository.clear()
 
-            then("the result should be all items") {
-                list.shouldHaveSize(5)
+            `when`("the create endpoint is called") {
+                val event = client.changeEventCreate()
+
+                then("repository should contain one event") {
+                    changeEventRepository.count().shouldBe(1)
+                }
             }
         }
-    }
-
-    given("an empty repository") {
-        changeEventRepository.clear()
-
-        `when`("the create endpoint is called") {
-            val event = client.changeEventCreate()
-
-            then("repository should contain one event") {
-                changeEventRepository.count().shouldBe(1)
-            }
-        }
-    }
-})
+    })

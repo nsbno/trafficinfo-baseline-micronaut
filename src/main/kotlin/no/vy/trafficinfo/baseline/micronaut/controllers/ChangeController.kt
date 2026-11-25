@@ -58,12 +58,12 @@ private val logger = KotlinLogging.logger {}
 class ChangeController(
     private val repo: ChangeEventRepository,
 ) {
-
-    private val events = MutableSharedFlow<ChangeEvent>(
-        10,
-        extraBufferCapacity = 0,
-        onBufferOverflow = BufferOverflow.SUSPEND,
-    )
+    private val events =
+        MutableSharedFlow<ChangeEvent>(
+            10,
+            extraBufferCapacity = 0,
+            onBufferOverflow = BufferOverflow.SUSPEND,
+        )
 
     /**
      * Listen for ApplicationEvents where new
@@ -87,30 +87,30 @@ class ChangeController(
     @Operation(
         summary = "Stream change events",
         description = "This endpoint will publish all received ChangeEvents from the events shared flow",
-        extensions = arrayOf(
-            Extension(
-                name = "x-amazon-apigateway-integration",
-                properties = [
-                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
-                    ExtensionProperty(
-                        name = "uri",
-                        value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
-                    ),
-                    ExtensionProperty(name = "httpMethod", value = "GET"),
-                    ExtensionProperty(name = "type", value = "http_proxy"),
-                ],
+        extensions =
+            arrayOf(
+                Extension(
+                    name = "x-amazon-apigateway-integration",
+                    properties = [
+                        ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                        ExtensionProperty(
+                            name = "uri",
+                            value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
+                        ),
+                        ExtensionProperty(name = "httpMethod", value = "GET"),
+                        ExtensionProperty(name = "type", value = "http_proxy"),
+                    ],
+                ),
+                Extension(
+                    name = "x-amazon-apigateway-request-validator",
+                    properties = [
+                        ExtensionProperty(
+                            name = "x-amazon-apigateway-request-validator",
+                            value = "Validate body, query string parameters, and headers",
+                        ),
+                    ],
+                ),
             ),
-            Extension(
-                name = "x-amazon-apigateway-request-validator",
-
-                properties = [
-                    ExtensionProperty(
-                        name = "x-amazon-apigateway-request-validator",
-                        value = "Validate body, query string parameters, and headers",
-                    ),
-                ],
-            ),
-        ),
     )
     @Get
     @Produces(MediaType.APPLICATION_JSON_STREAM)
@@ -133,43 +133,45 @@ class ChangeController(
     @Operation(
         summary = "Return all change events",
         description = "Return all change events",
-        extensions = arrayOf(
-            Extension(
-                name = "x-amazon-apigateway-integration",
-                properties = [
-                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
-                    ExtensionProperty(
-                        name = "uri",
-                        value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
-                    ),
-                    ExtensionProperty(name = "httpMethod", value = "GET"),
-                    ExtensionProperty(name = "type", value = "http_proxy"),
-                ],
+        extensions =
+            arrayOf(
+                Extension(
+                    name = "x-amazon-apigateway-integration",
+                    properties = [
+                        ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                        ExtensionProperty(
+                            name = "uri",
+                            value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
+                        ),
+                        ExtensionProperty(name = "httpMethod", value = "GET"),
+                        ExtensionProperty(name = "type", value = "http_proxy"),
+                    ],
+                ),
+                Extension(
+                    name = "x-amazon-apigateway-request-validator",
+                    properties = [
+                        ExtensionProperty(
+                            name = "x-amazon-apigateway-request-validator",
+                            value = "Validate body, query string parameters, and headers",
+                        ),
+                    ],
+                ),
             ),
-            Extension(
-                name = "x-amazon-apigateway-request-validator",
-
-                properties = [
-                    ExtensionProperty(
-                        name = "x-amazon-apigateway-request-validator",
-                        value = "Validate body, query string parameters, and headers",
-                    ),
-                ],
-            ),
-        ),
     )
     @Get
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
-    suspend fun changeEventsAll() = runBlocking {
-        logger.info { "All ChangeEvents." }
-        val a = async {
-            logger.info { "Async 1 ChangeEvents." }
-            repo.all().toCollection(mutableListOf())
-        }
+    suspend fun changeEventsAll() =
+        runBlocking {
+            logger.info { "All ChangeEvents." }
+            val a =
+                async {
+                    logger.info { "Async 1 ChangeEvents." }
+                    repo.all().toCollection(mutableListOf())
+                }
 
-        a.await()
-    }
+            a.await()
+        }
 
     /**
      * ## Create and return a single change event.
@@ -180,43 +182,45 @@ class ChangeController(
     @Operation(
         summary = "Create and return a single change event",
         description = "Create and return a single change event",
-        extensions = arrayOf(
-            Extension(
-                name = "x-amazon-apigateway-integration",
-                properties = [
-                    ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
-                    ExtensionProperty(
-                        name = "uri",
-                        value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
-                    ),
-                    ExtensionProperty(name = "httpMethod", value = "POST"),
-                    ExtensionProperty(name = "type", value = "http_proxy"),
-                ],
+        extensions =
+            arrayOf(
+                Extension(
+                    name = "x-amazon-apigateway-integration",
+                    properties = [
+                        ExtensionProperty(name = "passthroughBehavior", value = "when_no_match"),
+                        ExtensionProperty(
+                            name = "uri",
+                            value = "https://slb.\${hosted_zone_name}/\${base_path}/changes",
+                        ),
+                        ExtensionProperty(name = "httpMethod", value = "POST"),
+                        ExtensionProperty(name = "type", value = "http_proxy"),
+                    ],
+                ),
+                Extension(
+                    name = "x-amazon-apigateway-request-validator",
+                    properties = [
+                        ExtensionProperty(
+                            name = "x-amazon-apigateway-request-validator",
+                            value = "Validate body, query string parameters, and headers",
+                        ),
+                    ],
+                ),
             ),
-            Extension(
-                name = "x-amazon-apigateway-request-validator",
-
-                properties = [
-                    ExtensionProperty(
-                        name = "x-amazon-apigateway-request-validator",
-                        value = "Validate body, query string parameters, and headers",
-                    ),
-                ],
-            ),
-        ),
     )
     @Post
     @Produces(MediaType.APPLICATION_JSON)
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Status(HttpStatus.ACCEPTED)
-    suspend fun changeEventCreate() = coroutineScope {
-        logger.info { "Create ChangeEvent." }
-        val a = async {
-            logger.info { "Async Create ChangeEvents." }
-            repo.create()
-        }
+    suspend fun changeEventCreate() =
+        coroutineScope {
+            logger.info { "Create ChangeEvent." }
+            val a =
+                async {
+                    logger.info { "Async Create ChangeEvents." }
+                    repo.create()
+                }
 
-        logger.info { "Start await." }
-        a.await()
-    }
+            logger.info { "Start await." }
+            a.await()
+        }
 }

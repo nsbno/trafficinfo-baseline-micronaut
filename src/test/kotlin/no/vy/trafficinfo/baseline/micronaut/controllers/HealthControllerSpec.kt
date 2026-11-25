@@ -23,16 +23,16 @@ interface HealthClient {
  */
 @MicronautTest
 class HealthControllerSpec(
-    @Inject val client: HealthClient
+    @Inject val client: HealthClient,
 ) : BehaviorSpec({
 
-    given("the health check endpoint") {
-        `when`("calling the health check endpoint") {
-            val result = client.health()
+        given("the health check endpoint") {
+            `when`("calling the health check endpoint") {
+                val result = client.health()
 
-            `then`("we should get successful http status in return") {
-                result.status.shouldBe(HttpStatus.OK)
+                `then`("we should get successful http status in return") {
+                    result.status.shouldBe(HttpStatus.OK)
+                }
             }
         }
-    }
-})
+    })

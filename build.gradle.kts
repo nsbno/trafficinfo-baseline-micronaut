@@ -24,11 +24,12 @@ val version: String by project
 val micronautVersion: String by project
 val targetJvmVersion: String by project
 
-fun getProperty(name: String) = if (project.properties[name] != null) {
-    project.properties[name].toString()
-} else {
-    System.getenv(name)
-}
+fun getProperty(name: String) =
+    if (project.properties[name] != null) {
+        project.properties[name].toString()
+    } else {
+        System.getenv(name)
+    }
 
 repositories {
     maven {

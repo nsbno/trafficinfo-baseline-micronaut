@@ -30,15 +30,18 @@ class SnsClientCreatedEventListener : BeanCreatedEventListener<SnsClient> {
     override fun onCreated(event: BeanCreatedEvent<SnsClient>): SnsClient {
         val client = event.bean
         if (client.listTopics().topics().find { it.topicArn().endsWith(TEST_TOPIC_NAME) } == null) {
-            val topicArn = client.createTopic {
-                it.name(TEST_TOPIC_NAME)
-            }.topicArn()
+            val topicArn =
+                client
+                    .createTopic {
+                        it.name(TEST_TOPIC_NAME)
+                    }.topicArn()
 
-            val subResp = client.subscribe {
-                it.topicArn(TEST_TOPIC_ARN)
-                it.protocol("sqs")
-                it.endpoint(TEST_QUEUE_ARN)
-            }
+            val subResp =
+                client.subscribe {
+                    it.topicArn(TEST_TOPIC_ARN)
+                    it.protocol("sqs")
+                    it.endpoint(TEST_QUEUE_ARN)
+                }
             logger.info("Created topic $topicArn")
             logger.info("Created subscription: $subResp")
         }

@@ -12,13 +12,15 @@ import jakarta.inject.Singleton
 
 @Liveness
 @Singleton
-class UptimeHealthIndicator(@Property(name = "micronaut.application.name") val applicationName: String) : HealthIndicator {
-    override fun getResult(): Publisher<HealthResult> {
-        return Mono.just(
-            HealthResult.builder(applicationName)
+class UptimeHealthIndicator(
+    @Property(name = "micronaut.application.name") val applicationName: String,
+) : HealthIndicator {
+    override fun getResult(): Publisher<HealthResult> =
+        Mono.just(
+            HealthResult
+                .builder(applicationName)
                 .details(Health())
                 .status(HealthStatus.UP)
-                .build()
+                .build(),
         )
-    }
 }

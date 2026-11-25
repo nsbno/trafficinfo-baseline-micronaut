@@ -22,68 +22,68 @@ class ChangeEventDynamoDbRepositorySpec(
     @Inject @Named("dynamodb") val repository: ChangeEventRepository,
 ) : BehaviorSpec({
 
-    /**
-     * Create database table before running tests.
-     */
-    beforeSpec {
-        logger.debug { "Creating DynamoDB table in localstack." }
+        /**
+         * Create database table before running tests.
+         */
+        beforeSpec {
+            logger.debug { "Creating DynamoDB table in localstack." }
 
-        dynamoDbClient.createTable {
-            it.tableName("change-events")
-            it.keySchema({
-                it.keyType("HASH")
-                it.attributeName("version")
-            })
-            it.attributeDefinitions(
-                {
+            dynamoDbClient.createTable {
+                it.tableName("change-events")
+                it.keySchema({
+                    it.keyType("HASH")
                     it.attributeName("version")
-                    it.attributeType("N")
+                })
+                it.attributeDefinitions(
+                    {
+                        it.attributeName("version")
+                        it.attributeType("N")
+                    },
+                )
+                it.provisionedThroughput {
+                    it.readCapacityUnits(1)
+                    it.writeCapacityUnits(1)
                 }
-            )
-            it.provisionedThroughput {
-                it.readCapacityUnits(1)
-                it.writeCapacityUnits(1)
+            }
+
+            // set TTL on table
+            dynamoDbClient.updateTimeToLive {
+                it.tableName("change-events")
+                it.timeToLiveSpecification {
+                    it.attributeName("ttl")
+                    it.enabled(true)
+                }
+            }
+
+            // list tables
+            dynamoDbClient.listTables().tableNames().forEach {
+                logger.debug { "Found table: $it" }
             }
         }
 
-        // set TTL on table
-        dynamoDbClient.updateTimeToLive {
-            it.tableName("change-events")
-            it.timeToLiveSpecification {
-                it.attributeName("ttl")
-                it.enabled(true)
+        /**
+         * Cleanup database table after running tests.
+         */
+        afterSpec {
+            dynamoDbClient.deleteTable {
+                logger.debug { "Deleting DynamoDB \"change-events\" table in localstack." }
+                it.tableName("change-events")
             }
         }
 
-        // list tables
-        dynamoDbClient.listTables().tableNames().forEach {
-            logger.debug { "Found table: $it" }
-        }
-    }
+        given("a repository") {
+            `when`("creating new events") {
+                val newEvent = repository.create()
 
-    /**
-     * Cleanup database table after running tests.
-     */
-    afterSpec {
-        dynamoDbClient.deleteTable {
-            logger.debug { "Deleting DynamoDB \"change-events\" table in localstack." }
-            it.tableName("change-events")
-        }
-    }
+                `then`("we should have new events in the database table") {
+                    newEvent.version shouldNotBe null
+                }
 
-    given("a repository") {
-        `when`("creating new events") {
-            val newEvent = repository.create()
-
-            `then`("we should have new events in the database table") {
-                newEvent.version shouldNotBe null
-            }
-
-            `and`("we should be able to retrieve the new event") {
-                val retrievedEvent = repository.all().firstOrNull()
-                retrievedEvent shouldNotBe null
-                retrievedEvent shouldBe newEvent
+                `and`("we should be able to retrieve the new event") {
+                    val retrievedEvent = repository.all().firstOrNull()
+                    retrievedEvent shouldNotBe null
+                    retrievedEvent shouldBe newEvent
+                }
             }
         }
-    }
-})
+    })

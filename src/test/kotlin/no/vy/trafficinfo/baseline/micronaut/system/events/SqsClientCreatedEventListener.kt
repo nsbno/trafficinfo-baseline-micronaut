@@ -22,9 +22,11 @@ class SqsClientCreatedEventListener : BeanCreatedEventListener<SqsClient> {
         val client = event.bean
         if (client.listQueues().queueUrls().find { it.endsWith(TEST_QUEUE_NAME) } == null) {
             // create a queue and a topic and subscribe the queue to the topic
-            val queueUrl = client.createQueue {
-                it.queueName(TEST_QUEUE_NAME)
-            }.queueUrl()
+            val queueUrl =
+                client
+                    .createQueue {
+                        it.queueName(TEST_QUEUE_NAME)
+                    }.queueUrl()
             logger.info("Created queue $queueUrl")
         }
 
