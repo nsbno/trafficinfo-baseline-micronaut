@@ -11,11 +11,15 @@ package no.vy.trafficinfo.baseline.micronaut.system.events
  * Even allowlisted values have credentials in URLs (`scheme://user:password@host`)
  * removed, in case someone puts them in an otherwise harmless URL key.
  *
+ * A RESOLVED value is only logged if every placeholder it references is allowlisted too
+ * (see [maskResolved]), so `baseUrl: ${SOME_SECRET}` does not leak the secret.
+ *
  * ## Adding keys
  * Add a pattern to [ALLOWED_KEYS] only if the value is NEVER secret in any
  * environment. Do not add keys that can contain credentials, such as connection
- * strings, client ids/secrets, key stores or anything under an `ssl` section.
- * Prefer exact keys over wildcards.
+ * strings, client ids/secrets, api keys, key stores or anything under an `ssl` section.
+ * Prefer exact keys over wildcards, and never use `**` for a section that can hold
+ * credentials (e.g. metrics exporters, http clients, security).
  *
  * Pattern syntax (matched case-insensitively against the whole key):
  * - `*` matches exactly one key segment (no dots), e.g. `micronaut.http.services.*.url`
@@ -39,10 +43,12 @@ object ConfigValueMasker {
             "micronaut.application.name",
             "micronaut.server.port",
             "micronaut.server.context-path",
+            "CONTEXT_PATH",
             "micronaut.server.cors.**",
-            "micronaut.router.static-resources.**",
-            "micronaut.openapi.**",
-            "micronaut.caches.**",
+            "micronaut.router.static-resources.*.paths",
+            "micronaut.router.static-resources.*.mapping",
+            "micronaut.openapi.target.file",
+            "micronaut.caches.*.enabled",
             // outgoing http
             "micronaut.http.client.read-timeout",
             "micronaut.http.client.max-content-length",
@@ -60,9 +66,18 @@ object ConfigValueMasker {
             "micronaut.security.token.jwt.signatures.jwks.*.url",
             "micronaut.security.token.propagation.enabled",
             "micronaut.security.token.propagation.service-id-regex",
-            // metrics, management, json, messaging
-            "micronaut.metrics.**",
-            "endpoints.**",
+            // metrics (exact keys only: exporter sections can contain api keys)
+            "micronaut.metrics.enabled",
+            "micronaut.metrics.binders.*.enabled",
+            "micronaut.metrics.http.client.path",
+            "micronaut.metrics.export.cloudwatch.enabled",
+            "micronaut.metrics.export.cloudwatch.namespace",
+            "micronaut.metrics.export.cloudwatch.batchSize",
+            // management, json, messaging
+            "endpoints.*.enabled",
+            "endpoints.*.sensitive",
+            "endpoints.*.details-visible",
+            "endpoints.health.disk-space.enabled",
             "jackson.**",
             "micronaut.jms.sqs.enabled",
             // aws (region and local endpoints only, never credentials)
@@ -74,6 +89,9 @@ object ConfigValueMasker {
     private val allowedPatterns: List<Regex> = ALLOWED_KEYS.map(::toRegex)
 
     private val urlCredentials = Regex("(?<=://)[^/@\\s]+@")
+
+    // name of a `${name}` or `${name:default}` placeholder; defaults may contain nested placeholders
+    private val placeholder = Regex("\\$\\{([^}:]+)")
 
     private val listIndex = Regex("\\[\\d+]")
 
@@ -88,6 +106,38 @@ object ConfigValueMasker {
         key: String,
         value: Any?,
     ): Any? = if (isAllowed(key)) removeUrlCredentials(value) else HIDDEN
+
+    /**
+     * The value to log for a RESOLVED [value] of [key].
+     *
+     * A resolved value can come from another key through a placeholder (`baseUrl: ${SECRET}`),
+     * so it is only logged if [key] and every key its raw value references, recursively, are
+     * allowlisted. [rawValueOf] returns the unresolved value of a key, or null if it is unknown.
+     */
+    fun maskResolved(
+        key: String,
+        value: Any?,
+        rawValueOf: (String) -> Any?,
+    ): Any? = if (isSafe(key, rawValueOf, mutableSetOf())) removeUrlCredentials(value) else HIDDEN
+
+    private fun isSafe(
+        key: String,
+        rawValueOf: (String) -> Any?,
+        seen: MutableSet<String>,
+    ): Boolean {
+        if (!isAllowed(key)) return false
+        // already checked (or a placeholder cycle, which fails to resolve anyway)
+        if (!seen.add(key.lowercase())) return true
+        return placeholderNames(rawValueOf(key)).all { isSafe(it, rawValueOf, seen) }
+    }
+
+    private fun placeholderNames(value: Any?): List<String> =
+        when (value) {
+            is CharSequence -> placeholder.findAll(value).map { it.groupValues[1].trim() }.toList()
+            is List<*> -> value.flatMap(::placeholderNames)
+            is Map<*, *> -> value.values.flatMap(::placeholderNames)
+            else -> emptyList()
+        }
 
     private fun removeUrlCredentials(value: Any?): Any? =
         when (value) {

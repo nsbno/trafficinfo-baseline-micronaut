@@ -54,6 +54,33 @@ class ConfigValueMaskerSpec :
                 then("a single-segment wildcard does not match deeper keys") {
                     ConfigValueMasker.isAllowed("micronaut.http.services.whoami.ssl.key-store.password") shouldBe false
                 }
+
+                then("metrics exporter credentials are hidden, only the listed metrics keys are shown") {
+                    ConfigValueMasker.mask("micronaut.metrics.export.datadog.api-key", "supersecret") shouldBe ConfigValueMasker.HIDDEN
+                    ConfigValueMasker.mask("micronaut.metrics.export.cloudwatch.namespace", "ns") shouldBe "ns"
+                }
+            }
+
+            `when`("a resolved value comes from placeholders") {
+                val raw =
+                    mapOf(
+                        "baseUrl" to "\${APM_SECRET_TOKEN}",
+                        "micronaut.http.services.a.url" to "\${jwksUrl}/x",
+                        "jwksUrl" to "https://example.com",
+                        "micronaut.http.services.b.url" to "\${jwksUrl}",
+                        "micronaut.http.services.c.url" to "\${CONTEXT_PATH:\${some.secret}}",
+                    )
+
+                then("it is hidden if any referenced key is not allowlisted") {
+                    ConfigValueMasker.maskResolved("baseUrl", "supersecret", raw::get) shouldBe ConfigValueMasker.HIDDEN
+                    ConfigValueMasker.maskResolved("micronaut.http.services.c.url", "supersecret", raw::get) shouldBe
+                        ConfigValueMasker.HIDDEN
+                }
+
+                then("it is shown if all referenced keys are allowlisted") {
+                    ConfigValueMasker.maskResolved("micronaut.http.services.a.url", "https://example.com/x", raw::get) shouldBe
+                        "https://example.com/x"
+                }
             }
         }
 
@@ -70,6 +97,13 @@ class ConfigValueMaskerSpec :
                                 "cognito.clientSecret" to "supersecret1",
                                 "datasource.url" to "postgres://user:supersecret2@db/x",
                                 "baseUrl" to "https://user:supersecret3@services.example.com",
+                                // allowlisted key resolving a secret through a placeholder
+                                "planted.secret" to "supersecret6",
+                                "micronaut.http.services.alias.url" to "\${planted.secret}",
+                                // allowlisted key resolving an allowlisted key
+                                "micronaut.http.services.chained.url" to "\${jwksUrl}",
+                                // allowlisted key that cannot be resolved, with credentials in the raw value
+                                "micronaut.http.services.broken.url" to "https://u:supersecret7@\${missing.key}",
                             ),
                         ),
                     ).build()
@@ -112,6 +146,15 @@ class ConfigValueMaskerSpec :
                 then("allowlisted values are logged, resolved") {
                     report shouldContain "baseUrl = https://<hidden>@services.example.com"
                     report shouldContain "micronaut.security.token.jwt.signatures.jwks.awscognito.url = https://cognito-idp."
+                    report shouldContain "micronaut.http.services.chained.url = https://cognito-idp."
+                }
+
+                then("an allowlisted key resolving a secret through a placeholder is hidden") {
+                    report shouldContain "micronaut.http.services.alias.url = <hidden>"
+                }
+
+                then("unresolvable values never include the error message") {
+                    report shouldContain "micronaut.http.services.broken.url = <unresolvable>\n"
                 }
             }
 

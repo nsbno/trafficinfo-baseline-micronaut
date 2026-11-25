@@ -89,16 +89,27 @@ class ApplicationConfigLogger(
                     try {
                         environment
                             .getProperty(key, Any::class.java)
-                            .map { ConfigValueMasker.mask(key, it) }
+                            .map { ConfigValueMasker.maskResolved(key, it, ::rawValueOf) }
                             .orElse("<unset>")
                     } catch (e: ConfigurationException) {
-                        // the message can contain the raw value, so only show it for allowlisted keys
-                        if (ConfigValueMasker.isAllowed(key)) "<unresolvable: ${e.message}>" else "<unresolvable>"
+                        // never log the message: it can contain the raw value, credentials included.
+                        // The raw (unresolved) value of allowlisted keys is shown in the property source dump.
+                        "<unresolvable>"
                     }
                 "  $key = $value"
             }
         return "Effective configuration\n$effective"
     }
+
+    /**
+     * The unresolved value of [key] from the property source that wins
+     * (highest order; on equal order the one added last).
+     */
+    private fun rawValueOf(key: String): Any? =
+        environment.propertySources
+            .sortedBy { ps -> ps.order }
+            .asReversed()
+            .firstNotNullOfOrNull { ps -> ps.get(key) }
 
     /**
      * Convert map to String recursively on all values.

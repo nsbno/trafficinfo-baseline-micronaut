@@ -100,8 +100,13 @@ The raw property-source dump shows placeholders such as `${jwksUrl}` unresolved,
   keys they contain. Containers often get secrets as environment variables under arbitrary names.
 - **Credentials in URLs are removed even for allowlisted keys**
   (`postgres://user:pass@db` → `postgres://<hidden>@db`).
-- `<unresolvable>` errors only include the error message for allowlisted keys, since the message
-  can contain the raw value.
+- **Resolved values are only logged if every placeholder they reference is allowlisted too**,
+  checked recursively. Otherwise `baseUrl: ${SOME_SECRET}` would print the secret under an
+  allowlisted key. Example: `micronaut.server.context-path: ${CONTEXT_PATH:/}` is only shown
+  because `CONTEXT_PATH` is allowlisted as well.
+- **Unresolvable values are logged as `<unresolvable>` only**, without the error message, since
+  the message can contain the raw value. For allowlisted keys, the property source dump shows the
+  raw (unresolved) value, so you can see which placeholder is missing.
 
 A denylist of "secret-looking" key names was used before. It leaked secrets with unexpected names
 (`DB_PASS`, `PRIVATE_PEM`, credentials inside URLs), printed the whole OS environment, and hid
@@ -115,10 +120,15 @@ When a value you need for troubleshooting shows as `<hidden>`, add its key to `A
 
 - Only add keys whose value is **never** secret, in any environment.
 - Never add keys that can contain credentials: connection strings, client ids/secrets, passwords,
-  tokens, key stores, or anything under an `ssl` section.
+  tokens, api keys, key stores, or anything under an `ssl` section.
 - Prefer exact keys over wildcards. `*` matches exactly one key segment
   (`micronaut.http.services.*.url`), `**` any number of segments (`jackson.**`). Matching is
   case-insensitive, and list indexes (`[0]`) are ignored.
+- **Never use `**` for a section that can hold credentials**, such as metrics exporters
+  (`micronaut.metrics.export.datadog.api-key`), HTTP clients or security. `**` is only used for
+  `jackson.**` and `micronaut.server.cors.**`.
+- If an allowlisted key's value is built from placeholders, allowlist the referenced keys too
+  (if they are never secret), or the value stays `<hidden>`.
 - Never allowlist `env` or `system` values.
 - Extend `ConfigValueMaskerSpec` if you add wildcard patterns.
 
