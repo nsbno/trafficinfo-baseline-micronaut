@@ -52,11 +52,22 @@ Caveats:
   at all), the image builds fine but the app fails at runtime with `ClassNotFoundException`, or
   loses resources such as the logback config from `no.vy.trafficinfo.common:logging`. This is the
   same layout as the plugin's own generated Dockerfile (`./gradlew dockerfile`).
-- The plugin always creates all layer folders, even empty ones, so the Dockerfile copies them
-  unconditionally. If a plugin upgrade changes that (the `COPY` fails on a missing folder) or
-  changes the layout, compare with `build/docker/main/Dockerfile` from `./gradlew dockerfile`.
-- Micronaut Gradle plugin 5 moved `application.jar` into `app/`. Before that it was at the root of
-  `layers/`.
+- The plugin always creates all layer folders, even empty ones. CI systems may still drop the
+  empty ones when passing build output between jobs: GitHub Actions artifacts
+  (`actions/upload-artifact`) only contain files
+  ([actions/upload-artifact#392](https://github.com/actions/upload-artifact/issues/392)). The
+  CircleCI workspace used here keeps them. The Dockerfile therefore copies `project_libs/` and
+  `snapshot_libs/` with a `[s]` wildcard (`snapshot_lib[s]`), which is a no-op when the folder is
+  missing, so pipelines don't need extra steps. This requires BuildKit (the default builder since
+  Docker 23); the deprecated legacy builder (`DOCKER_BUILDKIT=0`) fails with
+  `COPY failed: no source files were specified`. Don't apply the wildcard to `libs/`, `resources/`
+  or `app/`: those are never empty, and a missing one should fail the build.
+- If a plugin upgrade changes the layout, compare with `build/docker/main/Dockerfile` from
+  `./gradlew dockerfile`.
+- The split layout (`app/`, `snapshot_libs/`, `project_libs/`, always created even when empty)
+  came with Micronaut Gradle plugin 4.4 (between 4.2.0 and 4.4.0). Older plugins put every
+  dependency, snapshots included, into `libs/` and `application.jar` at the root of `layers/`,
+  without the extra folders. Keep this in mind when comparing with older services or Dockerfiles.
 - To check an image, make sure every manifest entry exists (only `classes/` may be missing):
   ```bash
   docker run --rm --entrypoint sh <image> -c 'cd application && for f in $(unzip -p application.jar META-INF/MANIFEST.MF \

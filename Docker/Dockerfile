@@ -32,11 +32,14 @@ RUN chmod 755 $HOME/*.sh
 #   snapshot_libs/ -SNAPSHOT dependencies
 # All three must be merged into application/libs, or the app fails at runtime with
 # ClassNotFoundException for classes from snapshot/project dependencies.
-# The plugin always creates all three folders, also when they are empty, so they are copied
-# unconditionally. Ordered from least to most frequently changing for better layer caching.
+# The plugin creates project_libs/ and snapshot_libs/ even when empty, but CI systems may drop empty
+# folders when passing build output between jobs (e.g. GitHub Actions artifacts). The [s] wildcard
+# makes these COPYs a no-op when the folder is missing (requires BuildKit, the default builder);
+# when present, the folder's contents are merged into libs/.
+# Ordered from least to most frequently changing for better layer caching.
 COPY --chown=$USER build/docker/main/layers/libs $HOME/application/libs
-COPY --chown=$USER build/docker/main/layers/project_libs $HOME/application/libs
-COPY --chown=$USER build/docker/main/layers/snapshot_libs $HOME/application/libs
+COPY --chown=$USER build/docker/main/layers/project_lib[s] $HOME/application/libs
+COPY --chown=$USER build/docker/main/layers/snapshot_lib[s] $HOME/application/libs
 COPY --chown=$USER build/docker/main/layers/resources $HOME/application/resources
 COPY --chown=$USER build/docker/main/layers/app/application.jar $HOME/application/application.jar
 
