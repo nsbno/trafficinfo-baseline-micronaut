@@ -7,7 +7,6 @@ import io.micronaut.context.exceptions.ConfigurationException
 import io.micronaut.core.version.VersionUtils
 import mu.KotlinLogging
 import jakarta.annotation.PostConstruct
-import java.util.regex.Pattern
 
 private val logger = KotlinLogging.logger {}
 
@@ -19,6 +18,10 @@ private val logger = KotlinLogging.logger {}
  * to find out after a container has been started what config
  * was applied.
  *
+ * Values are only logged for keys allowlisted in [ConfigValueMasker];
+ * all other values are hidden. The OS environment and system properties
+ * are never logged, only how many keys they contain.
+ *
  * @see logConfig When the Context has been created the logConfig
  * function will be executed.
  */
@@ -27,14 +30,6 @@ private val logger = KotlinLogging.logger {}
 class ApplicationConfigLogger(
     private val environment: Environment,
 ) {
-    private val maskPatterns: List<Pattern> =
-        PROPERTY_NAMES_TO_MASK.map { s ->
-            Pattern.compile(
-                ".*$s.*",
-                Pattern.CASE_INSENSITIVE,
-            )
-        }
-
     @PostConstruct
     fun logConfig() {
         logger.info("Application Configuration - BOF")
@@ -42,7 +37,7 @@ class ApplicationConfigLogger(
         printEnvironments()
         printConfigSources()
         printConfigProperties()
-        printEffectiveProperties()
+        logger.info(effectiveConfigurationReport())
         logger.info("Application Configuration - EOF")
     }
 
@@ -56,9 +51,7 @@ class ApplicationConfigLogger(
     private fun printConfigProperties() =
         environment.propertySources
             .sortedBy { ps -> ps.order }
-            .forEach { ps ->
-                logger.info("Property Source '${ps.name}'\n${prettyPrintMap(getMaskedProperties(ps), 0)}")
-            }
+            .forEach { ps -> logger.info(propertySourceReport(ps)) }
 
     // print all config sources.
     private fun printConfigSources() =
@@ -69,27 +62,42 @@ class ApplicationConfigLogger(
             }
 
     /**
+     * Describe one property source. Values are masked with [ConfigValueMasker];
+     * for the OS environment and system properties only the number of keys is shown.
+     */
+    internal fun propertySourceReport(propertySource: PropertySource): String {
+        if (propertySource.name in UNLOGGED_SOURCES) {
+            return "Property Source '${propertySource.name}': ${propertySource.count()} keys (values not logged)"
+        }
+        return "Property Source '${propertySource.name}'\n${prettyPrintMap(getMaskedProperties(propertySource), 0)}"
+    }
+
+    /**
      * Print the effective (resolved) value of every configured key,
      * so that placeholders like ${jwksUrl} can be verified after startup.
-     * The OS environment and system properties are not dumped.
+     * Keys only set in the OS environment or system properties are not listed.
      */
-    private fun printEffectiveProperties() {
+    internal fun effectiveConfigurationReport(): String {
         val keys =
             environment.propertySources
-                .filter { ps -> ps.name !in setOf("env", "system") }
+                .filter { ps -> ps.name !in UNLOGGED_SOURCES }
                 .flatMap { ps -> ps.toList() }
                 .toSortedSet()
         val effective =
             keys.joinToString("\n") { key ->
                 val value =
                     try {
-                        environment.getProperty(key, Any::class.java).map { maskProperty(key, it) }.orElse("<unset>")
+                        environment
+                            .getProperty(key, Any::class.java)
+                            .map { ConfigValueMasker.mask(key, it) }
+                            .orElse("<unset>")
                     } catch (e: ConfigurationException) {
-                        "<unresolvable: ${e.message}>"
+                        // the message can contain the raw value, so only show it for allowlisted keys
+                        if (ConfigValueMasker.isAllowed(key)) "<unresolvable: ${e.message}>" else "<unresolvable>"
                     }
                 "  $key = $value"
             }
-        logger.info("Effective configuration\n$effective")
+        return "Effective configuration\n$effective"
     }
 
     /**
@@ -167,34 +175,20 @@ class ApplicationConfigLogger(
     ): String = input.prependIndent("  ".repeat(indent + 1))
 
     /**
-     * Get all properties from property source and mask all sensitive fields.
+     * Get all properties from property source with values masked by [ConfigValueMasker].
      * @param propertySource to read the properties from.
      * @return a key value map of config properties with masked values.
      */
     private fun getMaskedProperties(propertySource: PropertySource): Map<String, Any> {
         val properties = LinkedHashMap<String, Any>()
-        propertySource.forEach { k -> propertySource.get(k)?.let { properties[k] = maskProperty(k, it) } }
+        propertySource.forEach { k ->
+            propertySource.get(k)?.let { properties[k] = ConfigValueMasker.mask(k, it) ?: ConfigValueMasker.HIDDEN }
+        }
         return properties
     }
 
-    /**
-     * Match for sensitive property keys and mask values.
-     */
-    private fun maskProperty(
-        key: String,
-        value: Any,
-    ): Any {
-        for (pattern in this.maskPatterns) {
-            if (pattern.matcher(key).matches()) {
-                val valueString = value.toString()
-                return if (valueString.isNotEmpty()) valueString.first() + "*****" else "******"
-            }
-        }
-        return value
-    }
-
     companion object {
-        // mask sensitive information  that should not be printed to the logs.
-        private val PROPERTY_NAMES_TO_MASK = arrayOf("password", "credential", "certificate", "key", "secret", "token")
+        // property sources holding the OS environment and JVM system properties.
+        private val UNLOGGED_SOURCES = setOf("env", "system")
     }
 }

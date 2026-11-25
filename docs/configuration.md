@@ -79,14 +79,62 @@ since the values can differ between them.
 
 At startup, `ApplicationConfigLogger` logs all property sources (imported ones are named after
 their path) and an **"Effective configuration"** section with the resolved value of every key.
-Secrets are masked. After a deploy, check that:
+Only allowlisted values are shown (see [Configuration logging](#configuration-logging)). After a
+deploy, check that:
 
 - the imported property sources are present and contain keys,
 - `jwksUrl` and the other service URLs show the expected values,
-- there are no `<unresolvable: …>` entries.
+- there are no `<unresolvable…>` entries.
 
 The raw property-source dump shows placeholders such as `${jwksUrl}` unresolved, so use the
 "Effective configuration" section to check the values.
+
+## Configuration logging
+
+`ApplicationConfigLogger` logs the configuration at startup. To avoid leaking secrets it uses an
+**allowlist** (`ConfigValueMasker.ALLOWED_KEYS`):
+
+- **Values are only logged for allowlisted keys.** All other keys are still listed, with
+  `<hidden>` as the value, so the log shows which keys are set and where they come from.
+- **The OS environment (`env`) and system properties (`system`) are never logged**, only how many
+  keys they contain. Containers often get secrets as environment variables under arbitrary names.
+- **Credentials in URLs are removed even for allowlisted keys**
+  (`postgres://user:pass@db` → `postgres://<hidden>@db`).
+- `<unresolvable>` errors only include the error message for allowlisted keys, since the message
+  can contain the raw value.
+
+A denylist of "secret-looking" key names was used before. It leaked secrets with unexpected names
+(`DB_PASS`, `PRIVATE_PEM`, credentials inside URLs), printed the whole OS environment, and hid
+harmless values such as JWKS URLs because their keys contain `token`. With the allowlist,
+forgetting a key hides a value instead of leaking a secret.
+
+### Adding keys to the allowlist
+
+When a value you need for troubleshooting shows as `<hidden>`, add its key to `ALLOWED_KEYS` in
+`ConfigValueMasker.kt`:
+
+- Only add keys whose value is **never** secret, in any environment.
+- Never add keys that can contain credentials: connection strings, client ids/secrets, passwords,
+  tokens, key stores, or anything under an `ssl` section.
+- Prefer exact keys over wildcards. `*` matches exactly one key segment
+  (`micronaut.http.services.*.url`), `**` any number of segments (`jackson.**`). Matching is
+  case-insensitive, and list indexes (`[0]`) are ignored.
+- Never allowlist `env` or `system` values.
+- Extend `ConfigValueMaskerSpec` if you add wildcard patterns.
+
+### Startup script (`Docker/runapp.sh`)
+
+The script runs with `set -x`, so every command it executes, including the full `java` command
+line, is printed to the container log (and CloudWatch). The JVM command line is also readable
+from `/proc` inside the container, and `-D` options become system properties.
+
+- **Never pass secrets as command-line arguments or `-D` options.** Pass them as environment
+  variables and set them **before** `set -x`.
+- The APM token is configured this way: the task definition sets `APM_SECRET_TOKEN`, and the
+  script exports it as `ELASTIC_APM_SECRET_TOKEN` (read natively by the Elastic APM agent) before
+  `set -x`. The agent logs it masked (`secret_token: 'XXXX' (source: Environment Variables)`).
+- Other `-Delastic.apm.*` options (service name, server URL, environment) are not secret and stay
+  on the command line.
 
 ## JWT validation
 
